@@ -1,0 +1,23 @@
+{
+  "name": "heap-overflow",
+  "version": "0.0.1",
+  "description": "Knowledge sharing web app for developers",
+  "main": "server.js",
+  "scripts": {
+    "test": "nyc mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mildshower/heap-overflow.git"
+  },
+  "author": "Deepika, Ayush, Sravani, Sid",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mildshower/heap-overflow/issues"
+  },
+  "homepage": "https://github.com/mildshower/heap-overflow#readme",
+  "dependencies": {
+    "mocha": "^8.0.1",
+    "nyc": "^15.1.0"
+  }
+}
