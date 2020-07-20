@@ -4,7 +4,8 @@
   "description": "Knowledge sharing web app for developers",
   "main": "server.js",
   "scripts": {
-    "test": "nyc mocha"
+    "test": "nyc mocha",
+    "lint": "eslint *.js src/*.js"
   },
   "repository": {
     "type": "git",
@@ -16,7 +17,8 @@
     "url": "https://github.com/mildshower/heap-overflow/issues"
   },
   "homepage": "https://github.com/mildshower/heap-overflow#readme",
-  "dependencies": {
+  "devDependencies": {
+    "eslint": "^7.5.0",
     "mocha": "^8.0.1",
     "nyc": "^15.1.0"
   }
