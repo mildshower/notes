@@ -4,7 +4,7 @@
   "description": "Knowledge sharing web app for developers",
   "main": "server.js",
   "scripts": {
-    "test": "nyc mocha",
+    "test": "./scripts/seedTestData.sh data/ho_test.db && nyc mocha",
     "lint": "eslint *.js src/*.js"
   },
   "repository": {
