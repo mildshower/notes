@@ -1,0 +1,66 @@
+* {
+  font-family: sans-serif;
+}
+
+h1 {
+  font-weight: 100;
+  margin: 30px 10vw;
+  font-size: 40px;
+}
+
+#postButton {
+  margin: 30px 10vw;
+  font-size: 23px;
+  font-weight: lighter;
+  border-radius: 5px;
+  background: rgb(192, 192, 192);
+  box-shadow: none;
+  border: none;
+  padding: 10px 13px;
+  cursor: pointer;
+  transition: filter 0.6s ease-in-out;
+  outline: none;
+}
+
+#postButton:focus,
+#postButton:hover {
+  background-color: rgb(151, 151, 151);
+  filter: drop-shadow(2px 2px 1px rgb(138, 138, 138));
+}
+
+#bodyField {
+  border: 1px solid rgb(163, 163, 163);
+  border-top: none;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+
+.newQuestionBox {
+  border: 1px solid rgb(92, 92, 92);
+  margin: 0 10vw;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  border-radius: 2px;
+}
+
+.newQuestionBox > input,
+.newQuestionBox > label {
+  margin: 10px 0;
+}
+
+.newQuestionBox > label {
+  font-size: 35px;
+}
+
+#titleField {
+  font-size: 25px;
+  padding: 5px 10px;
+  border: 1px solid rgb(163, 163, 163);
+  outline: none;
+  border-radius: 5px;
+}
+
+#titleField:focus {
+  border: 1px solid black;
+}
