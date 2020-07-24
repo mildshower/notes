@@ -18,6 +18,7 @@ a {
   align-items: center;
   position: sticky;
   top: 0px;
+  z-index: 100;
 }
 
 /* Style for Icon */

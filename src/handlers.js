@@ -84,4 +84,8 @@ const handleLoginSignUp = (req, res) => {
     });
 };
 
-module.exports = { handleSessions, serveHomePage, handleGithubRequest, handleLoginSignUp };
+const serveAskQuestion = function(req, res){
+  res.render('askQuestion');
+};
+
+module.exports = { handleSessions, serveHomePage, handleGithubRequest, handleLoginSignUp, serveAskQuestion };
