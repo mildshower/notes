@@ -1,0 +1,14 @@
+link(rel='stylesheet' href='css/header.css')
+.header
+  a#icon(href='/home' alt='home' title='heapOverFlow')
+    img(src='images/appIcon.png' alt='heapOverflow Icon')
+  #searchBar
+    img(src='images/search.svg' alt='search icon')
+    input(type='search' onsearch="console.log('input')" placeholder='Search..')
+  if (name)
+    a#headerButton
+      img(src=imageUrl alt='avatar')
+      =name
+  else
+    a#headerButton(href='/entry?targetPath=home')
+      ='Login/Sign Up'

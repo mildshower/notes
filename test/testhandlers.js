@@ -3,7 +3,7 @@ const { app } = require('../src/routes');
 
 describe('GET', () => {
   context('/homepage', () => {
-    it('Should get home page for path "/"', done => {
+    it('Should redirect to home for path "/"', done => {
       request(app)
         .get('/')
         .set('Accept', '*/*')
@@ -20,9 +20,9 @@ describe('GET', () => {
         .expect(/heapOverflow | Home/, done);
     });
 
-    it('should get the index.css for "css/index.css" path', done => {
+    it('should get public file for  the home page', done => {
       request(app)
-        .get('/css/index.css')
+        .get('/css/header.css')
         .set('accept', '*/*')
         .expect(200)
         .expect('Content-Type', /text\/css/)
