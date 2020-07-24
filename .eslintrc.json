@@ -122,7 +122,6 @@
         "src/routes.js"
       ],
       "rules": {
-        "camelcase": "off",
         "max-len": "off",
         "no-process-env": "off"
       }

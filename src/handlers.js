@@ -1,3 +1,4 @@
+require('dotenv').config();
 const fetch = require('node-fetch');
 const Moment = require('moment');
 
@@ -9,7 +10,6 @@ const handleSessions = (req, res, next) => {
   const sessionId = req.cookies.session;
   if (sessionId) {
     req.userId = req.app.locals.sessions.getUserId(+sessionId);
-
   }
   next();
 };
@@ -33,14 +33,14 @@ const authenticateWithGithub = (req, res) => {
 };
 
 const getRedirectUrl = ({ dataStore, targetPath, userDetails }) => {
-  const { login, avatar_url, url } = userDetails;
+  const { login, avatar_url: avatarUrl, url } = userDetails;
   return new Promise((resolve, reject) => {
     dataStore.getUser('github_username', login)
       .then(({ isFound }) => {
         if (isFound) {
           return resolve({ path: targetPath, login });
         }
-        dataStore.storeUserDetails(login, avatar_url, url)
+        dataStore.storeUserDetails(login, avatarUrl, url)
           .then(() => resolve({ path: 'signUp', login }))
           .catch(err => {
             throw err;
@@ -65,9 +65,9 @@ const getGithubDetails = (code) => {
   return new Promise((resolve) => {
     fetch('https://github.com/login/oauth/access_token', getOauthOptions(code))
       .then((response) => response.json())
-      .then(({ access_token }) =>
+      .then(({ access_token: accessToken }) =>
         fetch('https://api.github.com/user', {
-          headers: { Authorization: `token ${access_token}` },
+          headers: { Authorization: `token ${accessToken}` },
         })
       )
       .then((response) => response.json())
@@ -125,4 +125,14 @@ const saveDetails = (req, res) => {
     });
 };
 
-module.exports = { handleSessions, serveHomePage, authenticateWithGithub, handleLoginSignUp, serveSignUpPage, serveAskQuestion, serveQuestionPage, serveQuestionDetails, saveDetails };
+module.exports = { 
+  handleSessions, 
+  serveHomePage, 
+  authenticateWithGithub, 
+  handleLoginSignUp, 
+  serveSignUpPage, 
+  serveAskQuestion, 
+  serveQuestionPage, 
+  serveQuestionDetails, 
+  saveDetails 
+};
