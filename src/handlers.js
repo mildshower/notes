@@ -12,7 +12,7 @@ const handleSessions = (req, res, next) => {
 const serveHomePage = (req, res) => {
   req.app.locals.dataStore.getUser('user_id', req.userId)
     .then(({ user, isFound }) =>
-      res.render('home', { user, isFound, title: 'Last 10 Questions'})
+      res.render('home', { user, isFound, title: 'Last 10 Questions' })
     );
 };
 
@@ -30,15 +30,15 @@ const getRedirectUrl = ({ dataStore, targetPath, userDetails }) => {
     dataStore.getUser('github_username', login)
       .then(({ isFound }) => {
         if (isFound) {
-          resolve({ path: targetPath, avatarUrl: avatar_url });
-          return;
+          return resolve(targetPath);
         }
-        dataStore.storeUserDetails(login, avatar_url, url);
-        resolve({ path: 'signUp', avatarUrl: '' });
+        dataStore.storeUserDetails(login, avatar_url, url)
+          .then(() => resolve('signUp'))
+          .catch(err => {
+            throw err;
+          });
       })
-      .catch(err => {
-        reject(err);
-      });
+      .catch(err => reject(err));
   });
 };
 
@@ -53,36 +53,47 @@ const getOauthOptions = (code) => {
   };
 };
 
+const getGithubDetails = (code) => {
+  return new Promise((resolve, reject) => {
+    fetch('https://github.com/login/oauth/access_token', getOauthOptions(code))
+      .then((response) => response.json())
+      .then(({ access_token }) =>
+        fetch('https://api.github.com/user', {
+          headers: { Authorization: `token ${access_token}` },
+        })
+      )
+      .then((response) => response.json())
+      .then(resolve);
+  });
+};
+
 const handleLoginSignUp = (req, res) => {
   if (req.query.error) {
     return res.redirect('/home');
   }
 
-  fetch('https://github.com/login/oauth/access_token', getOauthOptions(req.query.code))
-    .then((response) => response.json())
-    .then(({ access_token }) =>
-      fetch('https://api.github.com/user', {
-        headers: { Authorization: `token ${access_token}` },
-      })
-    )
-    .then((response) => response.json())
+  getGithubDetails(req.query.code)
     .then((userDetails) => {
       const { dataStore, sessions } = req.app.locals;
       const { targetPath } = req.query;
       getRedirectUrl({ dataStore, targetPath, userDetails })
-        .then(({ path, avatarUrl }) => {
+        .then((path) => {
           dataStore.getUser('github_username', userDetails.login)
             .then(({ user }) => {
               const sessionId = sessions.addSession(user.user_id);
               res.cookie('session', sessionId);
-              res.render(`${path}`, { avatarUrl });
+              res.redirect(`/${path}`);
             });
         });
     });
 };
 
-const serveAskQuestion = function(req, res){
+const serveSignUpPage = (req, res) => {
+  res.render('signUp');
+};
+
+const serveAskQuestion = function(req, res) {
   res.render('askQuestion');
 };
 
-module.exports = { handleSessions, serveHomePage, handleGithubRequest, handleLoginSignUp, serveAskQuestion };
+module.exports = { handleSessions, serveHomePage, handleGithubRequest, handleLoginSignUp, serveSignUpPage, serveAskQuestion };

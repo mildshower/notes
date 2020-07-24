@@ -5,13 +5,7 @@ const morgan = require('morgan');
 const sqlite3 = require('sqlite3').verbose();
 const DataStore = require('./dataStore');
 const { Sessions } = require('./sessions');
-const { 
-  handleSessions, 
-  serveHomePage, 
-  handleGithubRequest, 
-  handleLoginSignUp, 
-  serveAskQuestion 
-} = require('./handlers');
+const { handleSessions, serveHomePage, handleGithubRequest, handleLoginSignUp, serveSignUpPage, serveAskQuestion } = require('./handlers');
 const dbPath = process.env.HO_DB_PATH || 'data/ho_production.db';
 const dbClient = new sqlite3.Database(dbPath);
 
@@ -31,6 +25,7 @@ app.use(express.static('public'));
 app.get('/home', serveHomePage);
 app.get('/entry', handleGithubRequest);
 app.get('/verify', handleLoginSignUp);
+app.get('/signUp', serveSignUpPage);
 app.get('/askQuestion', serveAskQuestion);
 
 module.exports = { app };
