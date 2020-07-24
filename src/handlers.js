@@ -1,4 +1,9 @@
 const fetch = require('node-fetch');
+const Moment = require('moment');
+
+const getRelativeTime = function(time){
+  return new Moment(time).fromNow();
+};
 
 const handleSessions = (req, res, next) => {
   const sessionId = req.cookies.session;
@@ -9,11 +14,14 @@ const handleSessions = (req, res, next) => {
   next();
 };
 
-const serveHomePage = (req, res) => {
-  req.app.locals.dataStore.getUser('user_id', req.userId)
-    .then(({ user, isFound }) =>
-      res.render('home', { user, isFound, title: 'Last 10 Questions' })
-    );
+const serveHomePage = async function(req, res) {
+  const {dataStore} = req.app.locals;
+  const { user, isFound } = await dataStore.getUser('user_id', req.userId);
+  const questions = await dataStore.getLastQuestions(10);
+  questions.forEach(question => {
+    question.created = getRelativeTime(question.created);
+  });
+  res.render('home', { user, isFound, title: 'Last 10 Questions', questions});
 };
 
 const handleGithubRequest = (req, res) => {

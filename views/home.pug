@@ -2,7 +2,26 @@ doctype html
 head
   meta(charset='UTF-8')
   meta(name='viewport' content='width=device-width, initial-scale=1.0')
+  link(rel="stylesheet", href="css/home.css")
   title heapOverflow | Home
 body
   include header.pug
   include titleBar.pug
+
+  if(questions.length == 0)
+    .noQuestion
+      | No Questions Posted Yet. You can start asking a question.
+  else
+    each question in questions
+      .topQuestionsBox(id=question.id)
+        //- .voteCount
+        //- .answerCount
+        .questionDetails
+          .questionTitle
+            a(href='/q/'+question.id) #{question.title}
+          .otherDetails
+            .tags
+            p.status
+              | Asked #{question.created} by 
+              strong #{question.owner}
+      hr.separator

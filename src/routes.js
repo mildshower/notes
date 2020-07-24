@@ -20,7 +20,7 @@ app.use(morgan('dev'));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(handleSessions);
-app.get('/', serveHomePage);
+app.get('/', (req, res) => res.redirect('/home'));
 app.use(express.static('public'));
 app.get('/home', serveHomePage);
 app.get('/entry', handleGithubRequest);

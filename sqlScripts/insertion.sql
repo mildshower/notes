@@ -8,10 +8,10 @@ INSERT INTO users (user_id, github_username, display_name, location, email, bio,
    ("3","user3", "cany", "China", "can221@yahoo.co.in",NULL,NULL,"user","https://avatars1.githubusercontent.com/u/58025792?v=4");
 
 
-INSERT INTO questions (id,title, body, body_text, owner)
+INSERT INTO questions (id,title, body, body_text, owner, created)
   VALUES 
-   (1,'How to use foreign key in sqlite3?','{"ops":[{"insert":"I am unable to use foreign key in sqlite3."}]}', 'I am unable to use foreign key in sqlite3.', 1),
-   (2,'Why node js is single threaded?','{"ops":[{"insert":"I am using node version 12"}]}', 'I am using node version 12', 3);
+   (1,'How to use foreign key in sqlite3?','{"ops":[{"insert":"I am unable to use foreign key in sqlite3."}]}', 'I am unable to use foreign key in sqlite3.', 1, '2020-07-24 19:06:49'),
+   (2,'Why node js is single threaded?','{"ops":[{"insert":"I am using node version 12"}]}', 'I am using node version 12', 3, '2020-07-24 19:06:39');
 
 
 

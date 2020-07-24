@@ -1,5 +1,11 @@
 const tablesSchema = require('./tablesSchema.json');
 
+const getLastQuestionsSql = () =>
+  `select id, title, created, display_name as owner from questions
+  LEFT JOIN users
+  on questions.owner = users.user_id
+  order by created DESC;`;
+
 class DataStore {
   constructor(dbClient) {
     this.dbClient = dbClient;
@@ -46,6 +52,17 @@ class DataStore {
         });
       });
       this.dbClient.run('COMMIT;');
+    });
+  }
+
+  getLastQuestions(count){
+    return new Promise((resolve, reject) => {
+      this.dbClient.all(getLastQuestionsSql(), (err, rows) => {
+        if(err){
+          return reject(err);
+        }
+        resolve(rows.slice(0, count));
+      });
     });
   }
 }
