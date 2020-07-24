@@ -11,12 +11,9 @@ const handleSessions = (req, res, next) => {
 
 const serveHomePage = (req, res) => {
   req.app.locals.dataStore.getUser('user_id', req.userId)
-    .then(({ user, isFound }) => {
-      if (isFound) {
-        return res.render('home', { avatarUrl: user.avatar });
-      }
-      res.render('home');
-    });
+    .then(({ user, isFound }) =>
+      res.render('home', { user, isFound, title: 'Last 10 Questions'})
+    );
 };
 
 const handleGithubRequest = (req, res) => {

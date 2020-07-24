@@ -5,9 +5,9 @@ link(rel='stylesheet' href='css/header.css')
   #searchBar
     img(src='images/search.svg' alt='search icon')
     input(type='search' onsearch="console.log('input')" placeholder='Search..')
-  if (avatarUrl)
+  if (isFound)
     a#headerButton
-      img(src=avatarUrl alt='avatar')
+      img(src=user.avatar alt='avatar')
       ='Profile'
   else
     a#headerButton(href='/entry?targetPath=home')
