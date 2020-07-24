@@ -100,8 +100,21 @@ const serveSignUpPage = (req, res) => {
   res.render('signUp');
 };
 
+const serveQuestionPage = async function(req, res){
+  const dataStore = req.app.locals.dataStore;
+  const question = await dataStore.getQuestionDetails(req.query.id);
+  question.lastModified = getRelativeTime(question.lastModified);
+  question.created = getRelativeTime(question.created);
+  res.render('question', question);
+};
+
+const serveQuestionDetails = function(req, res){
+  req.app.locals.dataStore.getQuestionDetails(req.query.id)
+    .then(question => res.json(question));
+};
+
 const serveAskQuestion = function(req, res) {
   res.render('askQuestion');
 };
 
-module.exports = { handleSessions, serveHomePage, handleGithubRequest, handleLoginSignUp, serveSignUpPage, serveAskQuestion };
+module.exports = { handleSessions, serveHomePage, handleGithubRequest, handleLoginSignUp, serveSignUpPage, serveAskQuestion, serveQuestionPage, serveQuestionDetails };

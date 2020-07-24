@@ -2,8 +2,8 @@ link(rel='stylesheet' href='css/titleBar.css')
 #titleBar
   h1 #{title}
   a#askQuestionBtn Ask Question
-if askedTime
+if created
   p#questionStatus
     span Asked&nbsp;
-    | #{askedTime}
+    | #{created}
 hr.separator

@@ -1,3 +1,10 @@
+const getQuestionBox = () => document.querySelector('.questionBox');
+
+const disableToolbar = ancestor => {
+  const toolbar = document.querySelector(`${ancestor} .ql-toolbar`);
+  toolbar.classList.add('hidden');
+};
+
 const getEditorConfig = () => ({
   theme: 'snow',
   formats: [
@@ -28,63 +35,21 @@ const setupSyntax = () => {
   });
 };
 
-const showQuestion = function () {
-  const question = new Quill(
-    '#questionBox > .body > .editor',
-    getEditorConfig()
-  );
-  // setTimeout(() => {
-  question.disable();
-  document.querySelector('#questionBox > .body > .ql-toolbar').style.display =
-      'none';
-  // }, 5000);
-  question.setContents({
-    ops: [
-      { insert: 'This is my question' },
-      { attributes: { header: 1 }, insert: '\n' },
-      { insert: 'int a = 10;' },
-      { attributes: { 'code-block': true }, insert: '\n' },
-      { insert: 'b = a' },
-      { attributes: { 'code-block': true }, insert: '\n' },
-      { insert: 'fi = a - b;' },
-      { attributes: { 'code-block': true }, insert: '\n' },
-      { insert: 'function fi(5);' },
-      { attributes: { 'code-block': true }, insert: '\n' },
-      { insert: 'now what will it print\nso that\nI c\ncan \nhello\nhatt\n' },
-    ],
-  });
-  return question;
-};
-
-const showAnswers = function(){
-  const answer = new Quill(
-    '.answerBox > .body > .editor',
-    getEditorConfig()
-  );
-  answer.disable();
-  document.querySelector('.answerBox > .body > .ql-toolbar').style.display =
-      'none';
-  answer.setContents({
-    ops: [
-      { insert: 'This is my question' },
-      { attributes: { header: 1 }, insert: '\n' },
-      { insert: 'int a = 10;' },
-      { attributes: { 'code-block': true }, insert: '\n' },
-      { insert: 'b = a' },
-      { attributes: { 'code-block': true }, insert: '\n' },
-      { insert: 'fi = a - b;' },
-      { attributes: { 'code-block': true }, insert: '\n' },
-      { insert: 'function fi(5);' },
-      { attributes: { 'code-block': true }, insert: '\n' },
-      { insert: 'now what will it print\nso that\nI c\ncan \nhello\nhatt\n' },
-    ],
-  });
+const loadQuestion = function () {
+  const questionBox = getQuestionBox();
+  fetch(`/questionDetails?id=${questionBox.id}`)
+    .then(response => response.json())
+    .then(({body}) => {
+      const question = new Quill('.questionBox .editor', getEditorConfig());
+      question.setContents(JSON.parse(body));
+      question.disable();
+      disableToolbar('.questionBox');
+    });
 };
 
 const main = function () {
   setupSyntax();
-  const question = showQuestion();
-  showAnswers();
+  loadQuestion();
 };
 
 window.onload = main;

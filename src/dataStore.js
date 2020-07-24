@@ -6,6 +6,25 @@ const getLastQuestionsSql = () =>
   on questions.owner = users.user_id
   order by created DESC;`;
 
+const getQuestionDetailsSql = id =>
+  `select 
+  ques.id, 
+  ques.title, 
+  ques.body, 
+  ques.owner, 
+  ques.created, 
+  ques.last_modified as lastModified, 
+  (select display_name from users 
+    where users.user_id = ques.owner) as ownerName, 
+  (select count(*) from answers 
+    where answers.question = ques.id) as answerCount, 
+  (select count(*) from answers ans
+    where ans.question = ques.id AND ans.is_accepted = 1) as hasCorrectAnswer, 
+  (select sum(REPLACE(vote_type,0,-1)) from question_votes 
+    where question_votes.question_id = ques.id) as voteCount 
+  from questions ques
+  where ques.id = ${id};`;
+
 class DataStore {
   constructor(dbClient) {
     this.dbClient = dbClient;
@@ -62,6 +81,17 @@ class DataStore {
           return reject(err);
         }
         resolve(rows.slice(0, count));
+      });
+    });
+  }
+
+  getQuestionDetails(id){
+    return new Promise((resolve, reject) => {
+      this.dbClient.get(getQuestionDetailsSql(id), (err, details) => {
+        if(err){
+          return reject(err);
+        }
+        resolve(details);
       });
     });
   }
