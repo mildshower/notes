@@ -5,8 +5,8 @@ class DataStore {
     this.dbClient = dbClient;
   }
 
-  getUser(username) {
-    const query = `SELECT * FROM users WHERE github_username = "${username}";`;
+  getUser(key, value) {
+    const query = `SELECT * FROM users WHERE ${key} = "${value}";`;
     return new Promise((resolve, reject) => {
       this.dbClient.get(query, (err, user) => {
         if (err) {

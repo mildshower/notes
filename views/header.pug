@@ -5,10 +5,10 @@ link(rel='stylesheet' href='css/header.css')
   #searchBar
     img(src='images/search.svg' alt='search icon')
     input(type='search' onsearch="console.log('input')" placeholder='Search..')
-  if (name)
+  if (avatarUrl)
     a#headerButton
-      img(src=imageUrl alt='avatar')
-      =name
+      img(src=avatarUrl alt='avatar')
+      ='Profile'
   else
     a#headerButton(href='/entry?targetPath=home')
       ='Login/Sign Up'

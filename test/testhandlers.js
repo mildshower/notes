@@ -3,12 +3,13 @@ const { app } = require('../src/routes');
 
 describe('GET', () => {
   context('/homepage', () => {
-    it('Should redirect to home for path "/"', done => {
+    it('Should get home page for path "/"', done => {
       request(app)
         .get('/')
         .set('Accept', '*/*')
-        .expect(302)
-        .expect('Location', '/home', done);
+        .expect(200)
+        .expect('Content-Type', /text\/html/)
+        .expect(/heapOverflow | Home/, done);
     });
 
     it('Should get home page for path "/home"', done => {

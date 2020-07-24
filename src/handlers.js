@@ -1,5 +1,24 @@
 const fetch = require('node-fetch');
 
+const handleSessions = (req, res, next) => {
+  const sessionId = req.cookies.session;
+  if (sessionId) {
+    req.userId = req.app.locals.sessions.getUserId(+sessionId);
+
+  }
+  next();
+};
+
+const serveHomePage = (req, res) => {
+  req.app.locals.dataStore.getUser('user_id', req.userId)
+    .then(({ user, isFound }) => {
+      if (isFound) {
+        return res.render('home', { avatarUrl: user.avatar });
+      }
+      res.render('home');
+    });
+};
+
 const handleGithubRequest = (req, res) => {
   const redirectStatusCode = 302;
   res.redirect(
@@ -8,17 +27,17 @@ const handleGithubRequest = (req, res) => {
   );
 };
 
-const getRedirectUrl = function({ dataStore, targetPath, userDetails }) {
+const getRedirectUrl = ({ dataStore, targetPath, userDetails }) => {
   const { login, avatar_url, url } = userDetails;
   return new Promise((resolve, reject) => {
-    dataStore.getUser(login)
-      .then(({ user, isFound }) => {
+    dataStore.getUser('github_username', login)
+      .then(({ isFound }) => {
         if (isFound) {
-          resolve({ name: user.display_name, path: targetPath, imageUrl: avatar_url });
+          resolve({ path: targetPath, avatarUrl: avatar_url });
           return;
         }
         dataStore.storeUserDetails(login, avatar_url, url);
-        resolve({ name: '', path: 'signUp', imageUrl: '' });
+        resolve({ path: 'signUp', avatarUrl: '' });
       })
       .catch(err => {
         reject(err);
@@ -26,22 +45,24 @@ const getRedirectUrl = function({ dataStore, targetPath, userDetails }) {
   });
 };
 
-const handleLoginSignUp = (req, res) => {
-  if (req.query.error) {
-    return res.redirect('/home');
-  }
-
-  fetch('https://github.com/login/oauth/access_token', {
+const getOauthOptions = (code) => {
+  return {
     method: 'POST',
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/x-www-form-urlencoded',
     },
-    body: `client_id=${process.env.HO_CLIENT_ID}&client_secret=${process.env.HO_CLIENT_SECRET}&code=${req.query.code}`,
-  })
-    .then((response) => {
-      return response.json();
-    })
+    body: `client_id=${process.env.HO_CLIENT_ID}&client_secret=${process.env.HO_CLIENT_SECRET}&code=${code}`,
+  };
+};
+
+const handleLoginSignUp = (req, res) => {
+  if (req.query.error) {
+    return res.redirect('/home');
+  }
+
+  fetch('https://github.com/login/oauth/access_token', getOauthOptions(req.query.code))
+    .then((response) => response.json())
     .then(({ access_token }) =>
       fetch('https://api.github.com/user', {
         headers: { Authorization: `token ${access_token}` },
@@ -49,13 +70,18 @@ const handleLoginSignUp = (req, res) => {
     )
     .then((response) => response.json())
     .then((userDetails) => {
-      const { dataStore } = req.app.locals;
+      const { dataStore, sessions } = req.app.locals;
       const { targetPath } = req.query;
       getRedirectUrl({ dataStore, targetPath, userDetails })
-        .then(({ name, path, imageUrl }) => {
-          res.render(`${path}`, { name, imageUrl });
+        .then(({ path, avatarUrl }) => {
+          dataStore.getUser('github_username', userDetails.login)
+            .then(({ user }) => {
+              const sessionId = sessions.addSession(user.user_id);
+              res.cookie('session', sessionId);
+              res.render(`${path}`, { avatarUrl });
+            });
         });
     });
 };
 
-module.exports = { handleGithubRequest, handleLoginSignUp };
+module.exports = { handleSessions, serveHomePage, handleGithubRequest, handleLoginSignUp };
