@@ -2,4 +2,15 @@ doctype html
 head
   meta(charset='UTF-8')
   meta(name='viewport' content='width=device-width, initial-scale=1.0')
-a#icon(href='/home' alt='home' title='heapOverFlow`') Sign UP Page
+  link(rel='stylesheet' href='css/signUp.css')
+  title heapOverflow | Sign Up
+form(action='/saveDetails' method='post')
+  .fieldBox
+    img(src='images/appIcon.png' alt='')
+    label(for='name') Name
+    input#name(type='name' name='name' placeholder='ex. John Dev' required)
+    label(for='email') E-mail
+    input#email(type='email' name='email' placeholder='ex. someone@email.com')
+    label(for='location') Location
+    input#location(type='location' name='location' placeholder='ex. India')
+    button(type='submit') Sign Up

@@ -1,0 +1,50 @@
+*{
+  font-family: sans-serif;
+}
+
+.fieldBox{
+  margin: 180px auto;
+  width: 450px;
+  display: flex;
+  flex-direction: column;
+  border-radius: 5px;
+  border: 1px solid rgb(185, 185, 185);
+  padding: 30px 25px;
+  box-shadow: 0px 0px 15px rgb(212, 212, 212);
+}
+
+.fieldBox > img{
+  width: 60%;
+  align-self: center;
+}
+
+.fieldBox > label{
+  font-size: 25px;
+  padding: 20px 0 0 ;
+  color: rgb(61, 61, 61);
+}
+
+.fieldBox > input,
+.fieldBox > button{
+  font-size: 23px;
+  padding: 8px 10px;
+  border: 1px solid rgb(185, 185, 185);
+  border-radius: 3px;
+  outline: none ;
+}
+
+.fieldBox > input:focus{
+  border: 1px solid rgb(109, 109, 109);
+}
+
+.fieldBox > button{
+  margin: 20px 0 0;
+  color: rgb(61, 61, 61);
+  cursor: pointer;
+}
+
+.fieldBox > button:focus,
+.fieldBox > button:hover {
+  background-color: rgb(228, 228, 228);
+  color: black;
+}

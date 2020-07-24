@@ -55,6 +55,20 @@ class DataStore {
     });
   }
 
+  updateUserDetails(userId, name, email, location) {
+    const query = `UPDATE users
+    SET display_name = "${name}", email = "${email}", location = "${location}"
+    WHERE user_id = ${userId};`;
+    return new Promise((resolve, reject) => {
+      this.dbClient.run(query, err => {
+        if (err) {
+          return reject(err);
+        }
+        resolve();
+      });
+    });
+  }
+
   init() {
     const dataArr = Object.values(tablesSchema);
 
@@ -74,10 +88,10 @@ class DataStore {
     });
   }
 
-  getLastQuestions(count){
+  getLastQuestions(count) {
     return new Promise((resolve, reject) => {
       this.dbClient.all(getLastQuestionsSql(), (err, rows) => {
-        if(err){
+        if (err) {
           return reject(err);
         }
         resolve(rows.slice(0, count));
