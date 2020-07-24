@@ -2,6 +2,12 @@
   font-family: sans-serif;
 }
 
+.ql-editor {
+  min-height: 200px;
+  max-height: 350px;
+  overflow-y: scroll;
+}
+
 h1 {
   font-weight: 100;
   margin: 30px 10vw;

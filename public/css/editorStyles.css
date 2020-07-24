@@ -23,12 +23,6 @@
   border-top-right-radius: 5px;
 }
 
-.ql-editor {
-  min-height: 200px;
-  max-height: 350px;
-  overflow-y: scroll;
-}
-
 .ql-snow .ql-editor pre.ql-syntax {
   background-color: #eff0f1;
   color: black;

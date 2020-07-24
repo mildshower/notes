@@ -1,0 +1,92 @@
+.ql-editor {
+  overflow-y: scroll;
+  max-height: 400px;
+}
+
+.ql-disabled .ql-editor {
+  max-height: none;
+}
+
+.editor.ql-disabled {
+  border: none !important;
+}
+
+#questionBox, .answerBox {
+  margin: 20px 10vw;
+  display: flex;
+  padding: 15px 0;
+  height: fit-content;
+}
+
+#questionBox > .stats ,
+  .answerBox > .stats {
+  height: 300px;
+  background: red;
+  width: 100px;
+  flex-shrink: 0;
+}
+
+#questionBox > .body,
+.answerBox > .body {
+  flex-grow: 1;
+  margin: 0 20px;
+}
+
+#questionBox > .body > .editor,
+.answerBox > .body> .editor {
+  border: 1px solid rgb(163, 163, 163);
+  border-top: none;
+  height: auto !important;
+}
+
+#questionBox > .body > .tagStrip {
+  height: 40px;
+  width: 100%;
+  background-image: linear-gradient(white, gray);
+}
+
+#questionBox > .body > .modifier,
+.answerBox > .body > .modifier {
+  display: flex;
+}
+
+#questionBox > .body > .modifier > .options,
+.answerBox  > .body > .modifier > .options {
+  flex-grow: 1;
+}
+
+#questionBox > .body > .modifier > .options > .editButton,
+.answerBox > .body > .modifier > .options > .editButton {
+  background-color: skyblue;
+  height: 30px;
+}
+
+#questionBox > .body > .modifier > .options > .commentBar,
+.answerBox > .body > .modifier > .options > .commentBar {
+  background-color: rgb(24, 146, 79);
+  height: 60px;
+}
+#questionBox > .body > .modifier > .options > .commentsBox,
+.answerBox > .body > .modifier > .options > .commentsBox {
+  height: 50px;
+}
+
+#questionBox > .body > .modifier > .ownerInfo,
+.answerBox > .body > .modifier > .ownerInfo {
+  width: 210px;
+  background-color: rgb(228, 228, 228);
+  border-radius: 5px;
+  margin: 10px 0 10px 15px;
+  flex-shrink: 0;
+  height: fit-content;
+  padding: 12px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#questionBox > .body > .modifier > .ownerInfo > p,
+.answerBox > .body > .modifier > .ownerInfo > p {
+  margin: 5px 2px 5px 5px;
+  font-size: 18px;
+}

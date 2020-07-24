@@ -1,0 +1,61 @@
+* {
+  font-family: sans-serif;
+}
+
+a {
+  text-decoration: none;
+}
+
+#titleBar{
+  display: flex;
+  margin: 30px 10vw 10px;
+  /* align-items: center; */
+}
+
+#titleBar h1 {
+  font-weight: 100;
+  font-size: 35px;
+  margin: 20px 25px 20px 0;
+  flex-grow: 1;
+  /* word-break: break-all; */
+}
+
+#titleBar a {
+  color: black;
+  margin: 20px 1vw 20px 5vw;
+  font-size: 23px;
+  font-weight: lighter;
+  border-radius: 5px;
+  background: rgb(192, 192, 192);
+  box-shadow: none;
+  border: none;
+  padding: 10px 13px;
+  cursor: pointer;
+  transition: filter 0.6s ease-in-out;
+  outline: none;
+  width: 162.71px;
+  text-align: center;
+  flex-shrink: 0;
+  height: 26.94px;
+}
+
+#titleBar a:focus,
+#titleBar a:hover {
+  background-color: rgb(151, 151, 151);
+  filter: drop-shadow(2px 2px 1px rgb(138, 138, 138));
+}
+
+#questionStatus{
+  margin: 0px 10vw 10px;
+  font-size: 25px;
+  font-weight: 100;
+  color: gray;
+}
+
+#questionStatus span{
+  color: black;
+}
+
+.separator{
+  margin: 20px 10vw;
+}
