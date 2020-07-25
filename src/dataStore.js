@@ -42,7 +42,7 @@ class DataStore {
     });
   }
 
-  storeUserDetails(username, avatarUrl, githubUrl) {
+  addNewUser(username, avatarUrl, githubUrl) {
     const query = `INSERT INTO USERS (github_username, github_link, avatar) 
     VALUES ("${username}", "${githubUrl}", "${avatarUrl}")`;
     return new Promise((resolve, reject) => {
@@ -99,10 +99,10 @@ class DataStore {
     });
   }
 
-  getQuestionDetails(id){
+  getQuestionDetails(id) {
     return new Promise((resolve, reject) => {
       this.dbClient.get(getQuestionDetailsSql(id), (err, details) => {
-        if(err){
+        if (err) {
           return reject(err);
         }
         resolve(details);

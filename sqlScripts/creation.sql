@@ -2,7 +2,7 @@
 drop table if exists users;
 create table if not exists users (
   user_id integer primary key AUTOINCREMENT,
-  github_username varchar(40) not null,
+  github_username varchar(40) not null UNIQUE,
   display_name varchar(50) DEFAULT 'USER',
   location varchar(40),
   email varchar(50),
