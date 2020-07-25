@@ -1,7 +1,11 @@
 link(rel='stylesheet' href='css/titleBar.css')
+include popUp.pug
 #titleBar
   h1 #{title}
-  a#askQuestionBtn Ask Question
+  if(user)
+    a#askQuestionBtn(href= '/askQuestion') Ask Question
+  else
+    a#askQuestionBtn(onclick= 'showPopUp(\'/askQuestion\')') Ask Question
 if created
   p#questionStatus
     span Asked&nbsp;

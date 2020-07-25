@@ -177,8 +177,8 @@ describe('POST', function() {
       request(app)
         .post('/saveDetails')
         .set('Cookie', `session=${id}`)
-        .send({ name: 'john', email: 'john@email.com', location: 'Bangalore' })
-        .set('Accept', 'application/json')
+        .send('name=Narut&email=john%40email.com&location=Bangalore')
+        .set('Content-Type', 'application/x-www-form-urlencoded')
         .expect(302)
         .expect('Location', '/home', done);
     });
@@ -186,8 +186,8 @@ describe('POST', function() {
     it('should not save user details when he is not authorized', (done) => {
       request(app)
         .post('/saveDetails')
-        .send({ name: 'john', email: 'john@email.com', location: 'Bangalore' })
-        .set('Accept', 'application/json')
+        .send('name=Narut&email=john%40email.com&location=Bangalore')
+        .set('Content-Type', 'application/x-www-form-urlencoded')
         .expect(401, done);
     });
   });
