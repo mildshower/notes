@@ -7,6 +7,7 @@ head
   link(rel='icon' href='images/favicon.svg')
   link(rel='stylesheet' href='css/askQuestion.css')
   link(rel='stylesheet' href='css/editorStyles.css')
+  script(src='scripts/request.js')
   script(src='scripts/askQuestion.js')
   meta(name='viewport' content='width=device-width, initial-scale=1.0')
   title heapOverflow | Ask
@@ -15,7 +16,7 @@ body
   h1 Ask A Question
   .newQuestionBox
     label(for='titleField') Title
-    input#titleField(type='text' maxlength='100')
+    input#titleField(type='text' maxlength='100' autocomplete='off')
     label(for='bodyField') Body
     #bodyField
   button#postButton Post Your Question

@@ -191,4 +191,29 @@ describe('POST', function() {
         .expect(401, done);
     });
   });
+
+  context('/saveQuestion', () => {
+    it('should save given valid question', (done) => {
+      const sessions = new Sessions();
+      const id = sessions.addSession('1');
+      app.locals.sessions = sessions;
+      request(app)
+        .post('/saveQuestion')
+        .set('Cookie', `session=${id}`)
+        .send({title: 'title', body: 'body', bodyText: 'bodyText'})
+        .set('Content-Type', 'application/json')
+        .expect(200)
+        .expect('Content-Type', 'application/json; charset=utf-8')
+        .expect(/{"id":.*}/, done);
+    });
+
+    it('should serve unauthorized if not logged in', (done) => {
+      request(app)
+        .post('/saveQuestion')
+        .send({title: 'title', body: 'body', bodyText: 'bodyText'})
+        .set('Content-Type', 'application/json')
+        .expect(401, done);
+    });
+  });
 });
+

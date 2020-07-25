@@ -17,7 +17,8 @@ const {
   serveQuestionPage, 
   serveQuestionDetails, 
   saveDetails,
-  authorizeUser
+  authorizeUser,
+  saveQuestion
 } = require('./handlers');
 
 const app = express();
@@ -29,6 +30,7 @@ app.locals.sessions = new Sessions();
 app.set('view engine', 'pug');
 app.use(morgan('dev'));
 app.use(express.urlencoded({ extended: true }));
+app.use(express.json({limit: '100kb'}));
 app.use(cookieParser());
 app.use(handleSessions);
 app.get('/', (req, res) => res.redirect('/home'));
@@ -42,5 +44,6 @@ app.use(authorizeUser);
 app.get('/signUp', serveSignUpPage);
 app.get('/askQuestion', serveAskQuestion);
 app.post('/saveDetails', saveDetails);
+app.post('/saveQuestion', saveQuestion);
 
 module.exports = { app };

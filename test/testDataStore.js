@@ -4,7 +4,6 @@ const DataStore = require('../src/dataStore');
 
 describe('dataStore', () => {
   context('#getQuestionDetails', () => {
-
     it('it should give details of question when valid id provided', (done) => {
       const dbClient = {
         get: sinon.fake.yields(null, {title: 'question'})
@@ -75,6 +74,39 @@ describe('dataStore', () => {
           assert.deepStrictEqual(error.message, 'Negative count error!');
           assert.ok(dbClient.all.calledOnce);
           assert.ok(dbClient.all.firstArg.match(/order by created DESC/));
+          done();
+        });
+    });
+  });
+
+  context('#addQuestion', () => {
+
+    it('it should add a question when valid owner given', (done) => {
+      const dbClient = {
+        run: sinon.fake.yields(null),
+        get: sinon.fake.yields(null, {id: 1}),
+        serialize: (cb) => cb()
+      };
+      const dataStore = new DataStore(dbClient);
+      dataStore.addQuestion({title: 'title', body: 'body', body_text: 'body'}, 1)
+        .then(details => {
+          assert.deepStrictEqual(details, {id: 1});
+          assert.ok(dbClient.run.calledOnce);
+          assert.ok(dbClient.get.calledOnce);
+          done();
+        });
+    });
+
+    it('it should produce error if wrong owner is given', (done) => {
+      const dbClient = {
+        run: sinon.fake.yields(new Error()),
+        get: sinon.fake.yields(null, {id: 1}),
+        serialize: (cb) => cb()
+      };
+      const dataStore = new DataStore(dbClient);
+      dataStore.addQuestion({title: 'title', body: 'body', body_text: 'body'}, 10)
+        .catch(err => {
+          assert.deepStrictEqual(err.message, 'Question Insertion Incomplete!');
           done();
         });
     });

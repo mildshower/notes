@@ -22,6 +22,10 @@ const getQuestionDetailsSql = id =>
   from questions ques
   where ques.id = ${id};`;
 
+const getQuestionInsertionSql = ({title, body, bodyText}, owner) =>
+  `insert into questions (title, body, body_text, owner)
+    values ('${title}','${body}','${bodyText}', ${owner});`;
+
 const getInitiationSql = () => {
   return `
     ${Object.values(tablesSchema).join('\n')}
@@ -102,6 +106,26 @@ class DataStore {
           return reject(err || new Error('Negative count error!'));
         }
         resolve(rows.slice(0, count).map(({id}) => id));
+      });
+    });
+  }
+
+  addQuestion(question, owner){
+    return new Promise((resolve, reject) => {
+      this.dbClient.serialize(() => {
+        this.dbClient.run(getQuestionInsertionSql(question, owner), err => {
+          if(err){
+            return reject(new Error('Question Insertion Incomplete!'));
+          }
+        });
+        this.dbClient.get(
+          'select last_insert_rowid() as id;', 
+          (err, details) => {
+            if(err){
+              return reject(err);
+            }
+            resolve(details);
+          });
       });
     });
   }

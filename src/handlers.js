@@ -111,6 +111,11 @@ const saveDetails = async (req, res) => {
   res.redirect('/home');
 };
 
+const saveQuestion = function(req, res){
+  req.app.locals.dataStore.addQuestion(req.body, req.user.user_id)
+    .then(insertionDetails => res.json(insertionDetails));
+};
+
 const authorizeUser = function(req, res, next){
   if(req.user) {
     return next();
@@ -128,5 +133,6 @@ module.exports = {
   serveQuestionPage,
   serveQuestionDetails,
   saveDetails,
-  authorizeUser
+  authorizeUser,
+  saveQuestion
 };

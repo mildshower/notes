@@ -1,3 +1,7 @@
+const getPostButton = () => document.querySelector('#postButton');
+
+const getQuestionTitle = () => document.querySelector('#titleField').value;
+
 const getEditorConfig = () => ({
   theme: 'snow',
   formats: [
@@ -28,9 +32,20 @@ const setupSyntax = () => {
   });
 };
 
+const saveQuestion = function(editor){
+  const question = {title: getQuestionTitle()};
+  question.body = JSON.stringify(editor.getContents());
+  question.bodyText = editor.getText();
+  postData('/saveQuestion', question)
+    .then(({id}) => {
+      location.assign(`/question?id=${id}`);
+    });
+};
+
 const main = function () {
   setupSyntax();
   const editor = new Quill('#bodyField', getEditorConfig());
+  getPostButton().onclick = saveQuestion.bind(null, editor);
 };
 
 window.onload = main;
