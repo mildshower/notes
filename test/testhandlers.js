@@ -65,9 +65,29 @@ describe('GET', () => {
         .expect(/heapOverflow | Question/, done);
     });
 
-    it('should serve unauthorized if not logged in', (done) => {
+    it('should serve "wrong Id" when invalid id is given', (done) => {
       request(app)
         .get('/question?id=10')
+        .set('accept', '*/*')
+        .expect(400)
+        .expect('Content-Type', /text\/html/)
+        .expect('Wrong Id Provided', done);
+    });
+  });
+
+  context('/questionDetails', () => {
+    it('should serve question details for valid question id', (done) => {
+      request(app)
+        .get('/questionDetails?id=2')
+        .set('accept', '*/*')
+        .expect(200)
+        .expect('Content-Type', 'application/json; charset=utf-8')
+        .expect(/"id":2/, done);
+    });
+
+    it('should serve "wrong Id" when invalid id is given', (done) => {
+      request(app)
+        .get('/questionDetails?id=10')
         .set('accept', '*/*')
         .expect(400)
         .expect('Content-Type', /text\/html/)

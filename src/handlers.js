@@ -97,7 +97,8 @@ const serveQuestionPage = async function(req, res) {
 
 const serveQuestionDetails = function(req, res) {
   req.app.locals.dataStore.getQuestionDetails(req.query.id)
-    .then(question => res.json(question));
+    .then(question => res.json(question))
+    .catch(error => res.status(400).send(error.message));
 };
 
 const serveAskQuestion = function(req, res) {
