@@ -22,9 +22,9 @@ const getQuestionDetailsSql = id =>
   from questions ques
   where ques.id = ${id};`;
 
-const getQuestionInsertionSql = ({title, body, bodyText}, owner) =>
+const getQuestionInsertionSql = () =>
   `insert into questions (title, body, body_text, owner)
-    values ('${title}','${body}','${bodyText}', ${owner});`;
+    values (?, ?, ?, ?);`;
 
 const getInitiationSql = () => {
   return `
@@ -111,13 +111,17 @@ class DataStore {
   }
 
   addQuestion(question, owner){
+    const {title, body, bodyText} = question;
     return new Promise((resolve, reject) => {
       this.dbClient.serialize(() => {
-        this.dbClient.run(getQuestionInsertionSql(question, owner), err => {
-          if(err){
-            return reject(new Error('Question Insertion Incomplete!'));
-          }
-        });
+        this.dbClient.run(getQuestionInsertionSql(),
+          [title, body, bodyText, owner],
+          err => {
+            if(err){
+              console.log(err.message);
+              return reject(new Error('Question Insertion Incomplete!'));
+            }
+          });
         this.dbClient.get(
           'select last_insert_rowid() as id;', 
           (err, details) => {

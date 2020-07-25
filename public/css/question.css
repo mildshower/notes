@@ -73,7 +73,7 @@
 
 .questionBox > .body > .modifier > .ownerInfo,
 .answerBox > .body > .modifier > .ownerInfo {
-  width: 210px;
+  width: 250px;
   background-color: rgb(228, 228, 228);
   border-radius: 5px;
   margin: 10px 0 10px 15px;

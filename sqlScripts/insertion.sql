@@ -23,7 +23,13 @@ INSERT INTO questions (id,title, body, body_text, owner, created)
     'How do I access the index in a for loop like the following?', 3, '2020-07-21 03:12:14'),
    (6,'Can I hide the HTML5 number input’s spin box?','{"ops":[{"attributes":{"color":"#242729"},"insert":"Is there a consistent way across browsers to hide the new spin boxes that some browsers (such as Chrome) render for HTML input of type number? I am looking for a CSS or JavaScript method to prevent the up/down arrows from appearing."},{"insert":"\n<input id=\"test\" type=\"number\">"},{"attributes":{"code-block":true},"insert":"\n"}]}',
     'Is there a consistent way across browsers to hide the new spin boxes that some browsers (such as Chrome) render for HTML input of type number? I am looking for a CSS or JavaScript method to prevent the up/down arrows from appearing.<input id="test" type="number">',
- 1, '2020-07-22 19:06:39');
+ 1, '2020-07-22 19:06:39'),
+  (7,'How do I pass command line arguments to a Node.js program? ','{"ops":[{"insert":"I have a web server written in node.js and I would like to launch with a specific folder. I am not sure how to access arguments in JavaScript. I am running node like this:\n$ node server.js folder"},{"attributes":{"code-block":true},"insert":"\n"},{"insert":"here server.js is my server code. node.js help says this is possible:\n$ node -h"},{"attributes":{"code-block":true},"insert":"\n"},{"insert":"Usage: node [options] script.js [arguments]"},{"attributes":{"code-block":true},"insert":"\n"},{"insert":"How would I access those arguments in JavaScript? Somehow I was not able to find this information on the web.\n"}]} ', 'I have a web server written in node.js and I would like to launch with a specific folder. I am not sure how to access arguments in JavaScript. I am running node like this:
+$ node server.js folder
+here server.js is my server code. node.js help says this is possible:
+$ node -h
+Usage: node [options] script.js [arguments]
+How would I access those arguments in JavaScript? Somehow I was not able to find this information on the web. ', 3, '2020-07-24 19:06:39');
 
 
 
