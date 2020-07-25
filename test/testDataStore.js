@@ -34,6 +34,21 @@ describe('dataStore', () => {
     });
   });
 
+  context('#init', () => {
+    it('it should run database initiation sql', (done) => {
+      const dbClient = {
+        exec: sinon.fake.yields()
+      };
+      const dataStore = new DataStore(dbClient);
+      dataStore.init()
+        .then(() => {
+          assert.ok(dbClient.exec.calledOnce);
+          assert.ok(dbClient.exec.firstArg.match(/PRAGMA foreign_keys=ON/));
+          done();
+        });
+    });
+  });
+
   context('#getLastQuestions', () => {
 
     it('it should give last question id\'s if valid count is given', (done) => {

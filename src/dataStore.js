@@ -22,6 +22,13 @@ const getQuestionDetailsSql = id =>
   from questions ques
   where ques.id = ${id};`;
 
+const getInitiationSql = () => {
+  return `
+    ${Object.values(tablesSchema).join('\n')}
+    PRAGMA foreign_keys=ON;
+  `;
+};
+
 class DataStore {
   constructor(dbClient) {
     this.dbClient = dbClient;
@@ -67,21 +74,13 @@ class DataStore {
   }
 
   init() {
-    const dataArr = Object.values(tablesSchema);
-
-    this.dbClient.serialize(() => {
-      this.dbClient.run('BEGIN TRANSACTION;');
-      dataArr.forEach(query => {
-        this.dbClient.serialize(() => {
-          this.dbClient.run(query, err => {
-            if (err) {
-              throw err;
-            }
-          });
-          this.dbClient.run('PRAGMA foreign_keys=ON;');
-        });
+    return new Promise((resolve, reject) => {
+      this.dbClient.exec(getInitiationSql(), err => {
+        if(err){
+          return reject(err);
+        }
+        resolve();
       });
-      this.dbClient.run('COMMIT;');
     });
   }
 
