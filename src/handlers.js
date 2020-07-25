@@ -40,7 +40,7 @@ const getRedirectUrl = ({ dataStore, targetPath, userDetails }) => {
         if (isFound) {
           return resolve({ path: targetPath, login });
         }
-        dataStore.storeUserDetails(login, avatarUrl, url)
+        dataStore.addNewUser(login, avatarUrl, url)
           .then(() => resolve({ path: 'signUp', login }))
           .catch(err => {
             throw err;
@@ -75,22 +75,19 @@ const getGithubDetails = (code) => {
   });
 };
 
-const handleLoginSignUp = (req, res) => {
+const handleLoginSignUp = async (req, res) => {
   const { dataStore, sessions } = req.app.locals;
   const { targetPath, code, error } = req.query;
   if (error) {
     return res.redirect('/home');
   }
-  getGithubDetails(code)
-    .then((userDetails) => getRedirectUrl({ dataStore, targetPath, userDetails }))
-    .then(({ path, login }) => {
-      dataStore.getUser('github_username', login)
-        .then(({ user }) => {
-          const sessionId = sessions.addSession(user.user_id);
-          res.cookie('session', sessionId);
-          res.redirect(`/${path}`);
-        });
-    });
+
+  const userDetails = await getGithubDetails(code);
+  const { path, login } = await getRedirectUrl({ dataStore, targetPath, userDetails });
+  const { user } = await dataStore.getUser('github_username', login);
+  const sessionId = sessions.addSession(user.user_id);
+  res.cookie('session', sessionId);
+  res.redirect(`/${path}`);
 };
 
 const serveSignUpPage = (req, res) => {
@@ -125,14 +122,14 @@ const saveDetails = (req, res) => {
     });
 };
 
-module.exports = { 
-  handleSessions, 
-  serveHomePage, 
-  authenticateWithGithub, 
-  handleLoginSignUp, 
-  serveSignUpPage, 
-  serveAskQuestion, 
-  serveQuestionPage, 
-  serveQuestionDetails, 
-  saveDetails 
+module.exports = {
+  handleSessions,
+  serveHomePage,
+  authenticateWithGithub,
+  handleLoginSignUp,
+  serveSignUpPage,
+  serveAskQuestion,
+  serveQuestionPage,
+  serveQuestionDetails,
+  saveDetails
 };
