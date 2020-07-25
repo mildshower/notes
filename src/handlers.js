@@ -23,7 +23,7 @@ const serveHomePage = async function(req, res) {
     question.created = getRelativeTime(question.created);
     questions.push(question);
   }
-  res.render('home', { user: req.user, title: 'Last 10 Questions', questions });
+  res.render('home', { user: req.user, title: 'Last 10 Questions', questions, currPath: '/home' });
 };
 
 const authenticateWithGithub = (req, res) => {
@@ -76,7 +76,7 @@ const handleLoginSignUp = async (req, res) => {
   const { user } = await dataStore.getUser('github_username', login);
   const sessionId = sessions.addSession(user.user_id);
   res.cookie('session', sessionId);
-  res.redirect(`/${path}`);
+  res.redirect(path);
 };
 
 const serveSignUpPage = (req, res) => {
@@ -85,10 +85,14 @@ const serveSignUpPage = (req, res) => {
 
 const serveQuestionPage = async function(req, res) {
   const dataStore = req.app.locals.dataStore;
-  const question = await dataStore.getQuestionDetails(req.query.id);
-  question.lastModified = getRelativeTime(question.lastModified);
-  question.created = getRelativeTime(question.created);
-  res.render('question', Object.assign( {user: req.user}, question));
+  try{
+    const question = await dataStore.getQuestionDetails(req.query.id);
+    question.lastModified = getRelativeTime(question.lastModified);
+    question.created = getRelativeTime(question.created);
+    res.render('question', Object.assign( {user: req.user, currPath: req.originalUrl}, question));
+  }catch(error){
+    res.status(400).send(error.message);
+  }
 };
 
 const serveQuestionDetails = function(req, res) {

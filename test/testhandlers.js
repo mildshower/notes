@@ -55,25 +55,23 @@ describe('GET', () => {
     });
   });
 
-  context('/askQuestion', () => {
-    it('should serve askQuestion page when logged in', (done) => {
-      const sessions = new Sessions();
-      const id = sessions.addSession('1');
-      app.locals.sessions = sessions;
+  context('/question', () => {
+    it('should serve question page for valid question id', (done) => {
       request(app)
-        .get('/askQuestion')
+        .get('/question?id=2')
         .set('accept', '*/*')
-        .set('Cookie', `session=${id}`)
         .expect(200)
         .expect('Content-Type', /text\/html/)
-        .expect(/heapOverflow | Ask/, done);
+        .expect(/heapOverflow | Question/, done);
     });
 
     it('should serve unauthorized if not logged in', (done) => {
       request(app)
-        .get('/askQuestion')
+        .get('/question?id=10')
         .set('accept', '*/*')
-        .expect(401, done);
+        .expect(400)
+        .expect('Content-Type', /text\/html/)
+        .expect('Wrong Id Provided', done);
     });
   });
 

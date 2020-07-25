@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "test": "./scripts/seedTestData.sh data/ho_test.db && nyc mocha",
+    "test": "./scripts/seedTestData.sh data/ho_test.db && export HO_DB_PATH=data/ho_test.db && nyc mocha",
     "lint": "eslint *.js src/*.js"
   },
   "repository": {

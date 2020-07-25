@@ -10,5 +10,5 @@ link(rel='stylesheet' href='css/header.css')
       img(src=user.avatar alt='avatar')
       ='Profile'
   else
-    a#headerButton(href='/entry?targetPath=home')
+    a#headerButton(href=`/entry?targetPath=${currPath}`)
       ='Login/Sign Up'
