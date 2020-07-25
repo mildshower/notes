@@ -17,8 +17,8 @@ drop table if exists questions;
 create table if not exists questions (
   id integer primary key AUTOINCREMENT,
   title varchar(200) not null,
-  body varchar(500) not null,
-  body_text varchar(500) not null,
+  body varchar(1000) not null,
+  body_text varchar(1000) not null,
   owner integer not null,
   created timestamp not null DEFAULT (datetime('now','localtime')),
   last_modified timestamp not null DEFAULT (datetime('now','localtime')),
@@ -29,8 +29,8 @@ create table if not exists questions (
 drop table if exists answers;
 create table if not exists answers (
   id integer primary key AUTOINCREMENT,
-  body varchar(500) not null,
-  body_text varchar(500) not null,
+  body varchar(1000) not null,
+  body_text varchar(1000) not null,
   question integer not null,
   owner integer not null,
   created timestamp not null DEFAULT (datetime('now','localtime')),

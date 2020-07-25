@@ -3,15 +3,27 @@ PRAGMA foreign_keys = ON;
 
 INSERT INTO users (user_id, github_username, display_name, location, email, bio, github_link, role, avatar)
   VALUES 
-   ("1","user1", "john", "India", "user1@gmail.com",NULL,"http://github.com/user1","user","https://avatars1.githubusercontent.com/u/58025792?v=4"),
-   ("2","user2", "dev", "UK", "dev@yahoo.co.in","developing altime",NULL,"moderator","https://avatars1.githubusercontent.com/u/58025792?v=4"),
-   ("3","user3", "cany", "China", "can221@yahoo.co.in",NULL,NULL,"user","https://avatars1.githubusercontent.com/u/58025792?v=4");
+   (1,"user1", "john", "India", "user1@gmail.com",NULL,"http://github.com/user1","user","https://avatars1.githubusercontent.com/u/58025792?v=4"),
+   (2,"user2", "dev", "UK", "dev@yahoo.co.in","developing altime",NULL,"moderator","https://avatars1.githubusercontent.com/u/58025792?v=4"),
+   (3,"user3", "cany", "China", "can221@yahoo.co.in",NULL,NULL,"user","https://avatars1.githubusercontent.com/u/58025792?v=4"),
+   (4,"user4", "moozoo", "America", "moozoo221@yahoo.co.in",NULL,NULL,"user","https://avatars1.githubusercontent.com/u/58025792?v=4");
 
 
 INSERT INTO questions (id,title, body, body_text, owner, created)
   VALUES 
    (1,'How to use foreign key in sqlite3?','{"ops":[{"insert":"I am unable to use foreign key in sqlite3."}]}', 'I am unable to use foreign key in sqlite3.', 1, '2020-07-24 19:06:49'),
-   (2,'Why node js is single threaded?','{"ops":[{"insert":"I am using node version 12"}]}', 'I am using node version 12', 3, '2020-07-24 19:06:39');
+   (2,'Why node js is single threaded?','{"ops":[{"insert":"I am using node version 12"}]}', 'I am using node version 12', 3, '2020-07-24 19:06:39'),
+   (3,'How do I get started with Node.js?','{"ops":[{"insert":"Are there any good resources to get started with Node.JS? Any good tutorials, blogs or books?"}]}', 
+   'Are there any good resources to get started with Node.JS? Any good tutorials, blogs or books?', 2, '2020-07-25 15:03:19'),
+   (4,'How do I include a JavaScript file in another JavaScript file?',
+   '{"ops":[{"insert":"Is there something in JavaScript similar to @import in CSS that allows you to include a JavaScript file inside another JavaScript file?"}]}',
+    'Is there something in JavaScript similar to @import in CSS that allows you to include a JavaScript file inside another JavaScript file?',
+     4, '2020-07-24 07:37:42'),
+   (5,'Accessing the index in for loops?','{"ops":[{"insert":"How do I access the index in a for loop like the following?"}]}',
+    'How do I access the index in a for loop like the following?', 3, '2020-07-21 03:12:14'),
+   (6,'Can I hide the HTML5 number input’s spin box?','{"ops":[{"attributes":{"color":"#242729"},"insert":"Is there a consistent way across browsers to hide the new spin boxes that some browsers (such as Chrome) render for HTML input of type number? I am looking for a CSS or JavaScript method to prevent the up/down arrows from appearing."},{"insert":"\n<input id=\"test\" type=\"number\">"},{"attributes":{"code-block":true},"insert":"\n"}]}',
+    'Is there a consistent way across browsers to hide the new spin boxes that some browsers (such as Chrome) render for HTML input of type number? I am looking for a CSS or JavaScript method to prevent the up/down arrows from appearing.<input id="test" type="number">',
+ 1, '2020-07-22 19:06:39');
 
 
 
@@ -19,7 +31,6 @@ INSERT INTO answers (id, body, body_text, question, owner, is_accepted)
   VALUES 
    (1,'{"ops":[{"insert":"Use PRAGMA foreign_keys = ON in sqlite3"}]}', 'Use PRAGMA foreign_keys = ON in sqlite3',1,3, 1),
    (2,'{"ops":[{"insert":"You cant use"}]}', 'You cant use', 1, 2, 0);
-
 
 
 
