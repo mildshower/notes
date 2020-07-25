@@ -8,9 +8,7 @@ const getRelativeTime = function(time) {
 
 const handleSessions = (req, res, next) => {
   const sessionId = req.cookies.session;
-  if (sessionId) {
-    req.userId = req.app.locals.sessions.getUserId(+sessionId);
-  }
+  req.userId = req.app.locals.sessions.getUserId(+sessionId);
   next();
 };
 
@@ -35,25 +33,17 @@ const authenticateWithGithub = (req, res) => {
   );
 };
 
-const getRedirectUrl = ({ dataStore, targetPath, userDetails }) => {
+const getRedirectUrl = async ({ dataStore, targetPath, userDetails }) => {
   const { login, avatar_url: avatarUrl, url } = userDetails;
-  return new Promise((resolve, reject) => {
-    dataStore.getUser('github_username', login)
-      .then(({ isFound }) => {
-        if (isFound) {
-          return resolve({ path: targetPath, login });
-        }
-        dataStore.addNewUser(login, avatarUrl, url)
-          .then(() => resolve({ path: 'signUp', login }))
-          .catch(err => {
-            throw err;
-          });
-      })
-      .catch(err => reject(err));
-  });
+  const { isFound } = await dataStore.getUser('github_username', login);
+  if (isFound) {
+    return { path: targetPath, login };
+  }
+  await dataStore.addNewUser(login, avatarUrl, url);
+  return { path: 'signUp', login };
 };
 
-const getOauthOptions = (code) => {
+const getOauthOptions = code => {
   return {
     method: 'POST',
     headers: {
@@ -64,18 +54,13 @@ const getOauthOptions = (code) => {
   };
 };
 
-const getGithubDetails = (code) => {
-  return new Promise((resolve) => {
-    fetch('https://github.com/login/oauth/access_token', getOauthOptions(code))
-      .then((response) => response.json())
-      .then(({ access_token: accessToken }) =>
-        fetch('https://api.github.com/user', {
-          headers: { Authorization: `token ${accessToken}` },
-        })
-      )
-      .then((response) => response.json())
-      .then(resolve);
+const getGithubDetails = async (code) => {
+  const response = await fetch('https://github.com/login/oauth/access_token', getOauthOptions(code));
+  const { access_token: accessToken } = await response.json();
+  const details = await fetch('https://api.github.com/user', {
+    headers: { Authorization: `token ${accessToken}` },
   });
+  return await details.json();
 };
 
 const handleLoginSignUp = async (req, res) => {
@@ -114,15 +99,10 @@ const serveAskQuestion = function(req, res) {
   res.render('askQuestion');
 };
 
-const saveDetails = (req, res) => {
+const saveDetails = async (req, res) => {
   const { name, email, location } = req.body;
-  req.app.locals.dataStore.updateUserDetails(req.userId, name, email, location)
-    .then(() => {
-      res.redirect('/home');
-    })
-    .catch(err => {
-      throw err;
-    });
+  await req.app.locals.dataStore.updateUserDetails(req.userId, name, email, location);
+  res.redirect('/home');
 };
 
 module.exports = {

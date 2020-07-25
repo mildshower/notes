@@ -104,12 +104,12 @@ describe('#addNewUser', function() {
   it('should not add a user when the user already present', (done) => {
     const dbClient = {
       run: sinon.fake.yields({
-        message: 'SQLITE_CONSTRAINT: UNIQUE constraint failed: users.github_username'
+        message: 'no user found'
       }, null)
     };
     const dataStore = new DataStore(dbClient);
 
-    const message = 'SQLITE_CONSTRAINT: UNIQUE constraint failed: users.github_username';
+    const message = 'no user found';
     dataStore.addNewUser(name, avatarUrl, githubUrl)
       .catch(err => {
         assert.ok(dbClient.run.calledOnce);

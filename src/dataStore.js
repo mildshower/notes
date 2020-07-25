@@ -52,7 +52,7 @@ class DataStore {
     return new Promise((resolve, reject) => {
       this.dbClient.run(query, err => {
         if (err) {
-          return reject(err);
+          return reject(new Error('no user found'));
         }
         resolve();
       });
