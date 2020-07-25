@@ -4,7 +4,7 @@ const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
 const sqlite3 = require('sqlite3').verbose();
 const DataStore = require('./dataStore');
-const { Sessions } = require('./sessions');
+const Sessions = require('./sessions');
 const dbPath = process.env.HO_DB_PATH || 'data/ho_production.db';
 const dbClient = new sqlite3.Database(dbPath);
 const { 
@@ -16,7 +16,8 @@ const {
   serveAskQuestion, 
   serveQuestionPage, 
   serveQuestionDetails, 
-  saveDetails 
+  saveDetails,
+  authorizeUser
 } = require('./handlers');
 
 const app = express();
@@ -35,10 +36,11 @@ app.use(express.static('public'));
 app.get('/home', serveHomePage);
 app.get('/entry', authenticateWithGithub);
 app.get('/verify', handleLoginSignUp);
-app.get('/signUp', serveSignUpPage);
-app.get('/askQuestion', serveAskQuestion);
 app.get('/question', serveQuestionPage);
 app.get('/questionDetails', serveQuestionDetails);
+app.use(authorizeUser);
+app.get('/signUp', serveSignUpPage);
+app.get('/askQuestion', serveAskQuestion);
 app.post('/saveDetails', saveDetails);
 
 module.exports = { app };

@@ -6,15 +6,16 @@ const getRelativeTime = function(time) {
   return new Moment(time).fromNow();
 };
 
-const handleSessions = (req, res, next) => {
+const handleSessions = async (req, res, next) => {
   const sessionId = req.cookies.session;
-  req.userId = req.app.locals.sessions.getUserId(+sessionId);
+  const userId = req.app.locals.sessions.getUserId(sessionId);
+  const {user} = await req.app.locals.dataStore.getUser('user_id', userId);
+  req.user = user;
   next();
 };
 
 const serveHomePage = async function(req, res) {
   const { dataStore } = req.app.locals;
-  const { user, isFound } = await dataStore.getUser('user_id', req.userId);
   const questionIds = await dataStore.getLastQuestions(10);
   const questions = [];
   for(const questionId of questionIds){
@@ -22,7 +23,7 @@ const serveHomePage = async function(req, res) {
     question.created = getRelativeTime(question.created);
     questions.push(question);
   }
-  res.render('home', { user, isFound, title: 'Last 10 Questions', questions });
+  res.render('home', { user: req.user, title: 'Last 10 Questions', questions });
 };
 
 const authenticateWithGithub = (req, res) => {
@@ -87,7 +88,7 @@ const serveQuestionPage = async function(req, res) {
   const question = await dataStore.getQuestionDetails(req.query.id);
   question.lastModified = getRelativeTime(question.lastModified);
   question.created = getRelativeTime(question.created);
-  res.render('question', question);
+  res.render('question', Object.assign( {user: req.user}, question));
 };
 
 const serveQuestionDetails = function(req, res) {
@@ -96,13 +97,20 @@ const serveQuestionDetails = function(req, res) {
 };
 
 const serveAskQuestion = function(req, res) {
-  res.render('askQuestion');
+  res.render('askQuestion', {user: req.user});
 };
 
 const saveDetails = async (req, res) => {
   const { name, email, location } = req.body;
-  await req.app.locals.dataStore.updateUserDetails(req.userId, name, email, location);
+  await req.app.locals.dataStore.updateUserDetails(req.user.user_id, name, email, location);
   res.redirect('/home');
+};
+
+const authorizeUser = function(req, res, next){
+  if(req.user) {
+    return next();
+  }
+  res.sendStatus(401);
 };
 
 module.exports = {
@@ -114,5 +122,6 @@ module.exports = {
   serveAskQuestion,
   serveQuestionPage,
   serveQuestionDetails,
-  saveDetails
+  saveDetails,
+  authorizeUser
 };

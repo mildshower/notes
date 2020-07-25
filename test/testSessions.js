@@ -1,5 +1,5 @@
 const assert = require('assert');
-const { Sessions } = require('../src/sessions');
+const Sessions = require('../src/sessions');
 
 describe('Sessions', function() {
   describe('addSession', function() {
