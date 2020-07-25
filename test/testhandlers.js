@@ -89,7 +89,7 @@ describe('GET', () => {
   context('/verify', () => {
     it('should redirect to targetPath when right credentials given', (done) => {
       const stubbed = sinon.stub(fetch, 'Promise');
-      stubbed.returns(Promise.resolve({json: () => ({'access_token': 1, login: 'user1'})}));
+      stubbed.returns(Promise.resolve({ json: () => ({ 'access_token': 1, login: 'user1' }) }));
       request(app)
         .get('/verify?code=1&targetPath=home')
         .set('accept', '*/*')
@@ -102,8 +102,9 @@ describe('GET', () => {
 
     it('should redirect to signUp page if user doesn\'t exist', (done) => {
       const stubbed = sinon.stub(fetch, 'Promise');
-      stubbed.returns(Promise.resolve({json: () => 
-        ({'access_token': 1, login: 'user10', avatar_url: 'avatar'})
+      stubbed.returns(Promise.resolve({
+        json: () =>
+          ({ 'access_token': 1, login: 'user10', avatar_url: 'avatar' })
       }));
       request(app)
         .get('/verify?code=1&targetPath=home')
@@ -121,6 +122,53 @@ describe('GET', () => {
         .set('accept', '*/*')
         .expect(302)
         .expect('Location', '/home', done);
+    });
+  });
+
+  context('/signUp', () => {
+    it('should serve signUp page when the person is new user', (done) => {
+      const sessions = new Sessions();
+      const id = sessions.addSession('2');
+      app.locals.sessions = sessions;
+      request(app)
+        .get('/signUp')
+        .set('accept', '*/*')
+        .set('Cookie', `session=${id}`)
+        .expect(200)
+        .expect('Content-Type', /text\/html/)
+        .expect(/heapOverflow | Sign Up/, done);
+    });
+
+    it('should give unauthorized when the user is not authorized', (done) => {
+      request(app)
+        .get('/signUp')
+        .set('accept', '*/*')
+        .expect(401, done);
+    });
+  });
+});
+
+describe('POST', function() {
+  context('/saveDetails', () => {
+    it('should save user details when he is authorized', (done) => {
+      const sessions = new Sessions();
+      const id = sessions.addSession('3');
+      app.locals.sessions = sessions;
+      request(app)
+        .post('/saveDetails')
+        .set('Cookie', `session=${id}`)
+        .send({ name: 'john', email: 'john@email.com', location: 'Bangalore' })
+        .set('Accept', 'application/json')
+        .expect(302)
+        .expect('Location', '/home', done);
+    });
+
+    it('should not save user details when he is not authorized', (done) => {
+      request(app)
+        .post('/saveDetails')
+        .send({ name: 'john', email: 'john@email.com', location: 'Bangalore' })
+        .set('Accept', 'application/json')
+        .expect(401, done);
     });
   });
 });
