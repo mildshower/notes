@@ -2,19 +2,67 @@ const sinon = require('sinon');
 const { assert } = require('chai');
 const DataStore = require('../src/dataStore');
 
-describe('#getQuestionDetails', () => {
-  it('it should give details of a question when valid id provided', (done) => {
-    const dbClient = {
-      get: sinon.fake.yields(null, { title: 'question' })
-    };
-    const dataStore = new DataStore(dbClient);
-    dataStore.getQuestionDetails('1')
-      .then(details => {
-        assert.deepStrictEqual(details, { title: 'question' });
-        assert.ok(dbClient.get.calledOnce);
-        assert.ok(dbClient.get.firstArg.match(/ques.id = 1/));
-        done();
-      });
+describe('dataStore', () => {
+  context('#getQuestionDetails', () => {
+
+    it('it should give details of question when valid id provided', (done) => {
+      const dbClient = {
+        get: sinon.fake.yields(null, {title: 'question'})
+      };
+      const dataStore = new DataStore(dbClient);
+      dataStore.getQuestionDetails('1')
+        .then(details => {
+          assert.deepStrictEqual(details, {title: 'question'});
+          assert.ok(dbClient.get.calledOnce);
+          assert.ok(dbClient.get.firstArg.match(/ques.id = 1/));
+          done();
+        });
+    });
+
+    it('it should produce error when invalid id is given', (done) => {
+      const dbClient = {
+        get: sinon.fake.yields(null, undefined)
+      };
+      const dataStore = new DataStore(dbClient);
+      dataStore.getQuestionDetails('2')
+        .catch(error => {
+          assert.deepStrictEqual(error.message, 'Wrong Id Provided');
+          assert.ok(dbClient.get.calledOnce);
+          assert.ok(dbClient.get.firstArg.match(/ques.id = 2/));
+          done();
+        });
+    });
+  });
+
+  context('#getLastQuestions', () => {
+
+    it('it should give last question id\'s if valid count is given', (done) => {
+      const dbClient = {
+        all: sinon.fake.yields(null, [{id: 1}, {id: 2}, {id: 3}, {id: 4}])
+      };
+      const dataStore = new DataStore(dbClient);
+      dataStore.getLastQuestions(2)
+        .then(questionIds => {
+          assert.deepStrictEqual(questionIds, [1, 2]);
+          assert.ok(dbClient.all.calledOnce);
+          assert.ok(dbClient.all.firstArg.match(/order by created DESC/));
+          done();
+        });
+    });
+
+    it('it should produce error when invalid count is provided', (done) => {
+      const dbClient = {
+        all: sinon.fake.yields(null, [{id: 1}, {id: 2}, {id: 3}, {id: 4}])
+      };
+      const dataStore = new DataStore(dbClient);
+      dataStore.getLastQuestions(-1)
+        .catch(error => {
+          assert.deepStrictEqual(error.message, 'Negative count error!');
+          assert.ok(dbClient.all.calledOnce);
+          assert.ok(dbClient.all.firstArg.match(/order by created DESC/));
+          done();
+        });
+    });
   });
 });
 

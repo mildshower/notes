@@ -1,10 +1,7 @@
 const tablesSchema = require('./tablesSchema.json');
 
 const getLastQuestionsSql = () =>
-  `select id, title, created, display_name as owner from questions
-  LEFT JOIN users
-  on questions.owner = users.user_id
-  order by created DESC;`;
+  'select id from questions order by created DESC;';
 
 const getQuestionDetailsSql = id =>
   `select 
@@ -88,24 +85,24 @@ class DataStore {
     });
   }
 
-  getLastQuestions(count) {
+  getQuestionDetails(id){
     return new Promise((resolve, reject) => {
-      this.dbClient.all(getLastQuestionsSql(), (err, rows) => {
-        if (err) {
-          return reject(err);
+      this.dbClient.get(getQuestionDetailsSql(id), (err, details) => {
+        if(err || !details){
+          return reject(err || new Error('Wrong Id Provided'));
         }
-        resolve(rows.slice(0, count));
+        resolve(details);
       });
     });
   }
 
-  getQuestionDetails(id) {
+  getLastQuestions(count) {
     return new Promise((resolve, reject) => {
-      this.dbClient.get(getQuestionDetailsSql(id), (err, details) => {
-        if (err) {
-          return reject(err);
+      this.dbClient.all(getLastQuestionsSql(), (err, rows) => {
+        if (err || count < 0) {
+          return reject(err || new Error('Negative count error!'));
         }
-        resolve(details);
+        resolve(rows.slice(0, count).map(({id}) => id));
       });
     });
   }
