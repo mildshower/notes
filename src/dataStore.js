@@ -67,22 +67,16 @@ class DataStore {
     const query = `UPDATE users
     SET display_name = "${name}", email = "${email}", location = "${location}"
     WHERE user_id = ${userId};`;
-    return new Promise((resolve, reject) => {
-      this.dbClient.run(query, err => {
-        if (err) {
-          return reject(err);
-        }
+    return new Promise((resolve) => {
+      this.dbClient.run(query, () => {
         resolve();
       });
     });
   }
 
   init() {
-    return new Promise((resolve, reject) => {
-      this.dbClient.exec(getInitiationSql(), err => {
-        if(err){
-          return reject(err);
-        }
+    return new Promise((resolve) => {
+      this.dbClient.exec(getInitiationSql(), () => {
         resolve();
       });
     });
@@ -125,9 +119,6 @@ class DataStore {
         this.dbClient.get(
           'select last_insert_rowid() as id;', 
           (err, details) => {
-            if(err){
-              return reject(err);
-            }
             resolve(details);
           });
       });
