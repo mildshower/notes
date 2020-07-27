@@ -1,3 +1,5 @@
+/* eslint-disable max-statements */
+/* eslint-disable complexity */
 require('dotenv').config();
 const fetch = require('node-fetch');
 const Moment = require('moment');
@@ -23,22 +25,16 @@ const serveHomePage = async function(req, res) {
   res.render('home', { user: req.user, title: 'Last 10 Questions', questions, currPath: '/home' });
 };
 
-const authenticateWithGithub = (req, res) => {
+const authenticateWithGithub = (req, res, next) => {
+  if(!['login', 'signUp'].includes(req.query.type)){
+    return next();
+  }
   const redirectStatusCode = 302;
+  const redirectUri = `http://localhost:8000/${req.query.type}?targetPath=${req.query.targetPath}`;
   res.redirect(
     redirectStatusCode,
-    `https://github.com/login/oauth/authorize?client_id=${process.env.HO_CLIENT_ID}&redirect_uri=http://localhost:8000/verify?targetPath=${req.query.targetPath}`
+    `https://github.com/login/oauth/authorize?client_id=${process.env.HO_CLIENT_ID}&redirect_uri=${redirectUri}`
   );
-};
-
-const getRedirectUrl = async ( dataStore, targetPath, userDetails ) => {
-  const { login, avatar_url: avatarUrl} = userDetails;
-  const { isFound } = await dataStore.getUser('github_username', login);
-  if (isFound) {
-    return { path: targetPath, login };
-  }
-  await dataStore.addNewUser(login, avatarUrl);
-  return { path: 'signUp', login };
 };
 
 const getOauthOptions = code => {
@@ -61,23 +57,44 @@ const getGithubDetails = async (code) => {
   return await details.json();
 };
 
-const handleLoginSignUp = async (req, res) => {
-  const { dataStore, sessions } = req.app.locals;
-  const { targetPath, code, error } = req.query;
-  if (error) {
+const isValidVerificationReq = async function(req, res, next){
+  const { dataStore } = req.app.locals;
+  if (req.query.error) {
     return res.redirect('/home');
   }
+  req.userDetails = await getGithubDetails(req.query.code);
+  req.user = (await dataStore.getUser('github_username', req.userDetails.login)).user;
+  next();
+};
 
-  const userDetails = await getGithubDetails(code);
-  const { path, login } = await getRedirectUrl( dataStore, targetPath, userDetails );
-  const { user } = await dataStore.getUser('github_username', login);
-  const sessionId = sessions.addSession(user.user_id);
-  res.cookie('session', sessionId);
-  res.redirect(path);
+const handleSignUp = async function(req, res){
+  if(req.user){
+    return res.render('error', {
+      errorMessage: `It seems Github username ${req.userDetails.login} already has an account.`,
+      currPath: '/home'
+    }); 
+  }
+  const {dataStore, sessions} = req.app.locals;
+  const { login, avatar_url: avatarUrl} = req.userDetails;
+  const {id: userId} = await dataStore.addNewUser(login, avatarUrl);
+  res.cookie('session', sessions.addSession(userId));
+  res.redirect(`/signUpForm?targetPath=${req.query.targetPath}`);
+};
+
+const handleLogin = function(req, res){
+  if(!req.user){
+    return res.render('error', {
+      errorMessage: `It seems there is no account for Github username ${req.userDetails.login}.`,
+      currPath: '/home'
+    });  
+  }
+  const {sessions} = req.app.locals;
+  res.cookie('session', sessions.addSession(req.user.user_id));
+  res.redirect(req.query.targetPath);
 };
 
 const serveSignUpPage = (req, res) => {
-  res.render('signUp');
+  res.render('signUp', {targetPath: req.query.targetPath});
 };
 
 const serveQuestionPage = async function(req, res) {
@@ -105,7 +122,7 @@ const serveAskQuestion = function(req, res) {
 const saveDetails = async (req, res) => {
   const { name, email, location } = req.body;
   await req.app.locals.dataStore.updateUserDetails(req.user.user_id, name, email, location);
-  res.redirect('/home');
+  res.redirect(req.query.targetPath);
 };
 
 const saveQuestion = function(req, res){
@@ -124,12 +141,14 @@ module.exports = {
   handleSessions,
   serveHomePage,
   authenticateWithGithub,
-  handleLoginSignUp,
   serveSignUpPage,
   serveAskQuestion,
   serveQuestionPage,
   serveQuestionDetails,
   saveDetails,
   authorizeUser,
-  saveQuestion
+  saveQuestion,
+  isValidVerificationReq,
+  handleLogin,
+  handleSignUp
 };

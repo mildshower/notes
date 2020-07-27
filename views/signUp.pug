@@ -5,7 +5,7 @@ head
   link(rel='icon' href='images/favicon.svg')
   link(rel='stylesheet' href='css/signUp.css')
   title heapOverflow | Sign Up
-form(action='/saveDetails' method='post')
+form(action=`/saveDetails?targetPath=${targetPath}` method='post')
   .fieldBox
     img(src='images/appIcon.png' alt='')
     label(for='name') Name*

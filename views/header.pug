@@ -6,9 +6,11 @@ link(rel='stylesheet' href='css/header.css')
     img(src='images/search.svg' alt='search icon')
     input(type='search' onsearch="console.log('input')" placeholder='Search..')
   if (user)
-    a#headerButton
+    a#profileButton.headerButton
       img(src=user.avatar alt='avatar')
       ='Profile'
   else
-    a#headerButton(href=`/entry?targetPath=${currPath}`)
-      ='Login / Sign Up'
+    a.headerButton#login(href=`/entry?type=login&targetPath=${currPath}`)
+      ='Login'
+    a.headerButton#signUp(href=`/entry?type=signUp&targetPath=${currPath}`)
+      ='Sign Up'

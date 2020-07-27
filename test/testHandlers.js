@@ -97,22 +97,40 @@ describe('GET', () => {
   });
 
   context('/entry', () => {
-    it('should be redirected to gitHub authentication', (done) => {
+    it('should be redirected to gitHub authentication when tried to login', (done) => {
       request(app)
-        .get('/entry?targetPath=home')
+        .get('/entry?targetPath=home&type=login')
         .set('accept', '*/*')
         .expect(302)
         .expect('Location', /\?targetPath=home/)
+        .expect('Location', /login/)
         .expect('Location', /github.com\/login\/oauth\/authorize/, done);
+    });
+
+    it('should be redirected to gitHub authentication when tried to signUp', (done) => {
+      request(app)
+        .get('/entry?targetPath=home&type=signUp')
+        .set('accept', '*/*')
+        .expect(302)
+        .expect('Location', /\?targetPath=home/)
+        .expect('Location', /signUp/)
+        .expect('Location', /github.com\/login\/oauth\/authorize/, done);
+    });
+
+    it('should get not found if wrong type given', (done) => {
+      request(app)
+        .get('/entry?targetPath=home&type=wrong')
+        .set('accept', '*/*')
+        .expect(404, done);
     });
   });
 
-  context('/verify', () => {
+  context('/login', () => {
     it('should redirect to targetPath when right credentials given', (done) => {
       const stubbed = sinon.stub(fetch, 'Promise');
       stubbed.returns(Promise.resolve({ json: () => ({ 'access_token': 1, login: 'user1' }) }));
       request(app)
-        .get('/verify?code=1&targetPath=home')
+        .get('/login?code=1&targetPath=home')
         .set('accept', '*/*')
         .expect(302)
         .expect('Location', '/home', () => {
@@ -121,17 +139,14 @@ describe('GET', () => {
         });
     });
 
-    it('should redirect to signUp page if user doesn\'t exist', (done) => {
+    it('should redirect to error page when account doen\'t exist', (done) => {
       const stubbed = sinon.stub(fetch, 'Promise');
-      stubbed.returns(Promise.resolve({
-        json: () =>
-          ({ 'access_token': 1, login: 'user10', avatar_url: 'avatar' })
-      }));
+      stubbed.returns(Promise.resolve({ json: () => ({ 'access_token': 1, login: 'user10' }) }));
       request(app)
-        .get('/verify?code=1&targetPath=home')
+        .get('/login?code=1&targetPath=home')
         .set('accept', '*/*')
-        .expect(302)
-        .expect('Location', '/signUp', () => {
+        .expect(200)
+        .expect(/Oops../, () => {
           sinon.restore();
           done();
         });
@@ -139,20 +154,62 @@ describe('GET', () => {
 
     it('should redirect to home page if auth error occurs', (done) => {
       request(app)
-        .get('/verify?error=errorMsg')
+        .get('/login?error=errorMsg')
         .set('accept', '*/*')
         .expect(302)
         .expect('Location', '/home', done);
     });
   });
 
-  context('/signUp', () => {
+  context('/signUp', function(){
+    it('should redirect to signUp page if user doesn\'t exist', (done) => {
+      const stubbed = sinon.stub(fetch, 'Promise');
+      stubbed.returns(Promise.resolve({
+        json: () =>
+          ({ 'access_token': 1, login: 'user20', avatar_url: 'avatar' })
+      }));
+      request(app)
+        .get('/signUp?code=1&targetPath=home')
+        .set('accept', '*/*')
+        .expect(302)
+        .expect('Location', /\/signUp/, () => {
+          sinon.restore();
+          done();
+        });
+    });
+
+    it('should redirect to error page if user exists', (done) => {
+      const stubbed = sinon.stub(fetch, 'Promise');
+      stubbed.returns(Promise.resolve({
+        json: () =>
+          ({ 'access_token': 1, login: 'user1', avatar_url: 'avatar' })
+      }));
+      request(app)
+        .get('/signUp?code=1&targetPath=home')
+        .set('accept', '*/*')
+        .expect(200)
+        .expect(/Oops../, () => {
+          sinon.restore();
+          done();
+        });
+    });
+
+    it('should redirect to home page if auth error occurs', (done) => {
+      request(app)
+        .get('/signUp?error=errorMsg')
+        .set('accept', '*/*')
+        .expect(302)
+        .expect('Location', '/home', done);
+    });
+  });
+
+  context('/signUpForm', () => {
     it('should serve signUp page when the person is new user', (done) => {
       const sessions = new Sessions();
       const id = sessions.addSession('2');
       app.locals.sessions = sessions;
       request(app)
-        .get('/signUp')
+        .get('/signUpForm')
         .set('accept', '*/*')
         .set('Cookie', `session=${id}`)
         .expect(200)
@@ -162,7 +219,7 @@ describe('GET', () => {
 
     it('should give unauthorized when the user is not authorized', (done) => {
       request(app)
-        .get('/signUp')
+        .get('/signUpForm')
         .set('accept', '*/*')
         .expect(401, done);
     });
@@ -176,7 +233,7 @@ describe('POST', function() {
       const id = sessions.addSession('3');
       app.locals.sessions = sessions;
       request(app)
-        .post('/saveDetails')
+        .post('/saveDetails?targetPath=/home')
         .set('Cookie', `session=${id}`)
         .send('name=Narut&email=john%40email.com&location=Bangalore')
         .set('Content-Type', 'application/x-www-form-urlencoded')
@@ -186,7 +243,7 @@ describe('POST', function() {
 
     it('should not save user details when he is not authorized', (done) => {
       request(app)
-        .post('/saveDetails')
+        .post('/saveDetails?targetPath=/home')
         .send('name=Narut&email=john%40email.com&location=Bangalore')
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .expect(401, done);

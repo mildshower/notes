@@ -19,6 +19,7 @@ a {
   position: sticky;
   top: 0px;
   z-index: 100;
+  padding: 0 2vw 0 0;
 }
 
 /* Style for Icon */
@@ -50,7 +51,7 @@ a {
   flex-grow: 1;
   margin: 5vw;
   border: 1px solid rgb(202, 202, 202);
-  visibility: hidden;
+  /* visibility: hidden; */
 }
 
 #searchBar > input {
@@ -69,8 +70,8 @@ a {
 /* Style for searchBar ends */
 
 
-#headerButton {
-  margin: 0 3vw;
+.headerButton {
+  margin: 0 0.5vw;
   height: 40%;
   font-size: 27px;
   display: flex;
@@ -83,14 +84,14 @@ a {
   color: rgb(61, 61, 61);
 }
 
-#headerButton > img {
+.headerButton > img {
   height: 85%;
   margin: 0 8px 0 0;
   border-radius: 50%;
 }
 
-#headerButton:hover,
-#headerButton:focus {
+.headerButton:hover,
+.headerButton:focus {
   background-color: rgb(228, 228, 228);
   color: black;
   border: 1px solid rgb(107, 107, 107);

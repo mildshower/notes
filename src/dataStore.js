@@ -63,11 +63,17 @@ class DataStore {
     const query = `INSERT INTO USERS (github_username, avatar) 
     VALUES ("${username}", "${avatarUrl}")`;
     return new Promise((resolve, reject) => {
-      this.dbClient.run(query, err => {
-        if (err) {
-          return reject(new Error('no user found'));
-        }
-        resolve();
+      this.dbClient.serialize(() => {
+        this.dbClient.run(query, err => {
+          if (err) {
+            reject(new Error('User Already Exists!'));
+          }
+        });
+        this.dbClient.get(
+          'select last_insert_rowid() as id;', 
+          (err, details) => {
+            resolve(details);
+          });
       });
     });
   }
@@ -120,8 +126,8 @@ class DataStore {
         this.dbClient.run(getQuestionInsertionSql(),
           [title, body, bodyText, owner],
           err => {
-            if (err) {
-              return reject(new Error('Question Insertion Incomplete!'));
+            if(err){
+              reject(new Error('Question Insertion Incomplete!'));
             }
           });
         this.dbClient.get(

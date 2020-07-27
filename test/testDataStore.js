@@ -119,13 +119,15 @@ context('dataStore', () => {
 
     it('should add a new user to database', (done) => {
       const dbClient = {
-        run: sinon.fake.yields(null, undefined)
+        run: sinon.fake.yields(null),
+        get: sinon.fake.yields(null, {id: 1}),
+        serialize: (cb) => cb()
       };
       const dataStore = new DataStore(dbClient);
 
       dataStore.addNewUser(name, avatarUrl, githubUrl)
         .then(actual => {
-          assert.isUndefined(actual);
+          assert.deepStrictEqual(actual, {id: 1});
           assert.ok(dbClient.run.calledOnce);
           assert.ok(dbClient.run.firstArg.match(/"testUser"/));
           done();
@@ -134,13 +136,12 @@ context('dataStore', () => {
 
     it('should not add a user when the user already present', (done) => {
       const dbClient = {
-        run: sinon.fake.yields({
-          message: 'no user found'
-        }, null)
+        run: sinon.fake.yields(new Error('User Already Exists!'), null),
+        serialize: (cb) => cb()
       };
       const dataStore = new DataStore(dbClient);
 
-      const message = 'no user found';
+      const message = 'User Already Exists!';
       dataStore.addNewUser(name, avatarUrl, githubUrl)
         .catch(err => {
           assert.ok(dbClient.run.calledOnce);
