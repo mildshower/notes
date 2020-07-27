@@ -1,5 +1,4 @@
 const tablesSchema = require('./tablesSchema.json');
-const { response } = require('express');
 
 const questionDetails = `select 
   ques.id, 
@@ -27,6 +26,10 @@ const getQuestionDetailsSql = id =>
 
 const getUserQuestionsSql = (id) =>
   questionDetails + `where ques.owner = ${id};`;
+
+const searchQuestionsSql = (text) =>
+  questionDetails +
+  `where ques.title like "%${text}% OR ques.body_text like "%${text}%";`;
 
 const getQuestionInsertionSql = () =>
   `insert into questions (title, body, body_text, owner)
@@ -124,6 +127,9 @@ class DataStore {
         this.dbClient.get(
           'select last_insert_rowid() as id;',
           (err, details) => {
+            if (err) {
+              reject(err);
+            }
             resolve(details);
           });
       });
@@ -133,6 +139,17 @@ class DataStore {
   getUserQuestions(id) {
     return new Promise((resolve, reject) => {
       this.dbClient.all(getUserQuestionsSql(id), (err, rows) => {
+        if (err) {
+          return reject(err);
+        }
+        resolve(rows);
+      });
+    });
+  }
+
+  getMatchedQuestions(text) {
+    return new Promise((resolve, reject) => {
+      this.dbClient.all(searchQuestionsSql(text), (err, rows) => {
         if (err) {
           return reject(err);
         }

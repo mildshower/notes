@@ -239,7 +239,12 @@ context('dataStore', () => {
 
   context('#getUserQuestions', function() {
     it('should give all the questions of a particular', (done) => {
-      const questions = [{ id: 1, title: 'How to write arrow functions', body_text: 'here is a sample function' }];
+      const questions = [
+        {
+          id: 1,
+          title: 'How to write arrow functions',
+          body_text: 'here is a sample function'
+        }];
       const dbClient = {
         all: sinon.fake.yields(null, questions)
       };
@@ -250,6 +255,29 @@ context('dataStore', () => {
           assert.deepStrictEqual(actual, questions);
           assert.ok(dbClient.all.calledOnce);
           assert.ok(dbClient.all.firstArg.match(/ques.owner = 1/));
+          done();
+        });
+    });
+  });
+
+  context('#getMatchedQuestions', function() {
+    it('should give all the questions of a particular', (done) => {
+      const questions = [
+        {
+          id: 1,
+          title: 'How to write arrow functions',
+          body_text: 'here is a sample function'
+        }];
+      const dbClient = {
+        all: sinon.fake.yields(null, questions)
+      };
+      const dataStore = new DataStore(dbClient);
+
+      dataStore.getMatchedQuestions('arrow')
+        .then(actual => {
+          assert.deepStrictEqual(actual, questions);
+          assert.ok(dbClient.all.calledOnce);
+          assert.ok(dbClient.all.firstArg.match(/like "%arrow%"/));
           done();
         });
     });
