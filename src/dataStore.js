@@ -50,9 +50,9 @@ class DataStore {
     });
   }
 
-  addNewUser(username, avatarUrl, githubUrl) {
-    const query = `INSERT INTO USERS (github_username, github_link, avatar) 
-    VALUES ("${username}", "${githubUrl}", "${avatarUrl}")`;
+  addNewUser(username, avatarUrl) {
+    const query = `INSERT INTO USERS (github_username, avatar) 
+    VALUES ("${username}", "${avatarUrl}")`;
     return new Promise((resolve, reject) => {
       this.dbClient.run(query, err => {
         if (err) {

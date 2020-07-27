@@ -18,20 +18,20 @@ h1 {
   margin: 30px 10vw;
   font-size: 23px;
   font-weight: lighter;
-  border-radius: 5px;
-  background: rgb(192, 192, 192);
   box-shadow: none;
-  border: none;
-  padding: 10px 13px;
-  cursor: pointer;
-  transition: filter 0.6s ease-in-out;
   outline: none;
+  cursor: pointer;
+  border-radius: 3px;
+  padding: 8px 10px;
+  border: 1px solid rgb(185, 185, 185);
+  color: rgb(61, 61, 61);
 }
 
 #postButton:focus,
 #postButton:hover {
-  background-color: rgb(151, 151, 151);
-  filter: drop-shadow(2px 2px 1px rgb(138, 138, 138));
+   background-color: rgb(228, 228, 228);
+  color: black;
+  border: 1px solid rgb(107, 107, 107);
 }
 
 #bodyField {

@@ -36,20 +36,21 @@ a{
 
 #pop-up-container > .popUp > div > a{
   font-size: 23px;
-  padding: 8px 10px;
-  border: 1px solid rgb(185, 185, 185);
-  border-radius: 3px;
   outline: none ;
-  color: rgb(61, 61, 61);
-  cursor: pointer;
   align-self: center;
   margin: 0 10px;
+  cursor: pointer;
+  border-radius: 3px;
+  padding: 8px 10px;
+  border: 1px solid rgb(185, 185, 185);
+  color: rgb(61, 61, 61);
 }
 
 #pop-up-container > .popUp > div > a:focus,
 #pop-up-container > .popUp > div > a:hover {
   background-color: rgb(228, 228, 228);
   color: black;
+  border: 1px solid rgb(107, 107, 107);
 }
 
 .hidden{

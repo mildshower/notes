@@ -7,7 +7,6 @@ create table if not exists users (
   location varchar(40),
   email varchar(50),
   bio varchar(100),
-  github_link varchar(80),
   role varchar(10) not null DEFAULT 'user',
   avatar varchar(30) not null,
   CHECK (role = 'user' OR role = 'moderator')

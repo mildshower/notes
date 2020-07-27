@@ -71,29 +71,28 @@ a {
 
 #headerButton {
   margin: 0 3vw;
-  height: 55%;
+  height: 40%;
   font-size: 27px;
-  cursor: pointer;
   display: flex;
   align-items: center;
-  color: aliceblue;
-  padding: 0 8px;
-  border: none;
-  background-color: rgb(102, 102, 102);
-  border-radius: 4px;
   outline: none;
-  transition: filter 0.11s ease-in-out;
+  cursor: pointer;
+  border-radius: 3px;
+  padding: 8px 10px;
+  border: 1px solid rgb(185, 185, 185);
+  color: rgb(61, 61, 61);
 }
 
 #headerButton > img {
-  height: 75%;
+  height: 85%;
   margin: 0 8px 0 0;
   border-radius: 50%;
 }
 
 #headerButton:hover,
 #headerButton:focus {
-  background-color: rgb(63, 93, 144);
-  filter: drop-shadow(4px 4px 3px rgb(138, 138, 138));
+  background-color: rgb(228, 228, 228);
+  color: black;
+  border: 1px solid rgb(107, 107, 107);
 }
 /* styles for headerActions ends */

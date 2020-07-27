@@ -33,6 +33,7 @@ const setupSyntax = () => {
 };
 
 const saveQuestion = function(editor){
+  getPostButton().onclick = () => {};
   const question = {title: getQuestionTitle()};
   question.body = JSON.stringify(editor.getContents());
   question.bodyText = editor.getText();

@@ -34,13 +34,13 @@ const authenticateWithGithub = (req, res) => {
   );
 };
 
-const getRedirectUrl = async ({ dataStore, targetPath, userDetails }) => {
-  const { login, avatar_url: avatarUrl, url } = userDetails;
+const getRedirectUrl = async ( dataStore, targetPath, userDetails ) => {
+  const { login, avatar_url: avatarUrl} = userDetails;
   const { isFound } = await dataStore.getUser('github_username', login);
   if (isFound) {
     return { path: targetPath, login };
   }
-  await dataStore.addNewUser(login, avatarUrl, url);
+  await dataStore.addNewUser(login, avatarUrl);
   return { path: 'signUp', login };
 };
 
@@ -72,7 +72,7 @@ const handleLoginSignUp = async (req, res) => {
   }
 
   const userDetails = await getGithubDetails(code);
-  const { path, login } = await getRedirectUrl({ dataStore, targetPath, userDetails });
+  const { path, login } = await getRedirectUrl( dataStore, targetPath, userDetails );
   const { user } = await dataStore.getUser('github_username', login);
   const sessionId = sessions.addSession(user.user_id);
   res.cookie('session', sessionId);

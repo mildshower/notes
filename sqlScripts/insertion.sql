@@ -1,12 +1,12 @@
 PRAGMA foreign_keys = ON;
 
 
-INSERT INTO users (user_id, github_username, display_name, location, email, bio, github_link, role, avatar)
+INSERT INTO users (user_id, github_username, display_name, location, email, bio, role, avatar)
   VALUES 
-   (1,"user1", "john", "India", "user1@gmail.com",NULL,"http://github.com/user1","user","https://avatars1.githubusercontent.com/u/58025792?v=4"),
-   (2,"user2", "dev", "UK", "dev@yahoo.co.in","developing altime",NULL,"moderator","https://avatars1.githubusercontent.com/u/58025792?v=4"),
-   (3,"user3", "cany", "China", "can221@yahoo.co.in",NULL,NULL,"user","https://avatars1.githubusercontent.com/u/58025792?v=4"),
-   (4,"user4", "moozoo", "America", "moozoo221@yahoo.co.in",NULL,NULL,"user","https://avatars1.githubusercontent.com/u/58025792?v=4");
+   (1,"user1", "john", "India", "user1@gmail.com",NULL,"user","https://avatars1.githubusercontent.com/u/58025792?v=4"),
+   (2,"user2", "dev", "UK", "dev@yahoo.co.in","developing altime","moderator","https://avatars1.githubusercontent.com/u/58025792?v=4"),
+   (3,"user3", "cany", "China", "can221@yahoo.co.in",NULL,"user","https://avatars1.githubusercontent.com/u/58025792?v=4"),
+   (4,"user4", "moozoo", "America", "moozoo221@yahoo.co.in",NULL,"user","https://avatars1.githubusercontent.com/u/58025792?v=4");
 
 
 INSERT INTO questions (id,title, body, body_text, owner, created)
