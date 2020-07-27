@@ -112,7 +112,6 @@ class DataStore {
           [title, body, bodyText, owner],
           err => {
             if(err){
-              console.log(err.message);
               return reject(new Error('Question Insertion Incomplete!'));
             }
           });
