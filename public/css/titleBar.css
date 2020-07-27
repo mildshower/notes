@@ -33,7 +33,7 @@ a {
   border: 1px solid rgb(185, 185, 185);
   color: rgb(61, 61, 61);
   /* width: 162.71px; */
-  /* height: 26.94px; */
+  height: 26.94px;
 }
 
 #titleBar a:focus,
