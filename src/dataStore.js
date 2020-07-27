@@ -1,13 +1,10 @@
 const tablesSchema = require('./tablesSchema.json');
 
-const getLastQuestionsSql = () =>
-  'select id from questions order by created DESC;';
-
-const getQuestionDetailsSql = id =>
-  `select 
+const questionDetails = `select 
   ques.id, 
   ques.title, 
-  ques.body, 
+  ques.body,
+  ques.body_text as bodyText,
   ques.owner, 
   ques.created, 
   ques.last_modified as lastModified, 
@@ -19,8 +16,13 @@ const getQuestionDetailsSql = id =>
     where ans.question = ques.id AND ans.is_accepted = 1) as hasCorrectAnswer, 
   (select sum(REPLACE(vote_type,0,-1)) from question_votes 
     where question_votes.question_id = ques.id) as voteCount 
-  from questions ques
-  where ques.id = ${id};`;
+  from questions ques `;
+
+const getLastQuestionsSql = () =>
+  questionDetails + 'order by ques.created DESC;';
+
+const getQuestionDetailsSql = id =>
+  questionDetails + `where ques.id = ${id};`;
 
 const getQuestionInsertionSql = () =>
   `insert into questions (title, body, body_text, owner)
@@ -99,7 +101,7 @@ class DataStore {
         if (err || count < 0) {
           return reject(err || new Error('Negative count error!'));
         }
-        resolve(rows.slice(0, count).map(({id}) => id));
+        resolve(rows.slice(0, count));
       });
     });
   }

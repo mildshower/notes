@@ -57,9 +57,9 @@ context('dataStore', () => {
       const dataStore = new DataStore(dbClient);
       dataStore.getLastQuestions(2)
         .then(questionIds => {
-          assert.deepStrictEqual(questionIds, [1, 2]);
+          assert.deepStrictEqual(questionIds, [{id: 1}, {id: 2}]);
           assert.ok(dbClient.all.calledOnce);
-          assert.ok(dbClient.all.firstArg.match(/order by created DESC/));
+          assert.ok(dbClient.all.firstArg.match(/order by ques\.created DESC/));
           done();
         });
     });
@@ -73,7 +73,7 @@ context('dataStore', () => {
         .catch(error => {
           assert.deepStrictEqual(error.message, 'Negative count error!');
           assert.ok(dbClient.all.calledOnce);
-          assert.ok(dbClient.all.firstArg.match(/order by created DESC/));
+          assert.ok(dbClient.all.firstArg.match(/order by ques\.created DESC/));
           done();
         });
     });

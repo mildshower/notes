@@ -16,13 +16,10 @@ const handleSessions = async (req, res, next) => {
 
 const serveHomePage = async function(req, res) {
   const { dataStore } = req.app.locals;
-  const questionIds = await dataStore.getLastQuestions(10);
-  const questions = [];
-  for(const questionId of questionIds){
-    const question = await dataStore.getQuestionDetails(questionId);
+  const questions = await dataStore.getLastQuestions(10);
+  questions.forEach(question => {
     question.created = getRelativeTime(question.created);
-    questions.push(question);
-  }
+  });
   res.render('home', { user: req.user, title: 'Last 10 Questions', questions, currPath: '/home' });
 };
 

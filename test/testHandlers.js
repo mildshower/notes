@@ -14,13 +14,14 @@ describe('GET', () => {
         .expect('Location', '/home', done);
     });
 
-    it('Should get home page for path "/home"', done => {
+    it('Should get home page for path "/home"', function(done) {
+      this.timeout(3000);
       request(app)
         .get('/home')
         .set('Accept', '*/*')
         .expect(200)
         .expect('Content-Type', /text\/html/)
-        .expect(/heapOverflow | Home/, done);
+        .expect(/heapOverflow \| Home/, done);
     });
 
     it('should get public file for  the home page', done => {
@@ -44,7 +45,7 @@ describe('GET', () => {
         .set('Cookie', `session=${id}`)
         .expect(200)
         .expect('Content-Type', /text\/html/)
-        .expect(/heapOverflow | Ask/, done);
+        .expect(/heapOverflow \| Ask/, done);
     });
 
     it('should serve unauthorized if not logged in', (done) => {
@@ -62,7 +63,7 @@ describe('GET', () => {
         .set('accept', '*/*')
         .expect(200)
         .expect('Content-Type', /text\/html/)
-        .expect(/heapOverflow | Question/, done);
+        .expect(/heapOverflow \| Question/, done);
     });
 
     it('should serve "wrong Id" when invalid id is given', (done) => {
@@ -156,7 +157,7 @@ describe('GET', () => {
         .set('Cookie', `session=${id}`)
         .expect(200)
         .expect('Content-Type', /text\/html/)
-        .expect(/heapOverflow | Sign Up/, done);
+        .expect(/heapOverflow \| Sign Up/, done);
     });
 
     it('should give unauthorized when the user is not authorized', (done) => {
