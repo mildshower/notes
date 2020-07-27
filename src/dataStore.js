@@ -1,4 +1,5 @@
 const tablesSchema = require('./tablesSchema.json');
+const { response } = require('express');
 
 const questionDetails = `select 
   ques.id, 
@@ -23,6 +24,9 @@ const getLastQuestionsSql = () =>
 
 const getQuestionDetailsSql = id =>
   questionDetails + `where ques.id = ${id};`;
+
+const getUserQuestionsSql = (id) =>
+  questionDetails + `where ques.owner = ${id};`;
 
 const getQuestionInsertionSql = () =>
   `insert into questions (title, body, body_text, owner)
@@ -84,10 +88,10 @@ class DataStore {
     });
   }
 
-  getQuestionDetails(id){
+  getQuestionDetails(id) {
     return new Promise((resolve, reject) => {
       this.dbClient.get(getQuestionDetailsSql(id), (err, details) => {
-        if(err || !details){
+        if (err || !details) {
           return reject(err || new Error('Wrong Id Provided'));
         }
         resolve(details);
@@ -106,22 +110,33 @@ class DataStore {
     });
   }
 
-  addQuestion(question, owner){
-    const {title, body, bodyText} = question;
+  addQuestion(question, owner) {
+    const { title, body, bodyText } = question;
     return new Promise((resolve, reject) => {
       this.dbClient.serialize(() => {
         this.dbClient.run(getQuestionInsertionSql(),
           [title, body, bodyText, owner],
           err => {
-            if(err){
+            if (err) {
               return reject(new Error('Question Insertion Incomplete!'));
             }
           });
         this.dbClient.get(
-          'select last_insert_rowid() as id;', 
+          'select last_insert_rowid() as id;',
           (err, details) => {
             resolve(details);
           });
+      });
+    });
+  }
+
+  getUserQuestions(id) {
+    return new Promise((resolve, reject) => {
+      this.dbClient.all(getUserQuestionsSql(id), (err, rows) => {
+        if (err) {
+          return reject(err);
+        }
+        resolve(rows);
       });
     });
   }

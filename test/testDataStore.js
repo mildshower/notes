@@ -6,12 +6,12 @@ context('dataStore', () => {
   context('#getQuestionDetails', () => {
     it('it should give details of question when valid id provided', (done) => {
       const dbClient = {
-        get: sinon.fake.yields(null, {title: 'question'})
+        get: sinon.fake.yields(null, { title: 'question' })
       };
       const dataStore = new DataStore(dbClient);
       dataStore.getQuestionDetails('1')
         .then(details => {
-          assert.deepStrictEqual(details, {title: 'question'});
+          assert.deepStrictEqual(details, { title: 'question' });
           assert.ok(dbClient.get.calledOnce);
           assert.ok(dbClient.get.firstArg.match(/ques.id = 1/));
           done();
@@ -52,12 +52,12 @@ context('dataStore', () => {
 
     it('it should give last question id\'s if valid count is given', (done) => {
       const dbClient = {
-        all: sinon.fake.yields(null, [{id: 1}, {id: 2}, {id: 3}, {id: 4}])
+        all: sinon.fake.yields(null, [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }])
       };
       const dataStore = new DataStore(dbClient);
       dataStore.getLastQuestions(2)
         .then(questionIds => {
-          assert.deepStrictEqual(questionIds, [{id: 1}, {id: 2}]);
+          assert.deepStrictEqual(questionIds, [{ id: 1 }, { id: 2 }]);
           assert.ok(dbClient.all.calledOnce);
           assert.ok(dbClient.all.firstArg.match(/order by ques\.created DESC/));
           done();
@@ -66,7 +66,7 @@ context('dataStore', () => {
 
     it('it should produce error when invalid count is provided', (done) => {
       const dbClient = {
-        all: sinon.fake.yields(null, [{id: 1}, {id: 2}, {id: 3}, {id: 4}])
+        all: sinon.fake.yields(null, [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }])
       };
       const dataStore = new DataStore(dbClient);
       dataStore.getLastQuestions(-1)
@@ -84,13 +84,13 @@ context('dataStore', () => {
     it('it should add a question when valid owner given', (done) => {
       const dbClient = {
         run: sinon.fake.yields(null),
-        get: sinon.fake.yields(null, {id: 1}),
+        get: sinon.fake.yields(null, { id: 1 }),
         serialize: (cb) => cb()
       };
       const dataStore = new DataStore(dbClient);
-      dataStore.addQuestion({title: 'title', body: 'body', body_text: 'body'}, 1)
+      dataStore.addQuestion({ title: 'title', body: 'body', body_text: 'body' }, 1)
         .then(details => {
-          assert.deepStrictEqual(details, {id: 1});
+          assert.deepStrictEqual(details, { id: 1 });
           assert.ok(dbClient.run.calledOnce);
           assert.ok(dbClient.get.calledOnce);
           done();
@@ -100,11 +100,11 @@ context('dataStore', () => {
     it('it should produce error if wrong owner is given', (done) => {
       const dbClient = {
         run: sinon.fake.yields(new Error()),
-        get: sinon.fake.yields(null, {id: 1}),
+        get: sinon.fake.yields(null, { id: 1 }),
         serialize: (cb) => cb()
       };
       const dataStore = new DataStore(dbClient);
-      dataStore.addQuestion({title: 'title', body: 'body', body_text: 'body'}, 10)
+      dataStore.addQuestion({ title: 'title', body: 'body', body_text: 'body' }, 10)
         .catch(err => {
           assert.deepStrictEqual(err.message, 'Question Insertion Incomplete!');
           done();
@@ -232,6 +232,24 @@ context('dataStore', () => {
           assert.isUndefined(actual);
           assert.ok(dbClient.run.calledOnce);
           assert.ok(dbClient.run.firstArg.match(/email = "testUser.com",/));
+          done();
+        });
+    });
+  });
+
+  context('#getUserQuestions', function() {
+    it('should give all the questions of a particular', (done) => {
+      const questions = [{ id: 1, title: 'How to write arrow functions', body_text: 'here is a sample function' }];
+      const dbClient = {
+        all: sinon.fake.yields(null, questions)
+      };
+      const dataStore = new DataStore(dbClient);
+
+      dataStore.getUserQuestions(1)
+        .then(actual => {
+          assert.deepStrictEqual(actual, questions);
+          assert.ok(dbClient.all.calledOnce);
+          assert.ok(dbClient.all.firstArg.match(/ques.owner = 1/));
           done();
         });
     });
