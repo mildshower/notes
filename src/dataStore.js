@@ -29,7 +29,7 @@ const getUserQuestionsSql = (id) =>
 
 const searchQuestionsSql = (text) =>
   questionDetails +
-  `where ques.title like "%${text}% OR ques.body_text like "%${text}%";`;
+  `where ques.title like "%${text}%" OR ques.body_text like "%${text}%";`;
 
 const getQuestionInsertionSql = () =>
   `insert into questions (title, body, body_text, owner)
