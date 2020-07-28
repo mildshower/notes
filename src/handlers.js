@@ -99,9 +99,13 @@ const serveQuestionPage = async function(req, res) {
   const dataStore = req.app.locals.dataStore;
   try {
     const question = await dataStore.getQuestionDetails(req.query.id);
+    const answers = await dataStore.getAnswersByQuestion(question.id);
+    answers.forEach(answer => {
+      answer.created = getRelativeTime(answer.created);
+    });
     question.lastModified = getRelativeTime(question.lastModified);
     question.created = getRelativeTime(question.created);
-    res.render('question', Object.assign({ user: req.user, currPath: req.originalUrl }, question));
+    res.render('question', Object.assign({ user: req.user, currPath: req.originalUrl, answers }, question));
   } catch (error) {
     res.status(400).send(error.message);
   }
@@ -113,6 +117,13 @@ const serveQuestionDetails = function(req, res) {
       return res.json(question);
     })
     .catch(error => res.status(400).send(error.message));
+};
+
+const serveAnswers = function(req, res) {
+  req.app.locals.dataStore.getAnswersByQuestion(req.query.id)
+    .then(answers => {
+      res.json(answers);
+    });
 };
 
 const serveAskQuestion = function(req, res) {
@@ -179,6 +190,7 @@ module.exports = {
   serveAskQuestion,
   serveQuestionPage,
   serveQuestionDetails,
+  serveAnswers,
   saveDetails,
   authorizeUser,
   saveQuestion,

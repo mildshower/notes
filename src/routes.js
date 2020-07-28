@@ -23,7 +23,8 @@ const {
   handleLogin,
   serveSearchPage,
   serveNotFound,
-  showProfilePage
+  showProfilePage,
+  serveAnswers
 } = require('./handlers');
 
 const app = express();
@@ -47,6 +48,7 @@ app.get('/signUp', isValidVerificationReq, handleSignUp);
 app.get('/profile', showProfilePage);
 app.get('/question', serveQuestionPage);
 app.get('/questionDetails', serveQuestionDetails);
+app.get('/answers', serveAnswers);
 app.get('/search', serveSearchPage);
 app.get('/signUpForm', authorizeUser, serveSignUpPage);
 app.get('/askQuestion', authorizeUser, serveAskQuestion);

@@ -59,7 +59,7 @@ describe('GET', () => {
   context('/question', () => {
     it('should serve question page for valid question id', (done) => {
       request(app)
-        .get('/question?id=2')
+        .get('/question?id=1')
         .set('accept', '*/*')
         .expect(200)
         .expect('Content-Type', /text\/html/)
@@ -93,6 +93,17 @@ describe('GET', () => {
         .expect(400)
         .expect('Content-Type', /text\/html/)
         .expect('Wrong Id Provided', done);
+    });
+  });
+
+  context('/answers', () => {
+    it('should serve answers of a specific question id', (done) => {
+      request(app)
+        .get('/answers?id=1')
+        .set('accept', '*/*')
+        .expect(200)
+        .expect('Content-Type', 'application/json; charset=utf-8')
+        .expect(/Use PRAGMA foreign_keys = ON /, done);
     });
   });
 

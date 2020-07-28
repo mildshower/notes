@@ -29,16 +29,16 @@ body
             | by 
             a.strong(href=`/profile?userId=${owner}`) #{ownerName}
   hr.separator
-  //- each answer in answers
-  //-   .answerBox(id=answer.id)
-  //-     .stats
-  //-     .body
-  //-      .editor
-  //-       .modifier
-  //-         .options
-  //-           .editButton
-  //-           .commentsBox
-  //-           .commentBar
-  //-         .ownerInfo
-  //-           p answered #{answer.time}
-  //-           p by #{answer.owner}
+  each answer in answers
+    .answerBox(id=answer.id)
+      //- .stats
+      .body
+        .editor
+        .modifier
+          .options
+            //- .editButton
+            //- .commentsBox
+            //- .commentBar
+          .ownerInfo
+            p answered #{answer.created}
+            p by #{answer.ownerName}
