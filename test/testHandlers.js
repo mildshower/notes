@@ -162,7 +162,7 @@ describe('GET', () => {
     });
   });
 
-  context('/signUp', function(){
+  context('/signUp', function() {
     it('should redirect to signUp page if user doesn\'t exist', (done) => {
       const stubbed = sinon.stub(fetch, 'Promise');
       stubbed.returns(Promise.resolve({
@@ -270,7 +270,7 @@ describe('POST', function() {
       request(app)
         .post('/saveQuestion')
         .set('Cookie', `session=${id}`)
-        .send({title: 'How to configure vim?', body: '{"ops":[{"insert":"don\'t know about .vimrc"}]}', bodyText: 'bodyText'})
+        .send({ title: 'How to configure vim?', body: '{"ops":[{"insert":"don\'t know about .vimrc"}]}', bodyText: 'bodyText' })
         .set('Content-Type', 'application/json')
         .expect(200)
         .expect('Content-Type', 'application/json; charset=utf-8')
@@ -280,9 +280,40 @@ describe('POST', function() {
     it('should serve unauthorized if not logged in', (done) => {
       request(app)
         .post('/saveQuestion')
-        .send({title: 'title', body: 'body', bodyText: 'bodyText'})
+        .send({ title: 'title', body: 'body', bodyText: 'bodyText' })
         .set('Content-Type', 'application/json')
         .expect(401, done);
+    });
+  });
+
+  context('/profile', () => {
+    it('should serve user\'s profile page when user logged in', (done) => {
+      const sessions = new Sessions();
+      const id = sessions.addSession('1');
+      app.locals.sessions = sessions;
+      request(app)
+        .get('/profile?userId=1')
+        .set('Cookie', `session=${id}`)
+        .expect(200)
+        .expect('Content-Type', /text\/html/)
+        .expect(/id="editProfileButton"/)
+        .expect(/heapOverflow \| Profile/, done);
+    });
+
+    it('should serve profile page when asked with valid id', (done) => {
+      request(app)
+        .get('/profile?userId=1')
+        .expect(200)
+        .expect('Content-Type', /text\/html/)
+        .expect(/heapOverflow \| Profile/, done);
+    });
+
+    it('should serve error page when asked with invalid id', (done) => {
+      request(app)
+        .get('/profile?userId=34732')
+        .expect(404)
+        .expect('Content-Type', /text\/html/)
+        .expect(/heapOverflow \| Oops/, done);
     });
   });
 });

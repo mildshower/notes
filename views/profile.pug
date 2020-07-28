@@ -13,12 +13,14 @@ body
       img#avatar(src=`${requestedUser.avatar}` alt='avatar')
       #info
         p#displayName #{requestedUser.display_name}
-        p#email
-          img(src='images/mail.png' alt='mailIcon')
-          | &nbsp;#{requestedUser.email}
-        p#location
-          img(src='images/location.png' alt='')
-          | &nbsp;#{requestedUser.location}
+        if(requestedUser.email)
+          p#email
+            img(src='images/mail.png' alt='mailIcon')
+            | &nbsp;#{requestedUser.email}
+        if(requestedUser.location)
+          p#location
+            img(src='images/location.png' alt='')
+            | &nbsp;#{requestedUser.location}
         if(requestedUser.bio)
           p#bio #{requestedUser.bio}
         else

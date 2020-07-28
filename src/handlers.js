@@ -161,7 +161,7 @@ const showProfilePage = async (req, res) => {
   const { user: requestedUser } = await dataStore.getUser('user_id', userId);
   const { user } = req;
   if (!requestedUser) {
-    return res.render('error', {
+    return res.status(404).render('error', {
       user,
       errorMessage: 'We\'re sorry, we couldn\'t find the user you requested.',
       currPath: '/home'
