@@ -121,6 +121,7 @@ describe('GET', () => {
       request(app)
         .get('/entry?targetPath=home&type=wrong')
         .set('accept', '*/*')
+        .expect(/heapOverflow \| Oops/)
         .expect(404, done);
     });
   });

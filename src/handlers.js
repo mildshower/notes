@@ -145,6 +145,13 @@ const serveSearchPage = function(req, res){
     });
 };
 
+const serveNotFound = function(req, res){
+  res.status(404).render('error', {
+    errorMessage: `${req.originalUrl} is not a valid path!!`,
+    currPath: '/home'
+  });
+};
+
 module.exports = {
   handleSessions,
   serveHomePage,
@@ -159,5 +166,6 @@ module.exports = {
   isValidVerificationReq,
   handleLogin,
   handleSignUp,
-  serveSearchPage
+  serveSearchPage,
+  serveNotFound
 };

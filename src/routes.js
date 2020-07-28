@@ -21,7 +21,8 @@ const {
   isValidVerificationReq,
   handleSignUp,
   handleLogin,
-  serveSearchPage
+  serveSearchPage,
+  serveNotFound
 } = require('./handlers');
 
 const app = express();
@@ -49,5 +50,6 @@ app.get('/signUpForm', authorizeUser, serveSignUpPage);
 app.get('/askQuestion', authorizeUser, serveAskQuestion);
 app.post('/saveDetails', authorizeUser, saveDetails);
 app.post('/saveQuestion', authorizeUser, saveQuestion);
+app.use(serveNotFound);
 
 module.exports = { app };
