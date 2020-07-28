@@ -2,6 +2,11 @@ a{
   text-decoration: none;
 }
 
+.strong {
+  font-weight: bold;
+  color: black;
+}
+
 .topQuestionsBox{
   margin: 10px 10vw;
   display: flex;

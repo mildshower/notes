@@ -2,6 +2,11 @@
   font-family: sans-serif;
 }
 
+.strong {
+  font-weight: bold;
+  color: black;
+}
+
 .questionBox {
   margin: 50px 10vw 30px;
   display: flex;

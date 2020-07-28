@@ -11,6 +11,11 @@
   border: none !important;
 }
 
+.strong {
+  font-weight: bold;
+  color: black;
+}
+
 .questionBox, .answerBox {
   margin: 20px 10vw;
   display: flex;
