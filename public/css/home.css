@@ -4,15 +4,14 @@ a{
 
 .topQuestionsBox{
   margin: 10px 10vw;
-  /* background-color: red; */
   display: flex;
   padding: 20px 5px;
 }
 
 .topQuestionsBox > .voteCount,
 .topQuestionsBox > .answerCount{
-  width: 80px;
-  height: 60px;
+  width: 85px;
+  height: 70px;
   border-radius: 15px;
   margin:  0 10px;
   flex-shrink: 0;
@@ -32,7 +31,12 @@ a{
 }
 
 .topQuestionsBox > .questionDetails > .questionTitle > a{
+  color: rgb(0, 99, 190);
   font-size: 25px;
+}
+
+.topQuestionsBox > .questionDetails > .questionTitle > a:visited{
+  color: rgb(0, 99, 190);
 }
 
 .topQuestionsBox > .questionDetails > .otherDetails{

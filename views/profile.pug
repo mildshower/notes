@@ -2,6 +2,7 @@ doctype html
 head
   meta(charset='UTF-8')
   meta(name='viewport' content='width=device-width, initial-scale=1.0')
+  link(rel='icon' href='images/favicon.svg')
   link(rel='stylesheet' href='css/profile.css')
   title heapOverflow | Profile
 body
@@ -31,13 +32,13 @@ body
           .contents
             each question in questions
               a(href=`/question?id=${question.id}`) #{question.title}
-      //- .rightLane
-      //-   #tags
-      //-     p.laneTitle Tags (5)
-      //-     .contents
-      //-       a(href='question/1') javascript
-      //-       a(href='question/2') nodejs
-      //-       a(href='question/3') sqlite
+      .rightLane
+        //- #tags
+        //-   p.laneTitle Tags (5)
+        //-   .contents
+        //-     a(href='question/1') javascript
+        //-     a(href='question/2') nodejs
+        //-     a(href='question/3') sqlite
         //- #answers
         //-   p.laneTitle Answers (3)
         //-   .contents
