@@ -16,7 +16,10 @@ body
     each question in questions
       .topQuestionsBox(id=question.id)
         //- .voteCount
-        //- .answerCount
+        p(class=`answerCount ${question.hasCorrectAnswer?'hasCorrect':''}`)
+          | #{question.answerCount}
+          br
+          | Answers
         .questionDetails
           .questionTitle
             a(href='/question?id='+question.id) #{question.title}
