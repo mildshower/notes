@@ -43,15 +43,19 @@ a {
 
 /* Style for searchBar */
 #searchBar {
-  height: 50%;
+  height: 35%;
   display: flex;
   align-items: center;
   background-color: white;
   border-radius: 5px;
   flex-grow: 1;
   margin: 5vw;
+  margin-top: 6vw;
   border: 1px solid rgb(202, 202, 202);
-  /* visibility: hidden; */
+}
+
+#searchBar:focus-within {
+  border: 1px solid rgb(161, 161, 161);
 }
 
 #searchBar > form{
@@ -62,22 +66,30 @@ a {
   height: 90%;
   width: 100%;
   border: hidden;
-  padding: 0 15px;
+  padding-left: 5px;
   outline: none;
-  font-size: 25px;
+  font-size: 18px;
+}
+
+#searchBar input::placeholder {
+  color: rgb(202, 202, 202);
 }
 
 #searchBar > img {
-  height: 90%;
-  padding: 0 5px;
+  height: 100%;
+  padding-top: 10px;
+  padding-left: 5px;
 }
 /* Style for searchBar ends */
 
 
 .headerButton {
   margin: 0 0.5vw;
-  height: 40%;
-  font-size: 27px;
+  margin-top: 0.5vw;
+  /* height: 40%; */
+  /* font-size: 27px; */
+  height: 27px;
+  font-size: 24px;
   display: flex;
   align-items: center;
   outline: none;
