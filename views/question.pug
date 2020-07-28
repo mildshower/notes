@@ -28,7 +28,6 @@ body
           p 
             | by 
             a.strong(href=`/profile?userId=${owner}`) #{ownerName}
-  hr.separator
   p#answersHead Answers (#{answers.length})
   each answer in answers
     .answerBox(id=answer.id)
@@ -44,5 +43,5 @@ body
             p answered #{answer.created}
             p 
               | by 
-              strong #{answer.ownerName}
+              a.strong(href=`/profile?userId=${answer.owner}`) #{answer.ownerName}
     hr.separator
