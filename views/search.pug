@@ -13,7 +13,11 @@ if(questions.length == 0)
 else
   each question in questions
     .questionBox
-      //- .counts
+      .counts
+        p(class=`answersCount ${question.hasCorrectAnswer?'hasCorrect':''}`)
+          | #{question.answerCount}
+          br
+          | Answers
       .details
         a.title(href=`/question?id=${question.id}`) #{question.title}
         p.bodyText
