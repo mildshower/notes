@@ -47,9 +47,24 @@ const loadQuestion = function () {
     });
 };
 
+const loadAnswers = function(){
+  const questionId = getQuestionBox().id;
+  fetch(`/answers?id=${questionId}`)
+    .then(response => response.json())
+    .then(answers => {
+      answers.forEach(({id, body}) => {
+        const ans = new Quill(`.answerBox[id="${id}"] .editor`, getEditorConfig());
+        ans.setContents(JSON.parse(body));
+        ans.disable();
+        disableToolbar(`.answerBox[id="${id}"]`);
+      });
+    });
+};
+
 const main = function () {
   setupSyntax();
   loadQuestion();
+  loadAnswers();
 };
 
 window.onload = main;

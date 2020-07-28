@@ -79,7 +79,7 @@
 .questionBox > .body > .modifier > .ownerInfo,
 .answerBox > .body > .modifier > .ownerInfo {
   width: 250px;
-  background-color: rgb(228, 228, 228);
+  background-color: rgb(194, 224, 236);
   border-radius: 5px;
   margin: 10px 0 10px 15px;
   flex-shrink: 0;
@@ -98,4 +98,13 @@
 
 .hidden{
   display: none;
+}
+
+#answersHead{
+  margin: 15px 10vw;
+  font-size: 30px;
+  color: rgb(41, 41, 41);
+  background-color: rgb(194, 224, 236);
+  padding: 12px 30px;
+  border-radius: 7px;
 }

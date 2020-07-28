@@ -68,7 +68,7 @@ describe('GET', () => {
 
     it('should serve "wrong Id" when invalid id is given', (done) => {
       request(app)
-        .get('/question?id=10')
+        .get('/question?id=100')
         .set('accept', '*/*')
         .expect(400)
         .expect('Content-Type', /text\/html/)
@@ -88,7 +88,7 @@ describe('GET', () => {
 
     it('should serve "wrong Id" when invalid id is given', (done) => {
       request(app)
-        .get('/questionDetails?id=10')
+        .get('/questionDetails?id=100')
         .set('accept', '*/*')
         .expect(400)
         .expect('Content-Type', /text\/html/)
@@ -103,7 +103,7 @@ describe('GET', () => {
         .set('accept', '*/*')
         .expect(200)
         .expect('Content-Type', 'application/json; charset=utf-8')
-        .expect(/Use PRAGMA foreign_keys = ON /, done);
+        .expect(/"quesId":1/, done);
     });
   });
 

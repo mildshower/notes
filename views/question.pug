@@ -29,6 +29,7 @@ body
             | by 
             a.strong(href=`/profile?userId=${owner}`) #{ownerName}
   hr.separator
+  p#answersHead Answers (#{answers.length})
   each answer in answers
     .answerBox(id=answer.id)
       //- .stats
@@ -41,4 +42,7 @@ body
             //- .commentBar
           .ownerInfo
             p answered #{answer.created}
-            p by #{answer.ownerName}
+            p 
+              | by 
+              strong #{answer.ownerName}
+    hr.separator
