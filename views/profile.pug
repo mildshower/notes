@@ -1,0 +1,46 @@
+doctype html
+head
+  meta(charset='UTF-8')
+  meta(name='viewport' content='width=device-width, initial-scale=1.0')
+  link(rel='stylesheet' href='css/profile.css')
+  title heapOverflow | Profile
+body
+  include header.pug
+
+  .outerContainer
+    .detailsContainer
+      img#avatar(src=`${requestedUser.avatar}` alt='avatar')
+      #info
+        p#displayName #{requestedUser.display_name}
+        p#email
+          img(src='images/mail.png' alt='mailIcon')
+          | &nbsp;#{requestedUser.email}
+        p#location
+          img(src='images/location.png' alt='')
+          | &nbsp;#{requestedUser.location}
+        if(requestedUser.bio)
+          p#bio #{requestedUser.bio}
+        else
+          p#bio.default (About me for this profile is currently blank.)
+        if(user && user.user_id == requestedUser.user_id)
+          a#editProfileButton(href='') Click here to edit
+    .lanes
+      .leftLane
+        #questions
+          p.laneTitle Questions (#{questionsCount})
+          .contents
+            each question in questions
+              a(href=`/question?id=${question.id}`) #{question.title}
+      //- .rightLane
+      //-   #tags
+      //-     p.laneTitle Tags (5)
+      //-     .contents
+      //-       a(href='question/1') javascript
+      //-       a(href='question/2') nodejs
+      //-       a(href='question/3') sqlite
+        //- #answers
+        //-   p.laneTitle Answers (3)
+        //-   .contents
+        //-     a(href='question/1') What is the name of the node js? I am just kidding. but seriously I don&apos;t know
+        //-     a(href='question/2') What to do after using sqlite
+        //-     a(href='question/3') Why java is not hard but go lang is? 
