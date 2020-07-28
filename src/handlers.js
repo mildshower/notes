@@ -109,7 +109,9 @@ const serveQuestionPage = async function(req, res) {
 
 const serveQuestionDetails = function(req, res) {
   req.app.locals.dataStore.getQuestionDetails(req.query.id)
-    .then(question => res.json(question))
+    .then(question => {
+      return res.json(question);
+    })
     .catch(error => res.status(400).send(error.message));
 };
 
@@ -140,6 +142,7 @@ const serveSearchPage = function(req, res){
     .then(questions => {
       questions.forEach(question => {
         question.created = getRelativeTime(question.created);
+        question.bodyText = question.bodyText.split('\n');
       });
       res.render('search', {questions, currPath: req.originalUrl, user: req.user, searchQuery: req.query.searchQuery, title: 'Searched Results'});
     });

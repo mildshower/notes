@@ -17,7 +17,9 @@ else
       .details
         a.title(href=`/question?id=${question.id}`) #{question.title}
         p.bodyText
-          | #{question.bodyText}
+          each line in question.bodyText.slice(0,3)
+            | #{line}
+            br
         .tagsAndStatus
           .tags
           p.status
