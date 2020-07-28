@@ -54,13 +54,17 @@ a {
   /* visibility: hidden; */
 }
 
-#searchBar > input {
+#searchBar > form{
+  flex-grow: 1;
+}
+
+#searchBar input {
   height: 90%;
+  width: 100%;
   border: hidden;
   padding: 0 15px;
   outline: none;
   font-size: 25px;
-  flex-grow: 1;
 }
 
 #searchBar > img {

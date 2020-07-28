@@ -11,7 +11,6 @@ const {
   handleSessions, 
   serveHomePage, 
   authenticateWithGithub, 
-  handleLoginSignUp, 
   serveSignUpPage, 
   serveAskQuestion, 
   serveQuestionPage, 
@@ -21,7 +20,8 @@ const {
   saveQuestion,
   isValidVerificationReq,
   handleSignUp,
-  handleLogin
+  handleLogin,
+  serveSearchPage
 } = require('./handlers');
 
 const app = express();
@@ -39,11 +39,12 @@ app.use(handleSessions);
 app.get('/', (req, res) => res.redirect('/home'));
 app.use(express.static('public'));
 app.get('/home', serveHomePage);
-app.get('/entry/', authenticateWithGithub);
+app.get('/entry', authenticateWithGithub);
 app.get('/login', isValidVerificationReq, handleLogin);
 app.get('/signUp', isValidVerificationReq, handleSignUp );
 app.get('/question', serveQuestionPage);
 app.get('/questionDetails', serveQuestionDetails);
+app.get('/search', serveSearchPage);
 app.get('/signUpForm', authorizeUser, serveSignUpPage);
 app.get('/askQuestion', authorizeUser, serveAskQuestion);
 app.post('/saveDetails', authorizeUser, saveDetails);

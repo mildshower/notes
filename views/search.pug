@@ -1,0 +1,26 @@
+doctype html
+head
+  meta(charset='UTF-8')
+  meta(name='viewport' content='width=device-width, initial-scale=1.0')
+  link(rel='icon' href='images/favicon.svg')
+  link(rel='stylesheet' href='css/search.css')
+  title heapOverflow | Search
+include header.pug
+include titleBar.pug
+if(questions.length == 0)
+  .noQuestion
+    | Sorry! No questions found with the given query. Try to be more precise.
+else
+  each question in questions
+    .questionBox
+      //- .counts
+      .details
+        a.title(href=`/question?id=${question.id}`) #{question.title}
+        p.bodyText
+          | #{question.bodyText}
+        .tagsAndStatus
+          .tags
+          p.status
+            | Asked #{question.created} 
+            strong #{question.ownerName}
+    hr.separator

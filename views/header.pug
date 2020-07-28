@@ -1,10 +1,15 @@
 link(rel='stylesheet' href='css/header.css')
+script(src="scripts/header.js")
 .header
   a#icon(href='/home' alt='home' title='heapOverFlow')
     img(src='images/appIcon.png' alt='heapOverflow Icon')
   #searchBar
     img(src='images/search.svg' alt='search icon')
-    input(type='search' onsearch="console.log('input')" placeholder='Search..')
+    form(action="/search" id="searchForm")
+      if(searchQuery)
+        input(value=searchQuery type='search' id='searchField' onsearch='search()' autocomplete="off" placeholder='Search..' name='searchQuery')
+      else
+        input(type='search' id='searchField' onsearch='search()' autocomplete="off" placeholder='Search..' name='searchQuery')
   if (user)
     a#profileButton.headerButton
       img(src=user.avatar alt='avatar')

@@ -1,5 +1,3 @@
-/* eslint-disable max-statements */
-/* eslint-disable complexity */
 require('dotenv').config();
 const fetch = require('node-fetch');
 const Moment = require('moment');
@@ -137,6 +135,16 @@ const authorizeUser = function(req, res, next){
   res.sendStatus(401);
 };
 
+const serveSearchPage = function(req, res){
+  req.app.locals.dataStore.getMatchedQuestions(req.query.searchQuery)
+    .then(questions => {
+      questions.forEach(question => {
+        question.created = getRelativeTime(question.created);
+      });
+      res.render('search', {questions, currPath: req.originalUrl, user: req.user, searchQuery: req.query.searchQuery, title: 'Searched Results'});
+    });
+};
+
 module.exports = {
   handleSessions,
   serveHomePage,
@@ -150,5 +158,6 @@ module.exports = {
   saveQuestion,
   isValidVerificationReq,
   handleLogin,
-  handleSignUp
+  handleSignUp,
+  serveSearchPage
 };

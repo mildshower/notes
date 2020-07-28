@@ -224,6 +224,17 @@ describe('GET', () => {
         .expect(401, done);
     });
   });
+
+  context('/search', () => {
+    it('should serve search page with search result', (done) => {
+      request(app)
+        .get('/search?searchQuery=foreign')
+        .set('accept', '*/*')
+        .expect(200)
+        .expect('Content-Type', /text\/html/)
+        .expect(/heapOverflow \| Search/, done);
+    });
+  });
 });
 
 describe('POST', function() {
