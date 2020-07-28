@@ -262,7 +262,7 @@ context('dataStore', () => {
   });
 
   context('#getMatchedQuestions', function() {
-    it('should give all the questions of a particular', (done) => {
+    it('should give all the questions of a particular query', (done) => {
       const questions = [
         {
           id: 1,
@@ -279,6 +279,24 @@ context('dataStore', () => {
           assert.deepStrictEqual(actual, questions);
           assert.ok(dbClient.all.calledOnce);
           assert.ok(dbClient.all.firstArg.match(/like "%arrow%"/));
+          done();
+        });
+    });
+  });
+
+  context('#getAnswersByQuestion', function() {
+    it('should give all the answers of a particular question', (done) => {
+      const answers = [{id: 1}];
+      const dbClient = {
+        all: sinon.fake.yields(null, answers)
+      };
+      const dataStore = new DataStore(dbClient);
+
+      dataStore.getAnswersByQuestion(1)
+        .then(actual => {
+          assert.deepStrictEqual(actual, answers);
+          assert.ok(dbClient.all.calledOnce);
+          assert.deepStrictEqual(dbClient.all.args[0][1], [1]);
           done();
         });
     });

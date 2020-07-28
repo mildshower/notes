@@ -18,6 +18,24 @@ const questionDetails = `select
     where question_votes.question_id = ques.id) as voteCount 
   from questions ques `;
 
+const answerDetails = `select 
+  ans.id, 
+  ans.body,
+  ans.body_text as bodyText,
+  ans.owner, 
+  ans.is_accepted as isAccepted,
+  ans.question as quesId,
+  ans.created,
+  ans.last_modified as lastModified, 
+  (select display_name from users 
+    where users.user_id = ans.owner) as ownerName,   
+  (select sum(REPLACE(vote_type,0,-1)) from answer_votes 
+    where answer_votes.answer_id = ans.id) as voteCount 
+  from answers ans `;
+
+const getAnswerByQuestionSql = () =>
+  answerDetails + 'where ans.question = ?';
+
 const getLastQuestionsSql = () =>
   questionDetails + 'order by ques.created DESC;';
 
@@ -149,6 +167,17 @@ class DataStore {
           return reject(err);
         }
         resolve(rows);
+      });
+    });
+  }
+
+  getAnswersByQuestion(id) {
+    return new Promise((resolve, reject) => {
+      this.dbClient.all(getAnswerByQuestionSql(), [id], (err, answers) => {
+        if (err) {
+          return reject(err);
+        }
+        resolve(answers);
       });
     });
   }
