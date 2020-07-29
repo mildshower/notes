@@ -38,6 +38,7 @@ a{
 .topQuestionsBox > .questionDetails > .questionTitle > a{
   color: rgb(0, 99, 190);
   font-size: 25px;
+  line-height: 35px;
 }
 
 .topQuestionsBox > .questionDetails > .questionTitle > a:visited{

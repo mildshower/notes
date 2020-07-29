@@ -35,6 +35,11 @@ const answerDetails = `select
     where answer_votes.answer_id = ans.id) as voteCount 
   from answers ans `;
 
+const getUserUpdationQuery = () =>
+  `UPDATE users
+    SET display_name = ?, email = ?, location = ?, bio = ?
+    WHERE user_id = ?;`;
+
 const getAnswersByUserSql = () =>
   answerDetails + 'where ans.owner = ?';
 
@@ -113,15 +118,14 @@ class DataStore {
     });
   }
 
-  updateUserDetails(userId, name, email, location, bio) {
-    const query = `UPDATE users
-    SET display_name = "${name}", email = "${email}", location = "${location}", bio = "${bio || ""}"
-    WHERE user_id = ${userId};`;
-    console.log(query);
+  updateUserDetails(userId, { name, email, location, bio}) {
     return new Promise((resolve) => {
-      this.dbClient.run(query, () => {
-        resolve();
-      });
+      this.dbClient.run(
+        getUserUpdationQuery(),
+        [name, email, location, bio || '', userId],
+        () => {
+          resolve();
+        });
     });
   }
 

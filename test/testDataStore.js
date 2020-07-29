@@ -266,11 +266,11 @@ context('dataStore', () => {
       };
       const dataStore = new DataStore(dbClient);
 
-      dataStore.updateUserDetails(4, name, email, location)
+      dataStore.updateUserDetails(4, {name, email, location})
         .then(actual => {
           assert.isUndefined(actual);
           assert.ok(dbClient.run.calledOnce);
-          assert.ok(dbClient.run.firstArg.match(/email = "testUser.com",/));
+          assert.deepStrictEqual(dbClient.run.args[0][1], [name, email, location, '', 4]);
           done();
         });
     });

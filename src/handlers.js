@@ -129,8 +129,7 @@ const serveAskQuestion = function(req, res) {
 };
 
 const saveDetails = async (req, res) => {
-  const {name, email, location, bio} = req.body;
-  await req.app.locals.dataStore.updateUserDetails(req.user.user_id, name, email, location, bio);
+  await req.app.locals.dataStore.updateUserDetails(req.user.user_id, req.body);
   res.redirect(req.query.targetPath);
 };
 
@@ -194,7 +193,7 @@ const serveEditProfilePage = async (req, res, next) => {
     return next();
   }
   res.render('editProfile', {user});
-}
+};
 
 module.exports = {
   handleSessions,
