@@ -320,5 +320,36 @@ context('dataStore', () => {
     });
   });
 
+  context('#addAnswer', function() {
+    it('should add the answer without throwing error', (done) => {
+      const dbClient = {
+        run: sinon.fake.yields(null)
+      };
+      const dataStore = new DataStore(dbClient);
+
+      dataStore.addAnswer('body', 'bodyText', 1, 1)
+        .then(() => {
+          assert.ok(dbClient.run.calledOnce);
+          assert.deepStrictEqual(dbClient.run.args[0][1], ['body', 'bodyText', 1, 1]);
+          done();
+        });
+    });
+
+    it('should produce error when insertion failed', (done) => {
+      const dbClient = {
+        run: sinon.fake.yields(new Error())
+      };
+      const dataStore = new DataStore(dbClient);
+
+      dataStore.addAnswer('body', 'bodyText', 100, 1)
+        .catch(err => {
+          assert.deepStrictEqual(err.message, 'Answer Insertion Failed!');
+          assert.ok(dbClient.run.calledOnce);
+          assert.deepStrictEqual(dbClient.run.args[0][1], ['body', 'bodyText', 100, 1]);
+          done();
+        });
+    });
+  });
+
 });
 

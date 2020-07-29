@@ -65,6 +65,10 @@ const getInitiationSql = () => {
   `;
 };
 
+const getAnswerInsertionQuery = () =>
+  `insert into answers (body, body_text, question, owner)
+    values (?, ?, ?, ?)`;
+
 class DataStore {
   constructor(dbClient) {
     this.dbClient = dbClient;
@@ -206,6 +210,20 @@ class DataStore {
         }
         resolve(rows);
       });
+    });
+  }
+
+  addAnswer(body, bodyText, quesId, owner){
+    return new Promise((resolve, reject) => {
+      this.dbClient.run(
+        getAnswerInsertionQuery(),
+        [body, bodyText, quesId, owner],
+        (err) => {
+          if (err) {
+            return reject(new Error('Answer Insertion Failed!'));
+          }
+          resolve();
+        });
     });
   }
 }
