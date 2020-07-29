@@ -52,7 +52,7 @@ app.get('/question', serveQuestionPage);
 app.get('/questionDetails', serveQuestionDetails);
 app.get('/answers', serveAnswers);
 app.get('/search', serveSearchPage);
-app.get('/editProfile', serveEditProfilePage);
+app.get('/editProfile', authorizeUser, serveEditProfilePage);
 app.get('/signUpForm', authorizeUser, serveSignUpPage);
 app.get('/askQuestion', authorizeUser, serveAskQuestion);
 app.post('/saveDetails', authorizeUser, saveDetails);

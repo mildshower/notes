@@ -364,7 +364,7 @@ describe('POST', function() {
       const id = sessions.addSession('1');
       app.locals.sessions = sessions;
       request(app)
-        .get('/editProfile?userId=1')
+        .get('/editProfile')
         .set('Cookie', `session=${id}`)
         .expect(200)
         .expect('Content-Type', /text\/html/)
@@ -373,7 +373,7 @@ describe('POST', function() {
 
     it('should serve unauthorized if user asked to edit others profile', (done) => {
       request(app)
-        .get('/editProfile?userId=1')
+        .get('/editProfile')
         .expect(401, done);
     });
   });

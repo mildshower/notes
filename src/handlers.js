@@ -142,7 +142,7 @@ const authorizeUser = function (req, res, next) {
   if (req.user) {
     return next();
   }
-  res.sendStatus(401);
+  res.status(401).render('error', {errorMessage: 'You are Unauthorized', currPath: '/home'});
 };
 
 const serveSearchPage = function(req, res) {
@@ -185,14 +185,8 @@ const saveAnswer = function(req, res){
     .catch(() => res.status(400).json({isSaved: false})); 
 };
 
-const serveEditProfilePage = async (req, res, next) => {
-  const user = req.user;
-  if (!user || user.user_id != req.query.userId) {
-    req.responseStatus = 401;
-    req.errorMessage = 'You are not authorized for editing this profile';
-    return next();
-  }
-  res.render('editProfile', {user});
+const serveEditProfilePage = async (req, res) => {
+  res.render('editProfile', {user: req.user});
 };
 
 module.exports = {
