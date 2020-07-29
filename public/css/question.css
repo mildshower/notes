@@ -16,6 +16,10 @@
   color: black;
 }
 
+.strong:hover{
+  border-bottom: 2px solid black;
+}
+
 .questionBox, .answerBox {
   margin: 20px 10vw;
   display: flex;
@@ -79,7 +83,7 @@
 .questionBox > .body > .modifier > .ownerInfo,
 .answerBox > .body > .modifier > .ownerInfo {
   width: 250px;
-  background-color: rgb(194, 224, 236);
+  background-color: rgb(243, 243, 243) ;
   border-radius: 5px;
   margin: 10px 0 10px 15px;
   flex-shrink: 0;
@@ -104,9 +108,8 @@
   margin: 15px 10vw;
   font-size: 30px;
   color: rgb(41, 41, 41);
-  background-color: rgb(194, 224, 236);
-  padding: 12px 30px;
-  border-radius: 7px;
+  padding: 12px 15px;
+  border-bottom: 3px solid rgb(97, 97, 97);
 }
 
 #answerBody{
@@ -126,7 +129,7 @@
 }
 
 #answerButton {
-  margin: 0px 10vw 50px;
+  margin: 0px 10vw 250px;
   font-size: 20px;
   font-weight: lighter;
   box-shadow: none;

@@ -7,6 +7,10 @@
   color: black;
 }
 
+.strong:hover{
+  border-bottom: 2px solid black;
+}
+
 .questionBox {
   margin: 50px 10vw 30px;
   display: flex;

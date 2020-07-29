@@ -1,5 +1,6 @@
 .ql-editor {
-  font-size: 22px;
+  font-size: 19px;
+  line-height: 1.5;
 }
 
 .ql-toolbar button,
@@ -27,6 +28,9 @@
   background-color: #eff0f1;
   color: black;
   overflow: visible;
+  border-radius: 5px;
+  padding: 10px 15px;
+  margin: 10px 0;
 }
 /* highlight vs2015 */
 .hljs {

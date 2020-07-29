@@ -20,8 +20,8 @@ a{
   width: 500px;
   border-radius: 5px;
   padding: 20px;
-  background-color: aliceblue;
-  box-shadow: 0 0 15px 5px rgb(121, 121, 121);
+  background-color: white;
+  box-shadow: 0 0 25px 5px rgb(156, 156, 156);
 }
 
 #pop-up-container > .popUp > p{
