@@ -173,8 +173,9 @@ const showProfilePage = async (req, res, next) => {
     req.errorMessage = 'We\'re sorry, we couldn\'t find the user you requested.';
     return next();
   }
+  const answers = await dataStore.getUserAnswers(userId);
   const questions = await dataStore.getUserQuestions(userId);
-  res.render('profile', { requestedUser, user, questions, questionsCount: questions.length, currPath: `/profile?userId=${userId}` });
+  res.render('profile', { requestedUser, user, questions, answers, currPath: `/profile?userId=${userId}` });
 };
 
 module.exports = {

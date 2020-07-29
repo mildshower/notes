@@ -28,7 +28,9 @@ const answerDetails = `select
   ans.created,
   ans.last_modified as lastModified, 
   (select display_name from users 
-    where users.user_id = ans.owner) as ownerName,   
+    where users.user_id = ans.owner) as ownerName,
+  (select title from questions 
+    where questions.id = ans.question) as questionTitle,  
   (select sum(REPLACE(vote_type,0,-1)) from answer_votes 
     where answer_votes.answer_id = ans.id) as voteCount 
   from answers ans `;
@@ -196,7 +198,7 @@ class DataStore {
     });
   }
 
-  getAnswersByUser(id){
+  getUserAnswers(id){
     return new Promise((resolve, reject) => {
       this.dbClient.all(getAnswersByUserSql(), [id], (err, rows) => {
         if (err) {

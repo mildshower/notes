@@ -302,7 +302,7 @@ context('dataStore', () => {
     });
   });
 
-  context('#getAnswersByUser', function() {
+  context('#getUserAnswers', function() {
     it('should give all the answers of a particular user', (done) => {
       const answers = [{id: 1}];
       const dbClient = {
@@ -310,7 +310,7 @@ context('dataStore', () => {
       };
       const dataStore = new DataStore(dbClient);
 
-      dataStore.getAnswersByUser(1)
+      dataStore.getUserAnswers(1)
         .then(actual => {
           assert.deepStrictEqual(actual, answers);
           assert.ok(dbClient.all.calledOnce);

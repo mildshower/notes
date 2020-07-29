@@ -84,9 +84,6 @@ a {
 
 .headerButton {
   margin: 0 0.5vw;
-  /* margin-top: 0.5vw; */
-  /* height: 40%; */
-  /* font-size: 27px; */
   height: 27px;
   font-size: 24px;
   display: flex;

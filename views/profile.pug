@@ -30,7 +30,7 @@ body
     .lanes
       .leftLane
         #questions
-          p.laneTitle Questions (#{questionsCount})
+          p.laneTitle Questions (#{questions.length})
           .contents
             each question in questions
               a(href=`/question?id=${question.id}`) #{question.title}
@@ -41,9 +41,8 @@ body
         //-     a(href='question/1') javascript
         //-     a(href='question/2') nodejs
         //-     a(href='question/3') sqlite
-        //- #answers
-        //-   p.laneTitle Answers (3)
-        //-   .contents
-        //-     a(href='question/1') What is the name of the node js? I am just kidding. but seriously I don&apos;t know
-        //-     a(href='question/2') What to do after using sqlite
-        //-     a(href='question/3') Why java is not hard but go lang is? 
+        #answers
+          p.laneTitle Answers (#{answers.length})
+          .contents
+            each answer in answers
+              a(href=`question?id=${answer.quesId}`) #{answer.questionTitle}
