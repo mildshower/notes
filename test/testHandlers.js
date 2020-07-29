@@ -138,17 +138,15 @@ describe('GET', () => {
   });
 
   context('/login', () => {
+    afterEach(() => sinon.restore());
     it('should redirect to targetPath when right credentials given', (done) => {
       const stubbed = sinon.stub(fetch, 'Promise');
       stubbed.returns(Promise.resolve({ json: () => ({ 'access_token': 1, login: 'user1' }) }));
       request(app)
-        .get('/login?code=1&targetPath=home')
+        .get('/login?code=1&targetPath=/home')
         .set('accept', '*/*')
         .expect(302)
-        .expect('Location', '/home', () => {
-          sinon.restore();
-          done();
-        });
+        .expect('Location', '/home', done);
     });
 
     it('should redirect to error page when account doen\'t exist', (done) => {
@@ -157,14 +155,13 @@ describe('GET', () => {
       request(app)
         .get('/login?code=1&targetPath=home')
         .set('accept', '*/*')
-        .expect(200)
-        .expect(/Oops../, () => {
-          sinon.restore();
-          done();
-        });
+        .expect(400)
+        .expect(/Oops../, done);
     });
 
     it('should redirect to home page if auth error occurs', (done) => {
+      const stubbed = sinon.stub(fetch, 'Promise');
+      stubbed.returns(Promise.resolve({ json: () => ({ 'access_token': 1, login: 'user1' }) }));
       request(app)
         .get('/login?error=errorMsg')
         .set('accept', '*/*')
@@ -174,6 +171,7 @@ describe('GET', () => {
   });
 
   context('/signUp', function() {
+    afterEach(() => sinon.restore());
     it('should redirect to signUp page if user doesn\'t exist', (done) => {
       const stubbed = sinon.stub(fetch, 'Promise');
       stubbed.returns(Promise.resolve({
@@ -181,13 +179,10 @@ describe('GET', () => {
           ({ 'access_token': 1, login: 'user20', avatar_url: 'avatar' })
       }));
       request(app)
-        .get('/signUp?code=1&targetPath=home')
+        .get('/signUp?code=1&targetPath=/home')
         .set('accept', '*/*')
         .expect(302)
-        .expect('Location', /\/signUp/, () => {
-          sinon.restore();
-          done();
-        });
+        .expect('Location', '/signUpForm?targetPath=/home', done);
     });
 
     it('should redirect to error page if user exists', (done) => {
@@ -199,11 +194,8 @@ describe('GET', () => {
       request(app)
         .get('/signUp?code=1&targetPath=home')
         .set('accept', '*/*')
-        .expect(200)
-        .expect(/Oops../, () => {
-          sinon.restore();
-          done();
-        });
+        .expect(409)
+        .expect(/Oops../, done);
     });
 
     it('should redirect to home page if auth error occurs', (done) => {

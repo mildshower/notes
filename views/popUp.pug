@@ -1,7 +1,7 @@
 link(rel="stylesheet", href="css/popUp.css")
 script(src='scripts/popUp.js')
-#pop-up-container.hidden
-  .popUp
+#pop-up-container.hidden(onclick='closePopUp()')
+  .popUp(onclick='event.stopPropagation()')
     p You can&apos;t perform this action without Login. Please Login / Sign Up to continue.
     div
       a#login Login

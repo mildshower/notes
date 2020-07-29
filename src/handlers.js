@@ -65,12 +65,11 @@ const isValidVerificationReq = async function(req, res, next) {
   next();
 };
 
-const handleSignUp = async function(req, res) {
+const handleSignUp = async function(req, res, next) {
   if (req.user) {
-    return res.render('error', {
-      errorMessage: `It seems Github username ${req.userDetails.login} already has an account.`,
-      currPath: '/home'
-    });
+    req.responseStatus = 409;
+    req.errorMessage = `It seems Github username ${req.userDetails.login} already has an account.`;
+    return next();
   }
   const { dataStore, sessions } = req.app.locals;
   const { login, avatar_url: avatarUrl } = req.userDetails;
@@ -79,12 +78,11 @@ const handleSignUp = async function(req, res) {
   res.redirect(`/signUpForm?targetPath=${req.query.targetPath}`);
 };
 
-const handleLogin = function(req, res) {
+const handleLogin = function(req, res, next) {
   if (!req.user) {
-    return res.render('error', {
-      errorMessage: `It seems there is no account for Github username ${req.userDetails.login}.`,
-      currPath: '/home'
-    });
+    req.responseStatus = 400;
+    req.errorMessage = `It seems there is no account for Github username ${req.userDetails.login}.`;
+    return next();
   }
   const { sessions } = req.app.locals;
   res.cookie('session', sessions.addSession(req.user.user_id));
@@ -160,23 +158,20 @@ const serveSearchPage = function(req, res) {
 };
 
 const serveNotFound = function(req, res) {
-  res.status(404).render('error', {
-    errorMessage: `${req.originalUrl} is not a valid path!!`,
+  res.status(req.responseStatus || 404).render('error', {
+    errorMessage: req.errorMessage || `${req.originalUrl} is not a valid path!!`,
     currPath: '/home'
   });
 };
 
-const showProfilePage = async (req, res) => {
+const showProfilePage = async (req, res, next) => {
   const { userId } = req.query;
   const { dataStore } = req.app.locals;
   const { user: requestedUser } = await dataStore.getUser('user_id', userId);
   const { user } = req;
   if (!requestedUser) {
-    return res.status(404).render('error', {
-      user,
-      errorMessage: 'We\'re sorry, we couldn\'t find the user you requested.',
-      currPath: '/home'
-    });
+    req.errorMessage = 'We\'re sorry, we couldn\'t find the user you requested.';
+    return next();
   }
   const questions = await dataStore.getUserQuestions(userId);
   res.render('profile', { requestedUser, user, questions, questionsCount: questions.length, currPath: `/profile?userId=${userId}` });
