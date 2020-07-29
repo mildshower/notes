@@ -24,7 +24,8 @@ const {
   serveSearchPage,
   serveNotFound,
   showProfilePage,
-  serveAnswers
+  serveAnswers,
+  saveAnswer
 } = require('./handlers');
 
 const app = express();
@@ -54,6 +55,7 @@ app.get('/signUpForm', authorizeUser, serveSignUpPage);
 app.get('/askQuestion', authorizeUser, serveAskQuestion);
 app.post('/saveDetails', authorizeUser, saveDetails);
 app.post('/saveQuestion', authorizeUser, saveQuestion);
+app.post('/saveAnswer', authorizeUser, saveAnswer);
 app.use(serveNotFound);
 
 module.exports = { app };

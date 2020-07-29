@@ -2,6 +2,8 @@ const getQuestionBox = () => document.querySelector('.questionBox');
 
 const getAnswerButton = () => document.querySelector('#answerButton');
 
+const getAnswerBody = () => document.querySelector('#answerBody');
+
 const disableToolbar = ancestor => {
   const toolbar = document.querySelector(`${ancestor} .ql-toolbar`);
   toolbar.classList.add('hidden');
@@ -63,12 +65,26 @@ const loadAnswers = function(){
     });
 };
 
+const saveAnswer = function(answer){
+  const body = JSON.stringify(answer.getContents());
+  const bodyText = answer.getText();
+  const quesId = getQuestionBox().id;
+  postData('/saveAnswer', {body, bodyText, quesId})
+    .then(({isSaved}) => {
+      if(isSaved){
+        location.reload();
+      }
+    });
+};
+
 const main = function () {
   setupSyntax();
   loadQuestion();
   loadAnswers();
-  const newAnswer = new Quill('#answerBody > #editor', getEditorConfig());
-  getAnswerButton().onclick = () => console.log('doing...');
+  if(getAnswerBody()){
+    const newAnswer = new Quill('#answerBody > #editor', getEditorConfig());
+    getAnswerButton().onclick = saveAnswer.bind(null, newAnswer);
+  }
 };
 
 window.onload = main;

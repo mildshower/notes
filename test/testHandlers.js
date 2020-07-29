@@ -289,6 +289,44 @@ describe('POST', function() {
     });
   });
 
+  context('/saveAnswer', () => {
+    it('should save given valid answer', (done) => {
+      const sessions = new Sessions();
+      const id = sessions.addSession('1');
+      app.locals.sessions = sessions;
+      request(app)
+        .post('/saveAnswer')
+        .set('Cookie', `session=${id}`)
+        .send({ body: '{"ops":[{"insert":"User require"}]}', bodyText: 'use require', quesId: 4 })
+        .set('Content-Type', 'application/json')
+        .expect(200)
+        .expect('Content-Type', 'application/json; charset=utf-8')
+        .expect('{"isSaved":true}', done);
+    });
+
+    it('should serve bad request if wrong details given', (done) => {
+      const sessions = new Sessions();
+      const id = sessions.addSession('1');
+      app.locals.sessions = sessions;
+      request(app)
+        .post('/saveAnswer')
+        .set('Cookie', `session=${id}`)
+        .send({ body: '{"ops":[{"insert":"User require"}]}', bodyText: 'use require', quesId: 400 })
+        .set('Content-Type', 'application/json')
+        .expect(400)
+        .expect('Content-Type', 'application/json; charset=utf-8')
+        .expect('{"isSaved":false}', done);
+    });
+
+    it('should serve unauthorized if not logged in', (done) => {
+      request(app)
+        .post('/saveAnswer')
+        .send({ body: 'body', bodyText: 'bodyText', quesId: 1 })
+        .set('Content-Type', 'application/json')
+        .expect(401, done);
+    });
+  });
+
   context('/profile', () => {
     it('should serve user\'s profile page when user logged in', (done) => {
       const sessions = new Sessions();

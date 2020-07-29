@@ -94,6 +94,7 @@ a {
   padding: 8px 10px;
   border: 1px solid rgb(185, 185, 185);
   color: rgb(61, 61, 61);
+  flex-shrink: 0;
 }
 
 .headerButton > img {

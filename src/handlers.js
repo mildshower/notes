@@ -178,6 +178,13 @@ const showProfilePage = async (req, res, next) => {
   res.render('profile', { requestedUser, user, questions, answers, currPath: `/profile?userId=${userId}` });
 };
 
+const saveAnswer = function(req, res){
+  const {body, bodyText, quesId} = req.body;
+  req.app.locals.dataStore.addAnswer(body, bodyText, quesId, req.user.user_id)
+    .then(() => res.json({isSaved: true}))
+    .catch(() => res.status(400).json({isSaved: false})); 
+};
+
 module.exports = {
   handleSessions,
   serveHomePage,
@@ -195,5 +202,6 @@ module.exports = {
   handleSignUp,
   serveSearchPage,
   serveNotFound,
-  showProfilePage
+  showProfilePage,
+  saveAnswer
 };

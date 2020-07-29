@@ -9,6 +9,7 @@ head
   link(rel='stylesheet' href='css/editorStyles.css')
   link(rel='stylesheet' href='css/question.css')
   script(src='scripts/question.js')
+  script(src='scripts/request.js')
   title heapOverflow | Question
 body
   include header.pug
@@ -45,6 +46,9 @@ body
               | by 
               a.strong(href=`/profile?userId=${answer.owner}`) #{answer.ownerName}
     hr.separator
-  #answerBody
-    #editor
-  button#answerButton Post Your Answer
+  if(user)
+    #answerBody
+      #editor
+    button#answerButton Post Your Answer
+  else
+    button#answerButton(onclick=`showPopUp(\'${currPath}')`) Post Your Answer
