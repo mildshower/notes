@@ -139,7 +139,7 @@ const saveQuestion = function(req, res) {
     .then(insertionDetails => res.json(insertionDetails));
 };
 
-const authorizeUser = function(req, res, next) {
+const authorizeUser = function (req, res, next) {
   if (req.user) {
     return next();
   }
@@ -159,6 +159,7 @@ const serveSearchPage = function(req, res) {
 
 const serveNotFound = function(req, res) {
   res.status(req.responseStatus || 404).render('error', {
+    user: req.user,
     errorMessage: req.errorMessage || `${req.originalUrl} is not a valid path!!`,
     currPath: '/home'
   });
@@ -185,6 +186,16 @@ const saveAnswer = function(req, res){
     .catch(() => res.status(400).json({isSaved: false})); 
 };
 
+const serveEditProfilePage = async (req, res, next) => {
+  const user = req.user;
+  if (!user || user.user_id != req.query.userId) {
+    req.responseStatus = 401;
+    req.errorMessage = 'You are not authorized for editing this profile';
+    return next();
+  }
+  res.render('editProfile', {user});
+}
+
 module.exports = {
   handleSessions,
   serveHomePage,
@@ -203,5 +214,6 @@ module.exports = {
   serveSearchPage,
   serveNotFound,
   showProfilePage,
-  saveAnswer
+  saveAnswer,
+  serveEditProfilePage
 };

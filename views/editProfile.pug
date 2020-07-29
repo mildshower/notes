@@ -1,0 +1,29 @@
+doctype html
+head
+  meta(charset='UTF-8')
+  meta(name='viewport' content='width=device-width, initial-scale=1.0')
+  title heapOverflow | Edit profile
+  link(rel='stylesheet' href='css/editProfile.css')
+body
+  include header.pug
+  div
+    form(action='/saveProfile' method='post')
+      h1.title Edit your profile
+      .container
+        .top-lane
+          .profileImg
+            img(src=`${user.avatar}` alt='avatarImg')
+          .personalInfo
+            label(for='name') Name*
+            input#name(type='name' name='name' placeholder='ex. John Dev')
+            label(for='email') E-mail
+            input#email(type='email' name='email' placeholder='ex. someone@email.com')
+            label(for='location') Location
+            input#location(type='location' name='location' placeholder='ex. India')
+        .middle-lane
+          label(for='bio') About me
+          input#bio(type='bio' name='bio' placeholder='ex. I am a developer.')
+        .bottom-lane
+          button#submit(type='submit') Save
+          a(href=`/profile?userId=${user.user_id}`)
+            button#cancel Cancel

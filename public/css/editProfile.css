@@ -1,0 +1,83 @@
+* {
+  font-family: sans-serif;
+}
+
+.title {
+  font-weight: 100;
+  font-size: 35px;
+  margin: 50px 10vw 10px;
+}
+
+.container {
+  margin: 50px 10vw 70px;
+  width: 70vw;
+}
+
+.container > .top-lane,
+.container > .middle-lane {
+  display: flex;
+}
+
+.container input {
+  font-size: 18px;
+  padding: 8px;
+  margin-top: 5px;
+  border: 1px solid rgb(185, 185, 185);
+  border-radius: 3px;
+  outline: none ;
+}
+
+.container > .top-lane > .profileImg {
+  border-radius: 5px;
+  border: 1px solid rgb(194, 194, 194);
+}
+
+.container > .top-lane > .profileImg >img {
+  width: 300px;
+  height: 300px;
+  margin:auto;
+}
+
+.container > .top-lane > .personalInfo {
+  width: 450px;
+  display: flex;
+  flex-direction: column;
+  margin: 10px 80px;
+}
+
+.container label {
+  font-size: 25px;
+  padding: 20px 0 5px ;
+  color: rgb(61, 61, 61);
+}
+
+.container > .middle-lane {
+  display: flex;
+  flex-direction: column;
+  width: 833px;
+}
+
+.container > .bottom-lane {
+  display: flex;
+  flex-direction: row-reverse;
+  width: 833px;
+}
+
+.container button {
+  margin: 0 0.5vw;
+  margin-top: 2vw;
+  font-size: 24px;
+  outline: none;
+  cursor: pointer;
+  border-radius: 3px;
+  padding: 5px 8px;
+  border: 1px solid rgb(185, 185, 185);
+  color: rgb(61, 61, 61);
+}
+
+.container button:hover,
+.container button:focus {
+  background-color: rgb(228, 228, 228);
+  color: black;
+  border: 1px solid rgb(107, 107, 107);
+}
