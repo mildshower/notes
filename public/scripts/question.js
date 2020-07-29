@@ -1,5 +1,7 @@
 const getQuestionBox = () => document.querySelector('.questionBox');
 
+const getAnswerButton = () => document.querySelector('#answerButton');
+
 const disableToolbar = ancestor => {
   const toolbar = document.querySelector(`${ancestor} .ql-toolbar`);
   toolbar.classList.add('hidden');
@@ -65,6 +67,8 @@ const main = function () {
   setupSyntax();
   loadQuestion();
   loadAnswers();
+  const newAnswer = new Quill('#answerBody > #editor', getEditorConfig());
+  getAnswerButton().onclick = () => console.log('doing...');
 };
 
 window.onload = main;
