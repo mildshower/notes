@@ -357,5 +357,25 @@ describe('POST', function() {
         .expect(/heapOverflow \| Oops/, done);
     });
   });
+
+  context('/editProfile', () => {
+    it('should give edit profile page when user asked to edit his own profile', (done) => {
+      const sessions = new Sessions();
+      const id = sessions.addSession('1');
+      app.locals.sessions = sessions;
+      request(app)
+        .get('/editProfile?userId=1')
+        .set('Cookie', `session=${id}`)
+        .expect(200)
+        .expect('Content-Type', /text\/html/)
+        .expect(/heapOverflow \| Edit profile/, done);
+    });
+
+    it('should serve unauthorized if user asked to edit others profile', (done) => {
+      request(app)
+        .get('/editProfile?userId=1')
+        .expect(401, done);
+    });
+  });
 });
 

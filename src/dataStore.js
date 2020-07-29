@@ -105,10 +105,11 @@ class DataStore {
     });
   }
 
-  updateUserDetails(userId, name, email, location) {
+  updateUserDetails(userId, name, email, location, bio) {
     const query = `UPDATE users
-    SET display_name = "${name}", email = "${email}", location = "${location}"
+    SET display_name = "${name}", email = "${email}", location = "${location}", bio = "${bio}"
     WHERE user_id = ${userId};`;
+    console.log(query);
     return new Promise((resolve) => {
       this.dbClient.run(query, () => {
         resolve();

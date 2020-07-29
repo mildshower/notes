@@ -129,8 +129,8 @@ const serveAskQuestion = function(req, res) {
 };
 
 const saveDetails = async (req, res) => {
-  const { name, email, location } = req.body;
-  await req.app.locals.dataStore.updateUserDetails(req.user.user_id, name, email, location);
+  const {name, email, location, bio} = req.body;
+  await req.app.locals.dataStore.updateUserDetails(req.user.user_id, name, email, location, bio);
   res.redirect(req.query.targetPath);
 };
 

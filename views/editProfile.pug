@@ -7,23 +7,31 @@ head
 body
   include header.pug
   div
-    form(action='/saveProfile' method='post')
+    form(action=`/saveDetails?targetPath=/profile?userId=${user.user_id}` method='post')
       h1.title Edit your profile
       .container
         .top-lane
-          .profileImg
-            img(src=`${user.avatar}` alt='avatarImg')
+          img.profileImg(src=`${user.avatar}` alt='avatarImg')
           .personalInfo
             label(for='name') Name*
-            input#name(type='name' name='name' placeholder='ex. John Dev')
+            input#name(type='name' name='name' value=`${user.display_name}`)
             label(for='email') E-mail
-            input#email(type='email' name='email' placeholder='ex. someone@email.com')
+            if(user.email)
+              input#email(type='email' name='email' value=`${user.email}`)
+            else
+              input#email(type='email' name='email' placeholder='ex. email@gmail.com')
             label(for='location') Location
-            input#location(type='location' name='location' placeholder='ex. India')
+            if(user.location)
+              input#location(type='location' name='location' value=`${user.location}`)
+            else
+              input#location(type='location' name='location' placeholder='ex. Delhi')
         .middle-lane
           label(for='bio') About me
-          input#bio(type='bio' name='bio' placeholder='ex. I am a developer.')
+          if(user.bio)
+            input#bio(type='bio' name='bio' value=`${user.bio}`)
+          else
+            input#bio(type='bio' name='bio' placeholder='ex. I am a developer.')
         .bottom-lane
           button#submit(type='submit') Save
-          a(href=`/profile?userId=${user.user_id}`)
-            button#cancel Cancel
+          input#cancel(type='button' value='Cancel' onclick=`window.location.href='/profile?userId=${user.user_id}'`)
+
