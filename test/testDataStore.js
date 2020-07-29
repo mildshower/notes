@@ -88,11 +88,12 @@ context('dataStore', () => {
         serialize: (cb) => cb()
       };
       const dataStore = new DataStore(dbClient);
-      dataStore.addQuestion({ title: 'title', body: 'body', body_text: 'body' }, 1)
+      dataStore.addQuestion({ title: 'title', body: 'body', bodyText: 'body' }, 1)
         .then(details => {
           assert.deepStrictEqual(details, { id: 1 });
           assert.ok(dbClient.run.calledOnce);
           assert.ok(dbClient.get.calledOnce);
+          assert.deepStrictEqual(dbClient.run.args[0][1], ['title', 'body', 'body', 1]);
           done();
         });
     });
@@ -104,9 +105,28 @@ context('dataStore', () => {
         serialize: (cb) => cb()
       };
       const dataStore = new DataStore(dbClient);
-      dataStore.addQuestion({ title: 'title', body: 'body', body_text: 'body' }, 10)
+      dataStore.addQuestion({ title: 'title', body: 'body', bodyText: 'body' }, 10)
         .catch(err => {
           assert.deepStrictEqual(err.message, 'Question Insertion Incomplete!');
+          assert.deepStrictEqual(dbClient.run.args[0][1], ['title', 'body', 'body', 10]);
+          assert.ok(dbClient.run.calledOnce);
+          done();
+        });
+    });
+
+    it('it produce error when last row id fetching could not be performed', (done) => {
+      const dbClient = {
+        run: sinon.fake.yields(null),
+        get: sinon.fake.yields(new Error('error')),
+        serialize: (cb) => cb()
+      };
+      const dataStore = new DataStore(dbClient);
+      dataStore.addQuestion({ title: 'title', body: 'body', bodyText: 'body' }, 1)
+        .catch(err => {
+          assert.deepStrictEqual(err.message, 'error');
+          assert.ok(dbClient.run.calledOnce);
+          assert.ok(dbClient.get.calledOnce);
+          assert.deepStrictEqual(dbClient.run.args[0][1], ['title', 'body', 'body', 1]);
           done();
         });
     });
@@ -115,7 +135,6 @@ context('dataStore', () => {
   context('#addNewUser', function() {
     const name = 'testUser';
     const avatarUrl = 'avatarUrl.com/u/58025792?v=4';
-    const githubUrl = 'http://github.com/testUser';
 
     it('should add a new user to database', (done) => {
       const dbClient = {
@@ -125,11 +144,12 @@ context('dataStore', () => {
       };
       const dataStore = new DataStore(dbClient);
 
-      dataStore.addNewUser(name, avatarUrl, githubUrl)
+      dataStore.addNewUser(name, avatarUrl)
         .then(actual => {
           assert.deepStrictEqual(actual, {id: 1});
           assert.ok(dbClient.run.calledOnce);
-          assert.ok(dbClient.run.firstArg.match(/"testUser"/));
+          assert.ok(dbClient.get.calledOnce);
+          assert.deepStrictEqual(dbClient.run.args[0][1], [name, avatarUrl]);
           done();
         });
     });
@@ -142,11 +162,29 @@ context('dataStore', () => {
       const dataStore = new DataStore(dbClient);
 
       const message = 'User Already Exists!';
-      dataStore.addNewUser(name, avatarUrl, githubUrl)
+      dataStore.addNewUser(name, avatarUrl)
         .catch(err => {
-          assert.ok(dbClient.run.calledOnce);
-          assert.ok(dbClient.run.firstArg.match(/"testUser"/));
           assert.equal(err.message, message);
+          assert.ok(dbClient.run.calledOnce);
+          assert.deepStrictEqual(dbClient.run.args[0][1], [name, avatarUrl]);
+          done();
+        });
+    });
+
+    it('should produce error if fetching new row id fails', (done) => {
+      const dbClient = {
+        run: sinon.fake.yields(null),
+        get: sinon.fake.yields(new Error('error')),
+        serialize: (cb) => cb()
+      };
+      const dataStore = new DataStore(dbClient);
+
+      dataStore.addNewUser(name, avatarUrl)
+        .catch(err => {
+          assert.equal(err.message, 'error');
+          assert.ok(dbClient.run.calledOnce);
+          assert.ok(dbClient.get.calledOnce);
+          assert.deepStrictEqual(dbClient.run.args[0][1], [name, avatarUrl]);
           done();
         });
     });
@@ -255,7 +293,7 @@ context('dataStore', () => {
         .then(actual => {
           assert.deepStrictEqual(actual, questions);
           assert.ok(dbClient.all.calledOnce);
-          assert.ok(dbClient.all.firstArg.match(/ques.owner = 1/));
+          assert.deepStrictEqual(dbClient.all.args[0][1], [1]);
           done();
         });
     });
@@ -278,7 +316,7 @@ context('dataStore', () => {
         .then(actual => {
           assert.deepStrictEqual(actual, questions);
           assert.ok(dbClient.all.calledOnce);
-          assert.ok(dbClient.all.firstArg.match(/like "%arrow%"/));
+          assert.deepStrictEqual(dbClient.all.args[0][1], {$regExp: '%arrow%'});
           done();
         });
     });
@@ -313,6 +351,21 @@ context('dataStore', () => {
       dataStore.getUserAnswers(1)
         .then(actual => {
           assert.deepStrictEqual(actual, answers);
+          assert.ok(dbClient.all.calledOnce);
+          assert.deepStrictEqual(dbClient.all.args[0][1], [1]);
+          done();
+        });
+    });
+
+    it('should produce error while db produces error', (done) => {
+      const dbClient = {
+        all: sinon.fake.yields(new Error('error'))
+      };
+      const dataStore = new DataStore(dbClient);
+
+      dataStore.getUserAnswers(1)
+        .catch(err => {
+          assert.deepStrictEqual(err.message, 'error');
           assert.ok(dbClient.all.calledOnce);
           assert.deepStrictEqual(dbClient.all.args[0][1], [1]);
           done();

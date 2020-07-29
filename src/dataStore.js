@@ -47,16 +47,20 @@ const getLastQuestionsSql = () =>
 const getQuestionDetailsSql = id =>
   questionDetails + `where ques.id = ${id};`;
 
-const getUserQuestionsSql = (id) =>
-  questionDetails + `where ques.owner = ${id};`;
+const getUserQuestionsSql = () =>
+  questionDetails + 'where ques.owner = ?;';
 
-const searchQuestionsSql = (text) =>
+const searchQuestionsSql = () =>
   questionDetails +
-  `where ques.title like "%${text}%" OR ques.body_text like "%${text}%";`;
+  'where ques.title like $regExp OR ques.body_text like $regExp;';
 
 const getQuestionInsertionSql = () =>
   `insert into questions (title, body, body_text, owner)
     values (?, ?, ?, ?);`;
+
+const getUserInsertionQuery = () =>
+  `INSERT INTO USERS (github_username, avatar) 
+    VALUES (?, ?)`;
 
 const getInitiationSql = () => {
   return `
@@ -87,18 +91,22 @@ class DataStore {
   }
 
   addNewUser(username, avatarUrl) {
-    const query = `INSERT INTO USERS (github_username, avatar) 
-    VALUES ("${username}", "${avatarUrl}")`;
     return new Promise((resolve, reject) => {
       this.dbClient.serialize(() => {
-        this.dbClient.run(query, err => {
-          if (err) {
-            reject(new Error('User Already Exists!'));
-          }
-        });
+        this.dbClient.run(
+          getUserInsertionQuery(),
+          [username, avatarUrl],
+          err => {
+            if (err) {
+              reject(new Error('User Already Exists!'));
+            }
+          });
         this.dbClient.get(
           'select last_insert_rowid() as id;', 
           (err, details) => {
+            if (err) {
+              reject(err);
+            }
             resolve(details);
           });
       });
@@ -171,30 +179,20 @@ class DataStore {
   }
 
   getUserQuestions(id) {
-    return new Promise((resolve, reject) => {
-      this.dbClient.all(getUserQuestionsSql(id), (err, rows) => {
-        if (err) {
-          return reject(err);
-        }
-        resolve(rows);
-      });
-    });
+    return this.getRows(getUserQuestionsSql(), [id]);
   }
 
   getAnswersByQuestion(id) {
-    return new Promise((resolve, reject) => {
-      this.dbClient.all(getAnswerByQuestionSql(), [id], (err, answers) => {
-        if (err) {
-          return reject(err);
-        }
-        resolve(answers);
-      });
-    });
+    return this.getRows(getAnswerByQuestionSql(), [id]);
   }
 
   getMatchedQuestions(text) {
+    return this.getRows(searchQuestionsSql(), {$regExp: `%${text}%`});
+  }
+
+  getRows(query, params){
     return new Promise((resolve, reject) => {
-      this.dbClient.all(searchQuestionsSql(text), (err, rows) => {
+      this.dbClient.all(query, params, (err, rows) => {
         if (err) {
           return reject(err);
         }
@@ -204,14 +202,7 @@ class DataStore {
   }
 
   getUserAnswers(id){
-    return new Promise((resolve, reject) => {
-      this.dbClient.all(getAnswersByUserSql(), [id], (err, rows) => {
-        if (err) {
-          return reject(err);
-        }
-        resolve(rows);
-      });
-    });
+    return this.getRows(getAnswersByUserSql(), [id]);
   }
 
   addAnswer(body, bodyText, quesId, owner){
