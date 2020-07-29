@@ -33,6 +33,9 @@ const answerDetails = `select
     where answer_votes.answer_id = ans.id) as voteCount 
   from answers ans `;
 
+const getAnswersByUserSql = () =>
+  answerDetails + 'where ans.owner = ?';
+
 const getAnswerByQuestionSql = () =>
   answerDetails + 'where ans.question = ?';
 
@@ -185,6 +188,17 @@ class DataStore {
   getMatchedQuestions(text) {
     return new Promise((resolve, reject) => {
       this.dbClient.all(searchQuestionsSql(text), (err, rows) => {
+        if (err) {
+          return reject(err);
+        }
+        resolve(rows);
+      });
+    });
+  }
+
+  getAnswersByUser(id){
+    return new Promise((resolve, reject) => {
+      this.dbClient.all(getAnswersByUserSql(), [id], (err, rows) => {
         if (err) {
           return reject(err);
         }

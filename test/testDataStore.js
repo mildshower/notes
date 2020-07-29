@@ -302,5 +302,23 @@ context('dataStore', () => {
     });
   });
 
+  context('#getAnswersByUser', function() {
+    it('should give all the answers of a particular user', (done) => {
+      const answers = [{id: 1}];
+      const dbClient = {
+        all: sinon.fake.yields(null, answers)
+      };
+      const dataStore = new DataStore(dbClient);
+
+      dataStore.getAnswersByUser(1)
+        .then(actual => {
+          assert.deepStrictEqual(actual, answers);
+          assert.ok(dbClient.all.calledOnce);
+          assert.deepStrictEqual(dbClient.all.args[0][1], [1]);
+          done();
+        });
+    });
+  });
+
 });
 
