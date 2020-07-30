@@ -18,10 +18,10 @@ body
     .stats
       .votes
         button.upVote
-          img(src="images/arrow.svg", alt="voteUp")
+          img(src=`images/${userVote && userVote.voteType==1?'chosenArrow':'arrow'}.svg`, alt="voteUp")
         p.voteCount #{voteCount}
         button.downVote
-          img(src="images/arrow.svg", alt="voteUp")
+          img(src=`images/${userVote && userVote.voteType==0?'chosenArrow':'arrow'}.svg`, alt="voteUp")
     .body
       .editor
       //- .tagStrip
@@ -41,10 +41,10 @@ body
       .stats
         .votes
           button.upVote
-            img(src="images/arrow.svg", alt="voteUp")
+            img(src=`images/${answer.userVote && answer.userVote.voteType==1?'chosenArrow':'arrow'}.svg`, alt="voteUp")
           p.voteCount #{answer.voteCount}
           button.downVote
-            img(src="images/arrow.svg", alt="voteUp")
+            img(src=`images/${answer.userVote && answer.userVote.voteType==0?'chosenArrow':'arrow'}.svg`, alt="voteUp")
       .body
         .editor
         .modifier

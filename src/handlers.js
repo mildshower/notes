@@ -93,14 +93,21 @@ const serveSignUpPage = (req, res) => {
   res.render('signUp', { targetPath: req.query.targetPath });
 };
 
+const prepareAnswers = async function(answers, user, dataStore){
+  for(const answer of answers) {
+    answer.created = getRelativeTime(answer.created);
+    answer.userVote = user && await dataStore.getVote(answer.id, user.user_id, 'answer');
+  }
+  return answers;
+};
+
 const serveQuestionPage = async function(req, res) {
   const dataStore = req.app.locals.dataStore;
   try {
-    const question = await dataStore.getQuestionDetails(req.query.id);
-    const answers = await dataStore.getAnswersByQuestion(question.id);
-    answers.forEach(answer => {
-      answer.created = getRelativeTime(answer.created);
-    });
+    const question = await dataStore.getQuestionDetails(req.query.id); 
+    question.userVote = req.user && await dataStore.getVote(question.id, req.user.user_id, 'question');
+    let answers = await dataStore.getAnswersByQuestion(question.id);
+    answers = await prepareAnswers(answers, req.user, dataStore);
     question.lastModified = getRelativeTime(question.lastModified);
     question.created = getRelativeTime(question.created);
     res.render('question', Object.assign({ user: req.user, currPath: req.originalUrl, answers }, question));

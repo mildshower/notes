@@ -79,6 +79,11 @@ const getQuestionVoteQuery = () =>
     from question_votes
     where question_id = ? AND user = ?`;
 
+const getAnswerVoteQuery = () =>
+  `select vote_type as voteType
+    from answer_votes
+    where answer_id = ? AND user = ?`;
+
 const getAnswerInsertionQuery = () =>
   `insert into answers (body, body_text, question, owner)
     values (?, ?, ?, ?)`;
@@ -228,11 +233,13 @@ class DataStore {
     });
   }
 
-  getQuestionVote(questionId, userId){
+  getVote(contentId, userId, contentType){
     return new Promise((resolve, reject) => {
+      const query = contentType === 'answer' ? 
+        getAnswerVoteQuery() : getQuestionVoteQuery();
       this.dbClient.get(
-        getQuestionVoteQuery(),
-        [questionId, userId],
+        query,
+        [contentId, userId],
         (err, details) => {
           if(err){
             return reject(new Error('Fetching vote failed'));

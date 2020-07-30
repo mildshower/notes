@@ -340,14 +340,29 @@ context('dataStore', () => {
     });
   });
 
-  context('#getQuestionVote', function() {
+  context('#getVote', function() {
     it('should give voteType when valid user and question id given', (done) => {
       const dbClient = {
         get: sinon.fake.yields(null, {voteType: 0})
       };
       const dataStore = new DataStore(dbClient);
 
-      dataStore.getQuestionVote(1, 1)
+      dataStore.getVote(1, 1, 'question')
+        .then(actual => {
+          assert.deepStrictEqual(actual, {isVoted: true, voteType: 0});
+          assert.ok(dbClient.get.calledOnce);
+          assert.deepStrictEqual(dbClient.get.args[0][1], [1, 1]);
+          done();
+        });
+    });
+
+    it('should give voteType when valid user and answer id given', (done) => {
+      const dbClient = {
+        get: sinon.fake.yields(null, {voteType: 0})
+      };
+      const dataStore = new DataStore(dbClient);
+
+      dataStore.getVote(1, 1, 'answer')
         .then(actual => {
           assert.deepStrictEqual(actual, {isVoted: true, voteType: 0});
           assert.ok(dbClient.get.calledOnce);
@@ -362,7 +377,7 @@ context('dataStore', () => {
       };
       const dataStore = new DataStore(dbClient);
 
-      dataStore.getQuestionVote(300, 300)
+      dataStore.getVote(300, 300)
         .then(actual => {
           assert.deepStrictEqual(actual, {isVoted: false, voteType: undefined});
           assert.ok(dbClient.get.calledOnce);
@@ -377,7 +392,7 @@ context('dataStore', () => {
       };
       const dataStore = new DataStore(dbClient);
 
-      dataStore.getQuestionVote(300, 300)
+      dataStore.getVote(300, 300)
         .catch(err => {
           assert.deepStrictEqual(err.message, 'Fetching vote failed');
           assert.ok(dbClient.get.calledOnce);

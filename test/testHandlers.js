@@ -66,6 +66,20 @@ describe('GET', () => {
         .expect(/heapOverflow \| Question/, done);
     });
 
+    it('should serve question page with vote highlight if voter user logged in', (done) => {
+      const sessions = new Sessions();
+      const id = sessions.addSession('2');
+      app.locals.sessions = sessions;
+      request(app)
+        .get('/question?id=1')
+        .set('Cookie', `session=${id}`)
+        .set('accept', '*/*')
+        .expect(200)
+        .expect('Content-Type', /text\/html/)
+        .expect(/chosenArrow\.svg/)
+        .expect(/heapOverflow \| Question/, done);
+    });
+
     it('should serve "wrong Id" when invalid id is given', (done) => {
       request(app)
         .get('/question?id=100')
