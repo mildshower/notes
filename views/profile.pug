@@ -35,12 +35,11 @@ body
             each question in questions
               a(href=`/question?id=${question.id}`) #{question.title}
       .rightLane
-        //- #tags
-        //-   p.laneTitle Tags (5)
-        //-   .contents
-        //-     a(href='question/1') javascript
-        //-     a(href='question/2') nodejs
-        //-     a(href='question/3') sqlite
+        .tags
+          p.laneTitle Tags (#{tags.length})
+          .contents
+            each tag in tags
+              a.tag(href='') #{tag}
         #answers
           p.laneTitle Answers (#{answers.length})
           .contents

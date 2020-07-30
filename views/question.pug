@@ -24,7 +24,9 @@ body
           img(src=`images/arrow.svg` alt="voteUp" onclick= user?'':`showPopUp('${currPath}')`)
     .body
       .editor
-      //- .tagStrip
+      .tagStrip
+        each tag in tags
+          .tag #{tag}
       .modifier
         .options
           //- .editButton

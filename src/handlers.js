@@ -19,6 +19,7 @@ const serveHomePage = async function(req, res) {
   const questions = await dataStore.getLastQuestions(10);
   questions.forEach(question => {
     question.created = getRelativeTime(question.created);
+    question.tags = ['sqlite3', 'javaScript', 'node'];
   });
   res.render('home', { user: req.user, title: 'Last 10 Questions', questions, currPath: '/home' });
 };
@@ -110,7 +111,7 @@ const serveQuestionPage = async function(req, res) {
     answers = await prepareAnswers(answers, req.user, dataStore);
     question.lastModified = getRelativeTime(question.lastModified);
     question.created = getRelativeTime(question.created);
-    res.render('question', Object.assign({ user: req.user, currPath: req.originalUrl, answers }, question));
+    res.render('question', Object.assign({ user: req.user, currPath: req.originalUrl, tags:['js','javaScript'], answers }, question));
   } catch (error) {
     res.status(400).send(error.message);
   }
@@ -160,6 +161,7 @@ const serveSearchPage = function(req, res) {
       questions.forEach(question => {
         question.created = getRelativeTime(question.created);
         question.bodyText = question.bodyText.split('\n');
+        question.tags = ['hello', 'tag', 'is', 'good'];
       });
       res.render('search', { questions, currPath: req.originalUrl, user: req.user, searchQuery: req.query.searchQuery, title: 'Searched Results' });
     });
@@ -184,7 +186,7 @@ const showProfilePage = async (req, res, next) => {
   }
   const answers = await dataStore.getUserAnswers(userId);
   const questions = await dataStore.getUserQuestions(userId);
-  res.render('profile', { requestedUser, user, questions, answers, currPath: `/profile?userId=${userId}` });
+  res.render('profile', { requestedUser, user, questions, tags:['tags','in','profile','page'], answers, currPath: `/profile?userId=${userId}` });
 };
 
 const saveAnswer = function(req, res) {

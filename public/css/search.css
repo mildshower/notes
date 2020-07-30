@@ -75,6 +75,23 @@
 
 .questionBox > .details > .tagsAndStatus > .tags{
   flex-grow: 1;
+  display: flex;
+}
+
+.questionBox > .details > .tagsAndStatus > .tags > .tag {
+  color: rgb(44, 87, 119);
+  background-color: rgb(220, 234, 243);
+  text-decoration: none;
+  cursor: pointer;
+  padding: 5px;
+  margin: 5px;
+  font-size: 17px;
+  border-radius: 4px;
+  border: 1px solid rgb(173, 173, 173);
+}
+
+.questionBox > .details > .tagsAndStatus > .tags > .tag:hover {
+   background-color: rgb(186, 219, 238);
 }
 
 .questionBox > .details > .tagsAndStatus > .status{

@@ -28,6 +28,8 @@ body
             a(href='/question?id='+question.id) #{question.title}
           .otherDetails
             .tags
+              each tag in question.tags
+                .tag #{tag}
             p.status
               | Asked #{question.created} by 
               a.strong(href=`/profile?userId=${question.owner}`) #{question.ownerName}

@@ -30,6 +30,8 @@ else
             br
         .tagsAndStatus
           .tags
+            each tag in question.tags
+              .tag #{tag}
           p.status
             | Asked #{question.created} 
             a.strong(href=`/profile?userId=${question.owner}`) #{question.ownerName}

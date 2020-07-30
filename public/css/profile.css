@@ -83,7 +83,7 @@
 
 #questions,
 #answers,
-#tags{
+.tags{
   margin: 25px 0;
   padding: 0px 10px 10px;
 }
@@ -95,13 +95,13 @@
   flex-direction: column;
 }
 
-#tags > .contents{
+.tags > .contents{
   padding: 10px;
   display: flex;
   flex-wrap: wrap;
 }
 
-#tags > .contents > a{
+.tags > .contents > .tag{
   color: rgb(44, 87, 119);
   background-color: rgb(220, 234, 243);
   text-decoration: none;
@@ -113,8 +113,8 @@
   border: 1px solid rgb(173, 173, 173);
 }
 
-#tags > .contents > a:focus,
-#tags > .contents > a:hover{
+.tags > .contents > .tag:focus,
+.tags > .contents > .tag:hover{
   background-color: rgb(186, 219, 238);
 }
 
@@ -136,7 +136,7 @@
 
 #questions > .laneTitle,
 #answers > .laneTitle,
-#tags > .laneTitle{
+.tags > .laneTitle{
   font-size: 25px;
   margin: 0;
   padding-bottom: 5px;
