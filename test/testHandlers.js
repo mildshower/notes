@@ -76,7 +76,7 @@ describe('GET', () => {
         .set('accept', '*/*')
         .expect(200)
         .expect('Content-Type', /text\/html/)
-        .expect(/chosenArrow\.svg/)
+        .expect(/chosen/)
         .expect(/heapOverflow \| Question/, done);
     });
 

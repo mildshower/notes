@@ -196,6 +196,10 @@ const serveEditProfilePage = async (req, res) => {
   res.render('editProfile', {user: req.user});
 };
 
+const updateVote = function(req, res){
+  res.json({action: 'removed', currVoteCount: 10});
+};
+
 module.exports = {
   handleSessions,
   serveHomePage,
@@ -215,5 +219,6 @@ module.exports = {
   serveNotFound,
   showProfilePage,
   saveAnswer,
-  serveEditProfilePage
+  serveEditProfilePage,
+  updateVote
 };

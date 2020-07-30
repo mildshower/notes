@@ -17,11 +17,11 @@ body
   .questionBox(id= id)
     .stats
       .votes
-        button.upVote
-          img(src=`images/${userVote && userVote.voteType==1?'chosenArrow':'arrow'}.svg`, alt="voteUp")
+        button.upVote(class=userVote && userVote.voteType==1 && 'chosen')
+          img(src=`images/arrow.svg` alt="voteUp" onclick= user?'':`showPopUp('${currPath}')`)
         p.voteCount #{voteCount}
-        button.downVote
-          img(src=`images/${userVote && userVote.voteType==0?'chosenArrow':'arrow'}.svg`, alt="voteUp")
+        button.downVote(class=userVote && userVote.voteType==0 && 'chosen')
+          img(src=`images/arrow.svg` alt="voteUp" onclick= user?'':`showPopUp('${currPath}')`)
     .body
       .editor
       //- .tagStrip
@@ -40,11 +40,11 @@ body
     .answerBox(id=answer.id)
       .stats
         .votes
-          button.upVote
-            img(src=`images/${answer.userVote && answer.userVote.voteType==1?'chosenArrow':'arrow'}.svg`, alt="voteUp")
+          button.upVote(class=answer.userVote && answer.userVote.voteType==1 && 'chosen')
+            img(src=`images/arrow.svg` alt="voteUp" onclick= user?'':`showPopUp('${currPath}')`)
           p.voteCount #{answer.voteCount}
-          button.downVote
-            img(src=`images/${answer.userVote && answer.userVote.voteType==0?'chosenArrow':'arrow'}.svg`, alt="voteUp")
+          button.downVote(class=answer.userVote && answer.userVote.voteType==0 && 'chosen')
+            img(src=`images/arrow.svg` alt="voteUp" onclick= user?'':`showPopUp('${currPath}')`)
       .body
         .editor
         .modifier

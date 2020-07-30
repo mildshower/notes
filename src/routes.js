@@ -26,7 +26,8 @@ const {
   showProfilePage,
   serveAnswers,
   saveAnswer,
-  serveEditProfilePage
+  serveEditProfilePage,
+  updateVote
 } = require('./handlers');
 
 const app = express();
@@ -60,6 +61,7 @@ app.get('/askQuestion', authorizeUser, serveAskQuestion);
 app.post('/saveDetails', authorizeUser, saveDetails);
 app.post('/saveQuestion', authorizeUser, saveQuestion);
 app.post('/saveAnswer', authorizeUser, saveAnswer);
+app.post('/vote', authorizeUser, updateVote);
 app.use(serveNotFound);
 
 module.exports = { app };

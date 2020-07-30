@@ -67,7 +67,7 @@
 
   .questionBox > .stats > .votes > button:hover ,
   .answerBox > .stats > .votes > button:hover{
-    filter: brightness(60%);
+    filter: brightness(70%);
   }
 
   
@@ -194,4 +194,8 @@
   background-color: rgb(228, 228, 228);
   color: black;
   border: 1px solid rgb(107, 107, 107);
+}
+
+.chosen > img{
+  content: url('/images/chosenArrow.svg');
 }

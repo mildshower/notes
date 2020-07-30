@@ -4,6 +4,14 @@ const getAnswerButton = () => document.querySelector('#answerButton');
 
 const getAnswerBody = () => document.querySelector('#answerBody');
 
+const getAnswers = () => document.querySelectorAll('.answerBox');
+
+const getVoteElements = boxQuery => {
+  const voteBox = document.querySelector(`${boxQuery} .votes`);
+  const [upVote, count, downVote] = voteBox.children;
+  return {upVote, downVote, count};
+};
+
 const disableToolbar = ancestor => {
   const toolbar = document.querySelector(`${ancestor} .ql-toolbar`);
   toolbar.classList.add('hidden');
@@ -71,12 +79,47 @@ const saveAnswer = function(answer){
     });
 };
 
+const removeVoteHighlights = function(upVote, downVote){
+  upVote.classList.remove('chosen');
+  downVote.classList.remove('chosen');
+};
+
+const castVote = function(id, {upVote, count, downVote}, contentType) {
+  const voteType = this.className.includes('upVote') ? 1 : -1;
+  postData('/vote', {voteType, id, contentType})
+    .then(({error, action, currVoteCount}) => {
+      if(error){
+        return;
+      }
+      removeVoteHighlights(upVote, downVote);
+      count.innerText = currVoteCount;
+      if(action === 'added'){
+        this.classList.add('chosen');
+      }
+    });
+};
+
+const addVoteListener = function(ancestorQuery, contentType, id){
+  const voteBox = getVoteElements(ancestorQuery);
+  const {upVote, downVote} = voteBox;
+  upVote.onclick = castVote.bind(upVote, id, voteBox, contentType);
+  downVote.onclick = castVote.bind(downVote, id, voteBox, contentType);
+};
+
+const attachVoteListeners = function(){
+  addVoteListener('.questionBox', 'question', getQuestionBox().id);
+  getAnswers().forEach(answer => {
+    addVoteListener(`.answerBox[id="${answer.id}"]`, 'answer', answer.id);
+  });
+};
+
 const main = function () {
   loadQuestion();
   loadAnswers();
   if(getAnswerBody()){
     const newAnswer = new Quill('#answerBody > #editor', getEditorConfig());
     getAnswerButton().onclick = saveAnswer.bind(null, newAnswer);
+    attachVoteListeners();
   }
 };
 
