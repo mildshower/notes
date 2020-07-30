@@ -561,5 +561,37 @@ context('dataStore', () => {
     });
   });
 
+  context('#deleteVote', function() {
+    it('should delete a vote when valid credentials given', (done) => {
+      const dbClient = {
+        run: sinon.fake.yields(null)
+      };
+      const dataStore = new DataStore(dbClient);
+
+      dataStore.deleteVote(1, 'question', 1)
+        .then(isSucceeded => {
+          assert.ok(isSucceeded);
+          assert.ok(dbClient.run.calledOnce);
+          assert.deepStrictEqual(dbClient.run.args[0][1], [1, 1]);
+          done();
+        });
+    });
+
+    it('should produce error when invalid credentials given', (done) => {
+      const dbClient = {
+        run: sinon.fake.yields(new Error())
+      };
+      const dataStore = new DataStore(dbClient);
+
+      dataStore.deleteVote(100, 'wrongType', 100)
+        .catch(err => {
+          assert.deepStrictEqual(err.message, 'Vote Deletion Failed');
+          assert.ok(dbClient.run.calledOnce);
+          assert.deepStrictEqual(dbClient.run.args[0][1], [100, 100]);
+          done();
+        });
+    });
+  });
+
 });
 

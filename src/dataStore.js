@@ -101,10 +101,13 @@ const getAnswerVoteQuery = () =>
     from answer_votes
     where answer_id = ? AND user = ?`;
 
-const getVoteAdditionQuery = contentType => {
+const getVoteAdditionQuery = contentType => 
   `insert into ${contentType}_votes (${contentType}_id, user, vote_type)
     values (?, ?, ?)`;
-};
+
+const getVoteDeletionQuery = contentType => 
+  `delete from ${contentType}_votes
+    where ${contentType}_id = ? and user = ?`;
 
 const getAnswerInsertionQuery = () =>
   `insert into answers (body, body_text, question, owner)
@@ -341,6 +344,21 @@ class DataStore {
         err => {
           if(err){
             return reject(new Error('Vote Modification Failed'));
+          }
+          resolve(true);
+        }
+      );
+    });
+  }
+
+  deleteVote(contentId, contentType, userId){
+    return new Promise((resolve, reject) => {
+      this.dbClient.run(
+        getVoteDeletionQuery(contentType),
+        [contentId, userId],
+        err => {
+          if(err){
+            return reject(new Error('Vote Deletion Failed'));
           }
           resolve(true);
         }
