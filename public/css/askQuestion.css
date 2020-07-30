@@ -87,9 +87,12 @@ h1 {
   margin: -1px;
 }
 
+#tagInputHolder::-webkit-scrollbar {
+  display: none;
+}
+
 #tagsHolder {
   display: flex;
-  /* flex-direction: row; */
 }
 
 #tagName {
