@@ -20,18 +20,25 @@
   flex-shrink: 0;
 }
 
-.questionBox > .counts > .answersCount{
+.questionBox > .counts > .answersCount,
+.questionBox > .counts > .voteCount{
   border-radius: 15px;
   height: 60px;
   margin: 8px 18px;
-  border: 2px solid rgba(0, 153, 0, 1);
   text-align: center;
   justify-content: center;
   align-items: center;
   display: flex;
   font-size: 18px;
   width: 85px;
+}
 
+.questionBox > .counts > .answersCount{
+  border: 2px solid rgba(0, 153, 0, 1);
+}
+
+.questionBox > .counts > .voteCount{
+  border: 2px solid rgb(53, 155, 233);
 }
 
 .questionBox > .details{

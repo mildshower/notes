@@ -15,7 +15,10 @@ body
   else
     each question in questions
       .topQuestionsBox(id=question.id)
-        //- .voteCount
+        p.voteCount
+          | #{question.voteCount}
+          br
+          | Votes
         p(class=`answerCount ${question.hasCorrectAnswer?'hasCorrect':''}`)
           | #{question.answerCount}
           br

@@ -197,7 +197,7 @@ const serveEditProfilePage = async (req, res) => {
 };
 
 const updateVote = function(req, res){
-  res.json({action: 'removed', currVoteCount: 10});
+  res.json({action: 'added', currVoteCount: 10});
 };
 
 module.exports = {

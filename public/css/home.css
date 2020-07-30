@@ -24,6 +24,11 @@ a{
   border-radius: 15px;
   margin:  0 10px;
   flex-shrink: 0;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  font-size: 18px;
 }
 
 .topQuestionsBox > .questionDetails{
@@ -77,14 +82,13 @@ a{
 
 .topQuestionsBox > .answerCount{
   border: 2px solid rgba(0, 153, 0, 1);
-  text-align: center;
-  justify-content: center;
-  align-items: center;
-  display: flex;
-  font-size: 18px;
 }
 
 .topQuestionsBox > .answerCount.hasCorrect{
   background-color: rgba(0, 153, 0, 1);
   color: white;
+}
+
+.topQuestionsBox > .voteCount{
+  border: 2px solid rgb(53, 155, 233);
 }

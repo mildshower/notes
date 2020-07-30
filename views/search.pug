@@ -18,6 +18,10 @@ else
           | #{question.answerCount}
           br
           | Answers
+        p.voteCount
+          | #{question.voteCount}
+          br
+          | Votes
       .details
         a.title(href=`/question?id=${question.id}`) #{question.title}
         p.bodyText
