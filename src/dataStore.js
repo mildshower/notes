@@ -40,6 +40,11 @@ const getUserUpdationQuery = () =>
     SET display_name = ?, email = ?, location = ?, bio = ?
     WHERE user_id = ?;`;
 
+const getVoteModificationQuery = contentType =>
+  `update ${contentType}_votes
+    set vote_type = ?
+    where ${contentType}_id = ? AND user = ?`;
+
 const getAnswersByUserSql = () =>
   answerDetails + 'where ans.owner = ?';
 
@@ -321,6 +326,21 @@ class DataStore {
         err => {
           if(err){
             return reject(new Error('Vote Insertion Failed'));
+          }
+          resolve(true);
+        }
+      );
+    });
+  }
+
+  modifyVote(contentId, contentType, userId, voteType){
+    return new Promise((resolve, reject) => {
+      this.dbClient.run(
+        getVoteModificationQuery(contentType),
+        [voteType, contentId, userId],
+        err => {
+          if(err){
+            return reject(new Error('Vote Modification Failed'));
           }
           resolve(true);
         }
