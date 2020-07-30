@@ -74,6 +74,11 @@ const getInitiationSql = () => {
   `;
 };
 
+const getQuestionVoteQuery = () =>
+  `select vote_type as voteType
+    from question_votes
+    where question_id = ? AND user = ?`;
+
 const getAnswerInsertionQuery = () =>
   `insert into answers (body, body_text, question, owner)
     values (?, ?, ?, ?)`;
@@ -220,6 +225,23 @@ class DataStore {
           }
           resolve();
         });
+    });
+  }
+
+  getQuestionVote(questionId, userId){
+    return new Promise((resolve, reject) => {
+      this.dbClient.get(
+        getQuestionVoteQuery(),
+        [questionId, userId],
+        (err, details) => {
+          if(err){
+            return reject(new Error('Fetching vote failed'));
+          }
+          resolve(
+            {isVoted: Boolean(details), voteType: details && details.voteType}
+          );
+        }
+      );
     });
   }
 }

@@ -340,6 +340,53 @@ context('dataStore', () => {
     });
   });
 
+  context('#getQuestionVote', function() {
+    it('should give voteType when valid user and question id given', (done) => {
+      const dbClient = {
+        get: sinon.fake.yields(null, {voteType: 0})
+      };
+      const dataStore = new DataStore(dbClient);
+
+      dataStore.getQuestionVote(1, 1)
+        .then(actual => {
+          assert.deepStrictEqual(actual, {isVoted: true, voteType: 0});
+          assert.ok(dbClient.get.calledOnce);
+          assert.deepStrictEqual(dbClient.get.args[0][1], [1, 1]);
+          done();
+        });
+    });
+
+    it('should give no vote if invalid ids given', (done) => {
+      const dbClient = {
+        get: sinon.fake.yields(null, undefined)
+      };
+      const dataStore = new DataStore(dbClient);
+
+      dataStore.getQuestionVote(300, 300)
+        .then(actual => {
+          assert.deepStrictEqual(actual, {isVoted: false, voteType: undefined});
+          assert.ok(dbClient.get.calledOnce);
+          assert.deepStrictEqual(dbClient.get.args[0][1], [300, 300]);
+          done();
+        });
+    });
+
+    it('should produce error if database produces', (done) => {
+      const dbClient = {
+        get: sinon.fake.yields(new Error('error'))
+      };
+      const dataStore = new DataStore(dbClient);
+
+      dataStore.getQuestionVote(300, 300)
+        .catch(err => {
+          assert.deepStrictEqual(err.message, 'Fetching vote failed');
+          assert.ok(dbClient.get.calledOnce);
+          assert.deepStrictEqual(dbClient.get.args[0][1], [300, 300]);
+          done();
+        });
+    });
+  });
+
   context('#getUserAnswers', function() {
     it('should give all the answers of a particular user', (done) => {
       const answers = [{id: 1}];
