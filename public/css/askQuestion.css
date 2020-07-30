@@ -59,14 +59,58 @@ h1 {
   font-size: 35px;
 }
 
-#titleField {
+#titleField, #tagInputHolder {
   font-size: 25px;
   padding: 5px 10px;
+  display: flex;
   border: 1px solid rgb(163, 163, 163);
   outline: none;
   border-radius: 5px;
+  overflow-x: scroll;
 }
+
 
 #titleField:focus {
   border: 1px solid black;
+}
+
+#tagInputHolder:focus-within {
+  border: 1px solid black;
+}
+
+#tagInputHolder input {
+  font-size: 25px;
+  padding: 5px 10px;
+  height: 90%;
+  outline: none;
+  border: none;
+  margin: -1px;
+}
+
+#tagsHolder {
+  display: flex;
+  /* flex-direction: row; */
+}
+
+#tagName {
+  height: 28px;
+  outline: none;
+  border:none;
+}
+
+.tag{
+  color: rgb(44, 87, 119);
+  background-color: rgb(220, 234, 243);
+  text-decoration: none;
+  cursor: pointer;
+  padding: 5px 8px;
+  margin: 5px;
+  font-size: 18px;
+  border-radius: 4px;
+  border: 1px solid rgb(173, 173, 173);
+}
+
+.tag:focus,
+.tag:hover{
+  background-color: rgb(186, 219, 238);
 }

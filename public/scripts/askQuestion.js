@@ -1,4 +1,23 @@
+const addTags = function(event) {
+  if (event.code === 'Space') {
+    const tag = document.querySelector('#tagsField');
+    const tag_holder = document.querySelector('#tagsHolder');
+    const div = document.createElement('div');
+    div.className = 'tag';
+    div.innerText = tag.value;
+    tag_holder.appendChild(div);
+    tag.value = '';
+  }
+  if (event.code === 'Backspace') {
+    const tag = document.querySelector('#tagsField');
+    const tags = document.querySelectorAll('.tag');
+    Array.from(tags).pop().remove();
+  }
+};
+
 const getPostButton = () => document.querySelector('#postButton');
+
+const getTagInput = () => document.querySelector('#tagsField');
 
 const getQuestionTitle = () => document.querySelector('#titleField').value;
 
@@ -32,7 +51,7 @@ const saveQuestion = function(editor){
   question.body = JSON.stringify(editor.getContents());
   question.bodyText = editor.getText();
   postData('/saveQuestion', question)
-    .then(({id}) => {
+    .then(({ id }) => {
       location.assign(`/question?id=${id}`);
     });
 };
@@ -40,6 +59,7 @@ const saveQuestion = function(editor){
 const main = function () {
   const editor = new Quill('#bodyField', getEditorConfig());
   getPostButton().onclick = saveQuestion.bind(null, editor);
+  getTagInput().addEventListener('keyup', addTags);
 };
 
 window.onload = main;
