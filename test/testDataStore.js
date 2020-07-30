@@ -497,5 +497,37 @@ context('dataStore', () => {
     });
   });
 
+  context('#addVote', function() {
+    it('should add a vote when valid credentials given', (done) => {
+      const dbClient = {
+        run: sinon.fake.yields(null)
+      };
+      const dataStore = new DataStore(dbClient);
+
+      dataStore.addVote(1, 'question', 1, 1)
+        .then(isSucceeded => {
+          assert.ok(isSucceeded);
+          assert.ok(dbClient.run.calledOnce);
+          assert.deepStrictEqual(dbClient.run.args[0][1], [1, 1, 1]);
+          done();
+        });
+    });
+
+    it('should produce error when invalid credentials given', (done) => {
+      const dbClient = {
+        run: sinon.fake.yields(new Error())
+      };
+      const dataStore = new DataStore(dbClient);
+
+      dataStore.addVote(100, 'wrongType', 100, 100)
+        .catch(err => {
+          assert.deepStrictEqual(err.message, 'Vote Insertion Failed');
+          assert.ok(dbClient.run.calledOnce);
+          assert.deepStrictEqual(dbClient.run.args[0][1], [100, 100, 100]);
+          done();
+        });
+    });
+  });
+
 });
 

@@ -96,6 +96,11 @@ const getAnswerVoteQuery = () =>
     from answer_votes
     where answer_id = ? AND user = ?`;
 
+const getVoteAdditionQuery = contentType => {
+  `insert into ${contentType}_votes (${contentType}_id, user, vote_type)
+    values (?, ?, ?)`;
+};
+
 const getAnswerInsertionQuery = () =>
   `insert into answers (body, body_text, question, owner)
     values (?, ?, ?, ?)`;
@@ -301,11 +306,26 @@ class DataStore {
 
   async getTagsOfUser(userId) {
     const questions = await this.getUserQuestions(userId);
-    let tags = [];
+    const tags = [];
     for (const question of questions) {
       tags.push(...await this.getQuestionTags(question.id));
     }
     return [...new Set(tags)];
+  }
+  
+  addVote(contentId, contentType, userId, voteType){
+    return new Promise((resolve, reject) => {
+      this.dbClient.run(
+        getVoteAdditionQuery(contentType),
+        [contentId, userId, voteType],
+        err => {
+          if(err){
+            return reject(new Error('Vote Insertion Failed'));
+          }
+          resolve(true);
+        }
+      );
+    });
   }
 }
 
