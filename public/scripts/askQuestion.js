@@ -2,6 +2,7 @@ const getPostButton = () => document.querySelector('#postButton');
 const getQuestionTitle = () => document.querySelector('#titleField').value;
 const getTagHolder = () => document.querySelector('#tagsHolder');
 const getTagInput = () => document.querySelector('#tagsField');
+const getAllTags = () => document.querySelectorAll('.tag');
 
 const addTag = function() {
   const tag = getTagInput();
@@ -14,7 +15,7 @@ const addTag = function() {
 
 const removeTag = function() {
   const currentTag = getTagInput().value;
-  const tags = document.querySelectorAll('.tag');
+  const tags = getAllTags();
   const lastTag = Array.from(tags).pop();
   let currentTagValue = currentTag.slice(0, currentTag.length - 1);
   if (!currentTag) {
@@ -57,11 +58,17 @@ const getEditorConfig = () => ({
   },
 });
 
+const getQuestionTags = function() {
+  const tags = Array.from(getAllTags(), (tag) => tag.innerText);
+  return [...new Set(tags)];
+};
+
 const saveQuestion = function(editor) {
   getPostButton().onclick = () => { };
   const question = { title: getQuestionTitle() };
   question.body = JSON.stringify(editor.getContents());
   question.bodyText = editor.getText();
+  question.tags = getQuestionTags();
   postData('/saveQuestion', question)
     .then(({ id }) => {
       location.assign(`/question?id=${id}`);

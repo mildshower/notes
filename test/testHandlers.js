@@ -287,7 +287,7 @@ describe('POST', function() {
       request(app)
         .post('/saveQuestion')
         .set('Cookie', `session=${id}`)
-        .send({ title: 'How to configure vim?', body: '{"ops":[{"insert":"don\'t know about .vimrc"}]}', bodyText: 'bodyText' })
+        .send({ title: 'How to configure vim?', body: '{"ops":[{"insert":"don\'t know about .vimrc"}]}', bodyText: 'bodyText', tags: [] })
         .set('Content-Type', 'application/json')
         .expect(200)
         .expect('Content-Type', 'application/json; charset=utf-8')

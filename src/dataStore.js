@@ -65,7 +65,19 @@ const getQuestionInsertionSql = () =>
 
 const getUserInsertionQuery = () =>
   `INSERT INTO USERS (github_username, avatar) 
-    VALUES (?, ?)`;
+    VALUES (?, ?);`;
+
+const getTagsInsertionQuery = () =>
+  `INSERT INTO tags (tag_name)
+  VALUES (?);`;
+
+const getTagIdQuery = () =>
+  `SELECT id FROM tags
+  WHERE tag_name = ?;`;
+
+const getInsertQuesTagsQuery = () =>
+  `INSERt INTO questions_tags (tag_id, question_id)
+  VALUES(?, ?)`;
 
 const getInitiationSql = () => {
   return `
@@ -117,7 +129,7 @@ class DataStore {
             }
           });
         this.dbClient.get(
-          'select last_insert_rowid() as id;', 
+          'select last_insert_rowid() as id;',
           (err, details) => {
             if (err) {
               reject(err);
@@ -128,7 +140,7 @@ class DataStore {
     });
   }
 
-  updateUserDetails(userId, { name, email, location, bio}) {
+  updateUserDetails(userId, { name, email, location, bio }) {
     return new Promise((resolve) => {
       this.dbClient.run(
         getUserUpdationQuery(),
@@ -169,14 +181,14 @@ class DataStore {
     });
   }
 
-  addQuestion(question, owner) {
+  addQuestionContent(question, owner) {
     const { title, body, bodyText } = question;
     return new Promise((resolve, reject) => {
       this.dbClient.serialize(() => {
         this.dbClient.run(getQuestionInsertionSql(),
           [title, body, bodyText, owner],
           err => {
-            if(err){
+            if (err) {
               reject(new Error('Question Insertion Incomplete!'));
             }
           });
@@ -192,6 +204,30 @@ class DataStore {
     });
   }
 
+  getTagId(tagName) {
+    return new Promise((resolve, reject) => {
+      this.dbClient.get(getTagIdQuery(), tagName, (err, tag) => {
+        err && reject(new Error('tag name is not available'));
+        resolve(tag);
+      });
+    });
+  }
+
+  addQuestionTags(questionId, tags) {
+    for (let index = 0; index < tags.length; index++) {
+      this.dbClient.run(getTagsInsertionQuery(), tags[index], async () => {
+        const { id: tagId } = await this.getTagId(tags[index]);
+        this.dbClient.run(getInsertQuesTagsQuery(), [tagId, questionId]);
+      });
+    }
+  }
+
+  async addQuestion(question, owner) {
+    const qnDetails = await this.addQuestionContent(question, owner);
+    await this.addQuestionTags(qnDetails.id, question.tags);
+    return qnDetails;
+  }
+
   getUserQuestions(id) {
     return this.getRows(getUserQuestionsSql(), [id]);
   }
@@ -201,10 +237,10 @@ class DataStore {
   }
 
   getMatchedQuestions(text) {
-    return this.getRows(searchQuestionsSql(), {$regExp: `%${text}%`});
+    return this.getRows(searchQuestionsSql(), { $regExp: `%${text}%` });
   }
 
-  getRows(query, params){
+  getRows(query, params) {
     return new Promise((resolve, reject) => {
       this.dbClient.all(query, params, (err, rows) => {
         if (err) {
@@ -215,11 +251,11 @@ class DataStore {
     });
   }
 
-  getUserAnswers(id){
+  getUserAnswers(id) {
     return this.getRows(getAnswersByUserSql(), [id]);
   }
 
-  addAnswer(body, bodyText, quesId, owner){
+  addAnswer(body, bodyText, quesId, owner) {
     return new Promise((resolve, reject) => {
       this.dbClient.run(
         getAnswerInsertionQuery(),
@@ -241,11 +277,11 @@ class DataStore {
         query,
         [contentId, userId],
         (err, details) => {
-          if(err){
+          if (err) {
             return reject(new Error('Fetching vote failed'));
           }
           resolve(
-            {isVoted: Boolean(details), voteType: details && details.voteType}
+            { isVoted: Boolean(details), voteType: details && details.voteType }
           );
         }
       );

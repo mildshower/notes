@@ -140,16 +140,18 @@ const saveDetails = async (req, res) => {
   res.redirect(req.query.targetPath);
 };
 
-const saveQuestion = function(req, res) {
-  req.app.locals.dataStore.addQuestion(req.body, req.user.user_id)
-    .then(insertionDetails => res.json(insertionDetails));
+const saveQuestion = async (req, res) => {
+  const { dataStore } = req.app.locals;
+  const question = req.body;
+  const insertionDetails = await dataStore.addQuestion(question, req.user.user_id);
+  res.json(insertionDetails);
 };
 
-const authorizeUser = function (req, res, next) {
+const authorizeUser = function(req, res, next) {
   if (req.user) {
     return next();
   }
-  res.status(401).render('error', {errorMessage: 'You are Unauthorized', currPath: '/home'});
+  res.status(401).render('error', { errorMessage: 'You are Unauthorized', currPath: '/home' });
 };
 
 const serveSearchPage = function(req, res) {
@@ -185,15 +187,15 @@ const showProfilePage = async (req, res, next) => {
   res.render('profile', { requestedUser, user, questions, answers, currPath: `/profile?userId=${userId}` });
 };
 
-const saveAnswer = function(req, res){
-  const {body, bodyText, quesId} = req.body;
+const saveAnswer = function(req, res) {
+  const { body, bodyText, quesId } = req.body;
   req.app.locals.dataStore.addAnswer(body, bodyText, quesId, req.user.user_id)
-    .then(() => res.json({isSaved: true}))
-    .catch(() => res.status(400).json({isSaved: false})); 
+    .then(() => res.json({ isSaved: true }))
+    .catch(() => res.status(400).json({ isSaved: false }));
 };
 
 const serveEditProfilePage = async (req, res) => {
-  res.render('editProfile', {user: req.user});
+  res.render('editProfile', { user: req.user });
 };
 
 const updateVote = function(req, res){
