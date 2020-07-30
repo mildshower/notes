@@ -30,10 +30,57 @@
 .questionBox > .stats ,
   .answerBox > .stats {
   height: 300px;
-  background: red;
-  width: 100px;
+  /* background: red; */
+  width: 80px;
   flex-shrink: 0;
 }
+
+.questionBox > .stats > .votes ,
+  .answerBox > .stats > .votes {
+    height: 100px;
+    margin: 5px;
+    /* background: yellow; */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .questionBox > .stats > .votes > .voteCount ,
+  .answerBox > .stats > .votes > .voteCount{
+    margin: 10px;
+    font-size: 28px;
+    color: rgb(44, 44, 44);
+
+  }
+
+  .questionBox > .stats > .votes > button ,
+  .answerBox > .stats > .votes > button{
+    background: none;
+    border: none;
+    height: 20px;
+    width: 35px;
+    padding: 0;
+    margin: 5px;
+    cursor: pointer;
+  }
+
+  .questionBox > .stats > .votes > button:hover ,
+  .answerBox > .stats > .votes > button:hover{
+    filter: brightness(10%);
+  }
+
+  
+  .questionBox > .stats > .votes > .downVote ,
+  .answerBox > .stats > .votes > .downVote{
+    transform: rotate(180deg);
+  }
+
+  .questionBox > .stats > .votes > button > img ,
+  .answerBox > .stats > .votes > button > img{
+    height: 100%;
+    width: 100%;
+    /* padding: 5px; */
+  }
 
 .questionBox > .body,
 .answerBox > .body {

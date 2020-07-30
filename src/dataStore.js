@@ -14,7 +14,7 @@ const questionDetails = `select
     where answers.question = ques.id) as answerCount, 
   (select count(*) from answers ans
     where ans.question = ques.id AND ans.is_accepted = 1) as hasCorrectAnswer, 
-  (select sum(REPLACE(vote_type,0,-1)) from question_votes 
+  (select COALESCE(sum(REPLACE(vote_type,0,-1)),0) from question_votes 
     where question_votes.question_id = ques.id) as voteCount 
   from questions ques `;
 
@@ -31,7 +31,7 @@ const answerDetails = `select
     where users.user_id = ans.owner) as ownerName,
   (select title from questions 
     where questions.id = ans.question) as questionTitle,  
-  (select sum(REPLACE(vote_type,0,-1)) from answer_votes 
+  (select COALESCE(sum(REPLACE(vote_type,0,-1)),0) from answer_votes 
     where answer_votes.answer_id = ans.id) as voteCount 
   from answers ans `;
 

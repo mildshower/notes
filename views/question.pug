@@ -15,7 +15,13 @@ body
   include header.pug
   include titleBar.pug
   .questionBox(id= id)
-    //- .stats
+    .stats
+      .votes
+        button.upVote
+          img(src="images/arrow.svg", alt="voteUp")
+        p.voteCount #{voteCount}
+        button.downVote
+          img(src="images/arrow.svg", alt="voteUp")
     .body
       .editor
       //- .tagStrip
@@ -32,7 +38,13 @@ body
   p#answersHead Answers (#{answers.length})
   each answer in answers
     .answerBox(id=answer.id)
-      //- .stats
+      .stats
+        .votes
+          button.upVote
+            img(src="images/arrow.svg", alt="voteUp")
+          p.voteCount #{answer.voteCount}
+          button.downVote
+            img(src="images/arrow.svg", alt="voteUp")
       .body
         .editor
         .modifier

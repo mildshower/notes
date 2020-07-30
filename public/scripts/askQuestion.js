@@ -26,12 +26,6 @@ const getEditorConfig = () => ({
   },
 });
 
-const setupSyntax = () => {
-  hljs.configure({
-    languages: ['javascript', 'ruby', 'python', 'node.js', 'c'],
-  });
-};
-
 const saveQuestion = function(editor){
   getPostButton().onclick = () => {};
   const question = {title: getQuestionTitle()};
@@ -44,7 +38,6 @@ const saveQuestion = function(editor){
 };
 
 const main = function () {
-  setupSyntax();
   const editor = new Quill('#bodyField', getEditorConfig());
   getPostButton().onclick = saveQuestion.bind(null, editor);
 };

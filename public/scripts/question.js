@@ -33,12 +33,6 @@ const getEditorConfig = () => ({
   },
 });
 
-const setupSyntax = () => {
-  hljs.configure({
-    languages: ['javascript', 'ruby', 'python', 'node.js', 'c'],
-  });
-};
-
 const loadQuestion = function () {
   const questionBox = getQuestionBox();
   fetch(`/questionDetails?id=${questionBox.id}`)
@@ -78,7 +72,6 @@ const saveAnswer = function(answer){
 };
 
 const main = function () {
-  setupSyntax();
   loadQuestion();
   loadAnswers();
   if(getAnswerBody()){
