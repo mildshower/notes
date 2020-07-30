@@ -57,27 +57,27 @@ const getUserQuestionsSql = () =>
 
 const searchQuestionsSql = () =>
   questionDetails +
-  'where ques.title like $regExp OR ques.body_text like $regExp;';
+  'where ques.title like $regExp or ques.body_text like $regExp;';
 
 const getQuestionInsertionSql = () =>
   `insert into questions (title, body, body_text, owner)
     values (?, ?, ?, ?);`;
 
 const getUserInsertionQuery = () =>
-  `INSERT INTO USERS (github_username, avatar) 
-    VALUES (?, ?);`;
+  `insert into users (github_username, avatar) 
+    values (?, ?);`;
 
 const getTagsInsertionQuery = () =>
-  `INSERT INTO tags (tag_name)
-  VALUES (?);`;
+  `insert into tags (tag_name)
+    values (?);`;
 
 const getTagIdQuery = () =>
-  `SELECT id FROM tags
-  WHERE tag_name = ?;`;
+  `select id from tags
+    where tag_name = ?;`;
 
 const getInsertQuesTagsQuery = () =>
-  `INSERt INTO questions_tags (tag_id, question_id)
-  VALUES(?, ?)`;
+  `insert into questions_tags (tag_id, question_id)
+    values(?, ?)`;
 
 const getInitiationSql = () => {
   return `
@@ -100,13 +100,19 @@ const getAnswerInsertionQuery = () =>
   `insert into answers (body, body_text, question, owner)
     values (?, ?, ?, ?)`;
 
+const getQuestionTagsQuery = () =>
+  `select tags.tag_name FROM tags
+   left join questions_tags as ques_tags
+   on ques_tags.tag_id = tags.id
+   where ques_tags.question_id = ?;`;
+
 class DataStore {
   constructor(dbClient) {
     this.dbClient = dbClient;
   }
 
   getUser(key, value) {
-    const query = `SELECT * FROM users WHERE ${key} = "${value}";`;
+    const query = `select * from users where ${key} = "${value}";`;
     return new Promise((resolve, reject) => {
       this.dbClient.get(query, (err, user) => {
         if (err) {
@@ -286,6 +292,20 @@ class DataStore {
         }
       );
     });
+  }
+
+  async getQuestionTags(quesId) {
+    const tags = await this.getRows(getQuestionTagsQuery(), quesId);
+    return tags.map((tag) => tag.tag_name);
+  }
+
+  async getTagsOfUser(userId) {
+    const questions = await this.getUserQuestions(userId);
+    let tags = [];
+    for (const question of questions) {
+      tags.push(...await this.getQuestionTags(question.id));
+    }
+    return [...new Set(tags)];
   }
 }
 

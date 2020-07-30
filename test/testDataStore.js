@@ -110,40 +110,6 @@ context('dataStore', () => {
     });
   });
 
-  context('#addQuestionTags', () => {
-
-    it('it should add tags', (done) => {
-      const dbClient = {
-        get: sinon.fake.yields(null, { id: 1 }),
-        run: sinon.fake.yields(null)
-      };
-      const dataStore = new DataStore(dbClient);
-      dataStore.addQuestionTags(1, ['tag']);
-      assert.ok(dbClient.get.calledOnce);
-      assert.ok(dbClient.run.calledOnce);
-      assert.deepStrictEqual(dbClient.get.args[0][1], 'tag');
-      assert.deepStrictEqual(dbClient.run.args[0][1], 'tag');
-      done();
-    });
-  });
-
-  context('#addQuestion', () => {
-
-    it('it should add question', (done) => {
-      const dbClient = {
-        run: sinon.fake.yields(null),
-        get: sinon.fake.yields(null, { id: 1 }),
-        serialize: (cb) => cb()
-      };
-      const dataStore = new DataStore(dbClient);
-      dataStore.addQuestion({ title: 'title', body: 'body', bodyText: 'body', tags: ['tag'] }, 1)
-        .then(details => {
-          assert.deepStrictEqual(details, { id: 1 });
-          done();
-        });
-    });
-  });
-
   context('#addQuestionContent', () => {
 
     it('it should add a question when valid owner given', (done) => {
