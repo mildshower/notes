@@ -2,6 +2,10 @@
   font-family: sans-serif;
 }
 
+.red {
+  color:red;
+}
+
 .title {
   font-weight: 100;
   font-size: 35px;

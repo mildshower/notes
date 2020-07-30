@@ -8,7 +8,9 @@ head
 form(action=`/saveDetails?targetPath=${targetPath}` method='post')
   .fieldBox
     img(src='images/appIcon.png' alt='')
-    label(for='name') Name*
+    label(for='name')
+      |Name
+      span.red &nbsp;*
     input#name(type='name' name='name' placeholder='ex. John Dev' required)
     label(for='email') E-mail
     input#email(type='email' name='email' placeholder='ex. someone@email.com')
