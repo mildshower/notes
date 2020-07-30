@@ -118,6 +118,11 @@ const getQuestionTagsQuery = () =>
    left join questions_tags as ques_tags
    on ques_tags.tag_id = tags.id
    where ques_tags.question_id = ?;`;
+   
+const getVoteCountQuery = contentType =>
+  `select COALESCE(sum(REPLACE(vote_type,0,-1)),0) as voteCount
+    from ${contentType}_votes
+    where ${contentType}_id = ?`;
 
 class DataStore {
   constructor(dbClient) {
@@ -364,6 +369,34 @@ class DataStore {
         }
       );
     });
+  }
+
+  getVoteCount(contentType, contentId){
+    return new Promise((resolve, reject) => {
+      this.dbClient.get(
+        getVoteCountQuery(contentType),
+        [contentId],
+        (err, details) => {
+          if(err){
+            return reject(new Error('Vote Count Fetching Error'));
+          }
+          resolve(details.voteCount);
+        }
+      );
+    });
+  }
+
+  updateVotes(contentId, contentType, userId, voteType){
+    return this.getVote(contentId, userId, contentType)
+      .then(({isVoted, voteType: savedVoteType}) => {
+        if(!isVoted){
+          this.addVote(contentId, contentType, userId, voteType);
+        }
+        if(savedVoteType === voteType){
+          this.deleteVote(contentId, contentType, userId);
+        }
+        this.modifyVote(contentId, contentType, userId, voteType);
+      });
   }
 }
 

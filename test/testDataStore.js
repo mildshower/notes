@@ -593,5 +593,55 @@ context('dataStore', () => {
     });
   });
 
+  context('#getVoteCount', function() {
+    it('should give vote count for the content', (done) => {
+      const dbClient = {
+        get: sinon.fake.yields(null, {voteCount: 10})
+      };
+      const dataStore = new DataStore(dbClient);
+
+      dataStore.getVoteCount('question', 1)
+        .then(voteCount => {
+          assert.deepStrictEqual(voteCount, 10);
+          assert.ok(dbClient.get.calledOnce);
+          assert.deepStrictEqual(dbClient.get.args[0][1], [1]);
+          done();
+        });
+    });
+
+    it('should produce error when database produces', (done) => {
+      const dbClient = {
+        get: sinon.fake.yields(new Error(), {})
+      };
+      const dataStore = new DataStore(dbClient);
+
+      dataStore.getVoteCount('wrongType', 100)
+        .catch(err => {
+          assert.deepStrictEqual(err.message, 'Vote Count Fetching Error');
+          assert.ok(dbClient.get.calledOnce);
+          assert.deepStrictEqual(dbClient.get.args[0][1], [100]);
+          done();
+        });
+    });
+  });
+
+  // context('#deleteVote', function() {
+  //   this.afterEach = () => sinon.restore();
+  //   it('should delete a vote when valid credentials given', (done) => {
+  //     const dbClient = {
+  //       run: sinon.fake.yields(null)
+  //     };
+  //     const dataStore = new DataStore(dbClient);
+
+  //     dataStore.deleteVote(1, 'question', 1)
+  //       .then(isSucceeded => {
+  //         assert.ok(isSucceeded);
+  //         assert.ok(dbClient.run.calledOnce);
+  //         assert.deepStrictEqual(dbClient.run.args[0][1], [1, 1]);
+  //         done();
+  //       });
+  //   });
+  // });
+
 });
 
