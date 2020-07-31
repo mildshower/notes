@@ -129,10 +129,15 @@ const getQuestionTagsQuery = () =>
    on ques_tags.tag_id = tags.id
    where ques_tags.question_id = ?;`;
    
-const getVoteCountQuery = contentType =>
+const getQuestionVoteCountQuery = () =>
   `select COALESCE(sum(REPLACE(vote_type,0,-1)),0) as voteCount
-    from ${contentType}_votes
-    where ${contentType}_id = ?`;
+    from question_votes
+    where question_id = ?`;
+
+const getAnswerVoteCountQuery = () =>
+  `select COALESCE(sum(REPLACE(vote_type,0,-1)),0) as voteCount
+    from answer_votes
+    where answer_id = ?`;
 
 class DataStore {
   constructor(dbClient) {
@@ -375,19 +380,20 @@ class DataStore {
     );
   }
 
-  getVoteCount(contentType, contentId){
-    return new Promise((resolve, reject) => {
-      this.dbClient.get(
-        getVoteCountQuery(contentType),
-        [contentId],
-        (err, details) => {
-          if(err){
-            return reject(new Error('Vote Count Fetching Error'));
-          }
-          resolve(details.voteCount);
-        }
-      );
-    });
+  getQuestionVoteCount(quesId){
+    return this.getRow(
+      getQuestionVoteCountQuery(),
+      [quesId],
+      new Error('Vote Count Fetching Error')
+    );
+  }
+
+  getAnswerVoteCount(ansId){
+    return this.getRow(
+      getAnswerVoteCountQuery(),
+      [ansId],
+      new Error('Vote Count Fetching Error')
+    );
   }
 }
 

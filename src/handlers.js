@@ -250,7 +250,7 @@ const addQuestionVote = (req, res) => {
   const {voteType, id: quesId} = req.body;
   const {dataStore} = req.app.locals;
   dataStore.addQuestionVote(quesId, req.user.user_id, voteType)
-    .then(() => dataStore.getVoteCount('question', quesId))
+    .then(() => dataStore.getQuestionVoteCount( quesId).voteCount)
     .then(currVoteCount => res.json({isSucceeded: true, currVoteCount}))
     .catch(err => res.status(400).json({error: err.message}));
 };
@@ -259,7 +259,7 @@ const deleteQuestionVote = (req, res) => {
   const {id: quesId} = req.body;
   const {dataStore} = req.app.locals;
   dataStore.deleteQuestionVote(quesId, req.user.user_id)
-    .then(() => dataStore.getVoteCount('question', quesId))
+    .then(() => dataStore.getQuestionVoteCount( quesId).voteCount)
     .then(currVoteCount => res.json({isSucceeded: true, currVoteCount}));
 };
 
@@ -267,7 +267,7 @@ const addAnswerVote = (req, res) => {
   const {voteType, id: ansId} = req.body;
   const {dataStore} = req.app.locals;
   dataStore.addAnswerVote(ansId, req.user.user_id, voteType)
-    .then(() => dataStore.getVoteCount('answer', ansId))
+    .then(() => dataStore.getAnswerVoteCount(ansId).voteCount)
     .then(currVoteCount => res.json({isSucceeded: true, currVoteCount}))
     .catch(err => res.status(400).json({error: err.message}));
 };
@@ -276,7 +276,7 @@ const deleteAnswerVote = (req, res) => {
   const {id: ansId} = req.body;
   const {dataStore} = req.app.locals;
   dataStore.deleteAnswerVote(ansId, req.user.user_id)
-    .then(() => dataStore.getVoteCount('answer', ansId))
+    .then(() => dataStore.getAnswerVoteCount(ansId).voteCount)
     .then(currVoteCount => res.json({isSucceeded: true, currVoteCount}));
 };
 

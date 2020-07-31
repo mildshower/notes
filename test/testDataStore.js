@@ -789,16 +789,16 @@ context('dataStore', () => {
     });
   });
 
-  context('#getVoteCount', function() {
+  context('#getQuestionVoteCount', function() {
     it('should give vote count for the content', (done) => {
       const dbClient = {
         get: sinon.fake.yields(null, {voteCount: 10})
       };
       const dataStore = new DataStore(dbClient);
 
-      dataStore.getVoteCount('question', 1)
+      dataStore.getQuestionVoteCount( 1)
         .then(voteCount => {
-          assert.deepStrictEqual(voteCount, 10);
+          assert.deepStrictEqual(voteCount, {voteCount: 10});
           assert.ok(dbClient.get.calledOnce);
           assert.deepStrictEqual(dbClient.get.args[0][1], [1]);
           done();
@@ -811,7 +811,39 @@ context('dataStore', () => {
       };
       const dataStore = new DataStore(dbClient);
 
-      dataStore.getVoteCount('wrongType', 100)
+      dataStore.getQuestionVoteCount( 100)
+        .catch(err => {
+          assert.deepStrictEqual(err.message, 'Vote Count Fetching Error');
+          assert.ok(dbClient.get.calledOnce);
+          assert.deepStrictEqual(dbClient.get.args[0][1], [100]);
+          done();
+        });
+    });
+  });
+
+  context('#getAnswerVoteCount', function() {
+    it('should give vote count for the content', (done) => {
+      const dbClient = {
+        get: sinon.fake.yields(null, {voteCount: 10})
+      };
+      const dataStore = new DataStore(dbClient);
+
+      dataStore.getAnswerVoteCount( 1)
+        .then(voteCount => {
+          assert.deepStrictEqual(voteCount, {voteCount: 10});
+          assert.ok(dbClient.get.calledOnce);
+          assert.deepStrictEqual(dbClient.get.args[0][1], [1]);
+          done();
+        });
+    });
+
+    it('should produce error when database produces', (done) => {
+      const dbClient = {
+        get: sinon.fake.yields(new Error(), {})
+      };
+      const dataStore = new DataStore(dbClient);
+
+      dataStore.getAnswerVoteCount( 100)
         .catch(err => {
           assert.deepStrictEqual(err.message, 'Vote Count Fetching Error');
           assert.ok(dbClient.get.calledOnce);
