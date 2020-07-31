@@ -1,5 +1,5 @@
 
-drop table users;
+drop table if EXISTS users;
 create table users (
   user_id integer primary key AUTOINCREMENT,
   github_username varchar(40) not null UNIQUE,
@@ -12,7 +12,7 @@ create table users (
   CHECK (role = 'user' OR role = 'moderator')
 );
 
-drop table questions;
+drop table if EXISTS questions;
 create table questions (
   id integer primary key AUTOINCREMENT,
   title varchar(200) not null,
@@ -25,7 +25,7 @@ create table questions (
     REFERENCES users (user_id)
 );
 
-drop table answers;
+drop table if EXISTS answers;
 create table answers (
   id integer primary key AUTOINCREMENT,
   body varchar(1000) not null,
@@ -42,7 +42,7 @@ create table answers (
     CHECK(is_accepted=0 OR is_accepted = 1)
 );
 
-drop table question_comments;
+drop table if EXISTS question_comments;
 create table question_comments (
   id integer primary key AUTOINCREMENT,
   body varchar(100) not null,
@@ -56,7 +56,7 @@ create table question_comments (
     REFERENCES questions (id)
 );
 
-drop table answer_comments;
+drop table if EXISTS answer_comments;
 create table answer_comments (
   id integer primary key AUTOINCREMENT,
   body varchar(100) not null,
@@ -70,13 +70,13 @@ create table answer_comments (
     REFERENCES answers (id)
 );
 
-drop table tags;
+drop table if EXISTS tags;
 create table tags (
   id integer primary key AUTOINCREMENT,
   tag_name varchar(30) not null unique
 );
 
-drop table questions_tags;
+drop table if EXISTS questions_tags;
 create table questions_tags (
   tag_id integer not null,
   question_id integer not null,
@@ -87,7 +87,7 @@ create table questions_tags (
   PRIMARY KEY (tag_id, question_id)
 );
 
-drop table question_votes;
+drop table if EXISTS question_votes;
 create table question_votes (
   question_id integer not null,
   user integer not null,
@@ -100,7 +100,7 @@ create table question_votes (
   PRIMARY KEY (question_id, user)
 );
 
-drop table answer_votes;
+drop table if EXISTS answer_votes;
 create table answer_votes (
   answer_id integer not null,
   user integer not null,
