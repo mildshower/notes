@@ -1,143 +1,4 @@
-const tablesSchema = require('./tablesSchema.json');
-
-const questionDetails = `select 
-  ques.id, 
-  ques.title, 
-  ques.body,
-  ques.body_text as bodyText,
-  ques.owner, 
-  ques.created, 
-  ques.last_modified as lastModified, 
-  (select display_name from users 
-    where users.user_id = ques.owner) as ownerName, 
-  (select count(*) from answers 
-    where answers.question = ques.id) as answerCount, 
-  (select count(*) from answers ans
-    where ans.question = ques.id AND ans.is_accepted = 1) as hasCorrectAnswer, 
-  (select COALESCE(sum(REPLACE(vote_type,0,-1)),0) from question_votes 
-    where question_votes.question_id = ques.id) as voteCount 
-  from questions ques `;
-
-const answerDetails = `select 
-  ans.id, 
-  ans.body,
-  ans.body_text as bodyText,
-  ans.owner, 
-  ans.is_accepted as isAccepted,
-  ans.question as quesId,
-  ans.created,
-  ans.last_modified as lastModified, 
-  (select display_name from users 
-    where users.user_id = ans.owner) as ownerName,
-  (select title from questions 
-    where questions.id = ans.question) as questionTitle,  
-  (select COALESCE(sum(REPLACE(vote_type,0,-1)),0) from answer_votes 
-    where answer_votes.answer_id = ans.id) as voteCount 
-  from answers ans `;
-
-const getUserUpdationQuery = () =>
-  `UPDATE users
-    SET display_name = ?, email = ?, location = ?, bio = ?
-    WHERE user_id = ?;`;
-
-const getAnsVoteModificationQuery = () =>
-  `update answer_votes
-    set vote_type = ?
-    where answer_id = ? AND user = ?`;
-
-const getQuesVoteModificationQuery = () =>
-  `update question_votes
-    set vote_type = ?
-    where question_id = ? AND user = ?`;
-
-const getAnswersByUserSql = () => answerDetails + 'where ans.owner = ?';
-
-const getAnswerByQuestionSql = () => answerDetails + 'where ans.question = ?';
-
-const getLastQuestionsSql = () =>
-  questionDetails + 'order by ques.created DESC;';
-
-const getQuestionDetailsSql = (id) =>
-  questionDetails + `where ques.id = ${id};`;
-
-const getUserQuestionsSql = () => questionDetails + 'where ques.owner = ?;';
-
-const searchQuestionsSql = () =>
-  questionDetails +
-  'where ques.title like $regExp or ques.body_text like $regExp;';
-
-const getQuestionInsertionSql = () =>
-  `insert into questions (title, body, body_text, owner)
-    values (?, ?, ?, ?);`;
-
-const getUserInsertionQuery = () =>
-  `insert into users (github_username, avatar) 
-    values (?, ?);`;
-
-const getTagsInsertionQuery = () =>
-  `insert into tags (tag_name)
-    values (?);`;
-
-const getTagIdQuery = () =>
-  `select id from tags
-    where tag_name = ?;`;
-
-const getInsertQuesTagsQuery = () =>
-  `insert into questions_tags (tag_id, question_id)
-    values(?, ?)`;
-
-const getInitiationSql = () => {
-  return `
-    ${Object.values(tablesSchema).join('\n')}
-    PRAGMA foreign_keys=ON;
-  `;
-};
-
-const getQuestionVoteQuery = () =>
-  `select vote_type as voteType
-    from question_votes
-    where question_id = ? AND user = ?`;
-
-const getAnswerVoteQuery = () =>
-  `select vote_type as voteType
-    from answer_votes
-    where answer_id = ? AND user = ?`;
-
-const getAnsVoteAdditionQuery = () => 
-  `insert into answer_votes (vote_type, answer_id, user)
-    values (?, ?, ?)`;
-
-const getQuesVoteAdditionQuery = () => 
-  `insert into question_votes (vote_type, question_id, user)
-    values (?, ?, ?)`;
-
-const getAnsVoteDeletionQuery = () => 
-  `delete from answer_votes
-    where answer_id = ? and user = ?`;
-
-const getQuesVoteDeletionQuery = () => 
-  `delete from question_votes
-    where question_id = ? and user = ?`;
-
-const getAnswerInsertionQuery = () =>
-  `insert into answers (body, body_text, question, owner)
-    values (?, ?, ?, ?)`;
-
-const getQuestionTagsQuery = () =>
-  `select tags.tag_name FROM tags
-   left join questions_tags as ques_tags
-   on ques_tags.tag_id = tags.id
-   where ques_tags.question_id = ?;`;
-   
-const getQuestionVoteCountQuery = () =>
-  `select COALESCE(sum(REPLACE(vote_type,0,-1)),0) as voteCount
-    from question_votes
-    where question_id = ?`;
-
-const getAnswerVoteCountQuery = () =>
-  `select COALESCE(sum(REPLACE(vote_type,0,-1)),0) as voteCount
-    from answer_votes
-    where answer_id = ?`;
+const query = require('./dbQueries');
 
 class DataStore {
   constructor(dbClient) {
@@ -175,7 +36,7 @@ class DataStore {
 
   init() {
     return new Promise((resolve) => {
-      this.dbClient.exec(getInitiationSql(), () => {
+      this.dbClient.exec(query.initial, () => {
         resolve();
       });
     });
@@ -185,7 +46,7 @@ class DataStore {
     return new Promise((resolve, reject) => {
       this.dbClient.serialize(() => {
         this.dbClient.run(
-          getUserInsertionQuery(),
+          query.userInsertion,
           [username, avatarUrl],
           (err) => {
             if (err) {
@@ -217,13 +78,13 @@ class DataStore {
 
   updateUserDetails(userId, { name, email, location, bio }) {
     return this.runQuery(
-      getUserUpdationQuery(),
+      query.userUpdation,
       [name, email, location, bio || '', userId]
     );
   }
 
   getQuestionDetails(id) {
-    return this.getRow(getQuestionDetailsSql(id), [])
+    return this.getRow(query.questionDetails, [id])
       .then(details => {
         if(!details) {
           throw new Error('Wrong Id Provided');
@@ -236,7 +97,7 @@ class DataStore {
     if(count < 0){
       return Promise.reject(new Error('Invalid Count'));
     }
-    return this.getRows(getLastQuestionsSql(), [])
+    return this.getRows(query.lastQuestions, [])
       .then(rows => rows.slice(0, count));
   }
 
@@ -245,7 +106,7 @@ class DataStore {
     return new Promise((resolve, reject) => {
       this.dbClient.serialize(() => {
         this.dbClient.run(
-          getQuestionInsertionSql(),
+          query.questionInsertion,
           [title, body, bodyText, owner],
           (err) => {
             if (err) {
@@ -269,8 +130,8 @@ class DataStore {
   getTagId(tagName) {
     return new Promise((resolve, reject) => {
       this.dbClient.serialize(() => {
-        this.dbClient.run(getTagsInsertionQuery(), tagName, () => {});
-        this.dbClient.get(getTagIdQuery(), tagName, (err, tag) => {
+        this.dbClient.run(query.tagsInsertion, tagName, () => {});
+        this.dbClient.get(query.tagIdByTagName, tagName, (err, tag) => {
           err && reject(err);
           resolve(tag);
         });
@@ -281,7 +142,7 @@ class DataStore {
   async addQuestionTags(questionId, tags) {
     for (let index = 0; index < tags.length; index++) {
       const {id: tagId} = await this.getTagId(tags[index]);
-      this.dbClient.run(getInsertQuesTagsQuery(), [tagId, questionId], () => {});
+      this.dbClient.run(query.insertQuesTags, [tagId, questionId], () => {});
     }
   }
 
@@ -292,24 +153,24 @@ class DataStore {
   }
 
   getUserQuestions(id) {
-    return this.getRows(getUserQuestionsSql(), [id]);
+    return this.getRows(query.userQuestions, [id]);
   }
 
   getAnswersByQuestion(id) {
-    return this.getRows(getAnswerByQuestionSql(), [id]);
+    return this.getRows(query.answerByQuestion, [id]);
   }
 
   getMatchedQuestions(text) {
-    return this.getRows(searchQuestionsSql(), { $regExp: `%${text}%` });
+    return this.getRows(query.searchQuestions, { $regExp: `%${text}%` });
   }
 
   getUserAnswers(id) {
-    return this.getRows(getAnswersByUserSql(), [id]);
+    return this.getRows(query.answersByUser, [id]);
   }
 
   addAnswer(body, bodyText, quesId, owner) {
     return this.runQuery(
-      getAnswerInsertionQuery(),
+      query.answerInsertion,
       [body, bodyText, quesId, owner],
       new Error('Answer Insertion Failed!')
     );
@@ -317,7 +178,7 @@ class DataStore {
 
   getQuestionVote(quesId, userId) {
     return this.getRow(
-      getQuestionVoteQuery(),
+      query.questionVoteByUser,
       [quesId, userId],
       new Error('Fetching vote failed')
     ).then(details => ({
@@ -328,7 +189,7 @@ class DataStore {
 
   getAnswerVote(ansId, userId) {
     return this.getRow(
-      getAnswerVoteQuery(),
+      query.answerVoteByUser,
       [ansId, userId],
       new Error('Fetching vote failed')
     ).then(details => ({
@@ -340,7 +201,7 @@ class DataStore {
   async getTags(questions) {
     const tags = [];
     for (const question of questions) {
-      const newTags = await this.getRows(getQuestionTagsQuery(), question.id);
+      const newTags = await this.getRows(query.questionTags, question.id);
       tags.push(...newTags.map((tag) => tag.tag_name));
     }
     return [...new Set(tags)];
@@ -348,10 +209,10 @@ class DataStore {
   
   async addQuestionVote(quesId, userId, voteType){
     const {isVoted} = await this.getQuestionVote(quesId, userId);
-    const query = isVoted ? 
-      getQuesVoteModificationQuery() : getQuesVoteAdditionQuery();
+    const additionQuery = isVoted ? 
+      query.quesVoteToggle : query.quesVoteAddition;
     await this.runQuery(
-      query, 
+      additionQuery, 
       [voteType, quesId, userId],
       new Error('Vote Addition Failed')
     );
@@ -359,7 +220,7 @@ class DataStore {
 
   deleteQuestionVote(quesId, userId){
     return this.runQuery(
-      getQuesVoteDeletionQuery(),
+      query.quesVoteDeletion,
       [quesId, userId],
       new Error('Vote Deletion Failed')
     );
@@ -367,10 +228,10 @@ class DataStore {
 
   async addAnswerVote(ansId, userId, voteType){
     const {isVoted} = await this.getAnswerVote(ansId, userId);
-    const query = isVoted ? 
-      getAnsVoteModificationQuery() : getAnsVoteAdditionQuery();
+    const additionQuery = isVoted ? 
+      query.ansVoteToggle : query.ansVoteAddition;
     await this.runQuery(
-      query, 
+      additionQuery, 
       [voteType, ansId, userId],
       new Error('Vote Addition Failed')
     );
@@ -378,7 +239,7 @@ class DataStore {
 
   deleteAnswerVote(ansId, userId){
     return this.runQuery(
-      getAnsVoteDeletionQuery(),
+      query.ansVoteDeletion,
       [ansId, userId],
       new Error('Vote Deletion Failed')
     );
@@ -386,7 +247,7 @@ class DataStore {
 
   getQuestionVoteCount(quesId){
     return this.getRow(
-      getQuestionVoteCountQuery(),
+      query.questionVoteCount,
       [quesId],
       new Error('Vote Count Fetching Error')
     );
@@ -394,7 +255,7 @@ class DataStore {
 
   getAnswerVoteCount(ansId){
     return this.getRow(
-      getAnswerVoteCountQuery(),
+      query.answerVoteCount,
       [ansId],
       new Error('Vote Count Fetching Error')
     );

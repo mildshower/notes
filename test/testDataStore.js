@@ -12,7 +12,7 @@ context('dataStore', () => {
       dataStore.getQuestionDetails('1').then((details) => {
         assert.deepStrictEqual(details, { title: 'question' });
         assert.ok(dbClient.get.calledOnce);
-        assert.ok(dbClient.get.firstArg.match(/ques.id = 1/));
+        assert.deepStrictEqual(dbClient.get.args[0][1], ['1']);
         done();
       });
     });
@@ -25,7 +25,7 @@ context('dataStore', () => {
       dataStore.getQuestionDetails('2').catch((error) => {
         assert.deepStrictEqual(error.message, 'Wrong Id Provided');
         assert.ok(dbClient.get.calledOnce);
-        assert.ok(dbClient.get.firstArg.match(/ques.id = 2/));
+        assert.deepStrictEqual(dbClient.get.args[0][1], ['2']);
         done();
       });
     });
