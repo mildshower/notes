@@ -315,22 +315,26 @@ class DataStore {
     );
   }
 
-  getVote(contentId, userId, contentType) {
-    return new Promise((resolve, reject) => {
-      const query =
-        contentType === 'answer'
-          ? getAnswerVoteQuery()
-          : getQuestionVoteQuery();
-      this.dbClient.get(query, [contentId, userId], (err, details) => {
-        if (err) {
-          return reject(new Error('Fetching vote failed'));
-        }
-        resolve({
-          isVoted: Boolean(details),
-          voteType: details && details.voteType,
-        });
-      });
-    });
+  getQuestionVote(quesId, userId) {
+    return this.getRow(
+      getQuestionVoteQuery(),
+      [quesId, userId],
+      new Error('Fetching vote failed')
+    ).then(details => ({
+      isVoted: Boolean(details),
+      voteType: details && details.voteType,
+    }));
+  }
+
+  getAnswerVote(ansId, userId) {
+    return this.getRow(
+      getAnswerVoteQuery(),
+      [ansId, userId],
+      new Error('Fetching vote failed')
+    ).then(details => ({
+      isVoted: Boolean(details),
+      voteType: details && details.voteType,
+    }));
   }
 
   async getTags(questions) {
@@ -343,7 +347,7 @@ class DataStore {
   }
   
   async addQuestionVote(quesId, userId, voteType){
-    const {isVoted} = await this.getVote(quesId, userId, 'question');
+    const {isVoted} = await this.getQuestionVote(quesId, userId);
     const query = isVoted ? 
       getQuesVoteModificationQuery() : getQuesVoteAdditionQuery();
     await this.runQuery(
@@ -362,7 +366,7 @@ class DataStore {
   }
 
   async addAnswerVote(ansId, userId, voteType){
-    const {isVoted} = await this.getVote(ansId, userId, 'answer');
+    const {isVoted} = await this.getAnswerVote(ansId, userId);
     const query = isVoted ? 
       getAnsVoteModificationQuery() : getAnsVoteAdditionQuery();
     await this.runQuery(

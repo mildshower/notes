@@ -108,14 +108,14 @@ const prepareAnswers = async function (answers, user, dataStore) {
   for (const answer of answers) {
     answer.created = getRelativeTime(answer.created);
     answer.userVote =
-      user && await dataStore.getVote(answer.id, user.user_id, 'answer');
+      user && await dataStore.getAnswerVote(answer.id, user.user_id);
   }
   return answers;
 };
 
 const prepareQuestion = async function (question, user, dataStore) {
   question.userVote =
-    user && await dataStore.getVote(question.id, user.user_id, 'question');
+    user && await dataStore.getQuestionVote(question.id, user.user_id);
   const answers = await dataStore.getAnswersByQuestion(question.id);
   question.answers = await prepareAnswers(answers, user, dataStore);
   question.tags = await dataStore.getTags([question]);
