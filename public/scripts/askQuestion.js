@@ -25,11 +25,11 @@ const removeTag = function() {
   getTagInput().value = currentTagValue;
 };
 
-const manageTags = function(event) {
-  if (event.code === 'Space') {
+const manageTags = function (event) {
+  if (event.keyCode === 32) {
     return addTag();
   }
-  if (event.code === 'Backspace') {
+  if (event.keyCode === 8) {
     removeTag();
   }
 };

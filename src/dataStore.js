@@ -45,20 +45,17 @@ const getVoteModificationQuery = contentType =>
     set vote_type = ?
     where ${contentType}_id = ? AND user = ?`;
 
-const getAnswersByUserSql = () =>
-  answerDetails + 'where ans.owner = ?';
+const getAnswersByUserSql = () => answerDetails + 'where ans.owner = ?';
 
-const getAnswerByQuestionSql = () =>
-  answerDetails + 'where ans.question = ?';
+const getAnswerByQuestionSql = () => answerDetails + 'where ans.question = ?';
 
 const getLastQuestionsSql = () =>
   questionDetails + 'order by ques.created DESC;';
 
-const getQuestionDetailsSql = id =>
+const getQuestionDetailsSql = (id) =>
   questionDetails + `where ques.id = ${id};`;
 
-const getUserQuestionsSql = () =>
-  questionDetails + 'where ques.owner = ?;';
+const getUserQuestionsSql = () => questionDetails + 'where ques.owner = ?;';
 
 const searchQuestionsSql = () =>
   questionDetails +
@@ -147,11 +144,12 @@ class DataStore {
         this.dbClient.run(
           getUserInsertionQuery(),
           [username, avatarUrl],
-          err => {
+          (err) => {
             if (err) {
               reject(new Error('User Already Exists!'));
             }
-          });
+          }
+        );
         this.dbClient.get(
           'select last_insert_rowid() as id;',
           (err, details) => {
@@ -159,7 +157,8 @@ class DataStore {
               reject(err);
             }
             resolve(details);
-          });
+          }
+        );
       });
     });
   }
@@ -171,7 +170,8 @@ class DataStore {
         [name, email, location, bio || '', userId],
         () => {
           resolve();
-        });
+        }
+      );
     });
   }
 
@@ -209,13 +209,15 @@ class DataStore {
     const { title, body, bodyText } = question;
     return new Promise((resolve, reject) => {
       this.dbClient.serialize(() => {
-        this.dbClient.run(getQuestionInsertionSql(),
+        this.dbClient.run(
+          getQuestionInsertionSql(),
           [title, body, bodyText, owner],
-          err => {
+          (err) => {
             if (err) {
               reject(new Error('Question Insertion Incomplete!'));
             }
-          });
+          }
+        );
         this.dbClient.get(
           'select last_insert_rowid() as id;',
           (err, details) => {
@@ -223,26 +225,28 @@ class DataStore {
               reject(err);
             }
             resolve(details);
-          });
+          }
+        );
       });
     });
   }
 
   getTagId(tagName) {
     return new Promise((resolve, reject) => {
-      this.dbClient.get(getTagIdQuery(), tagName, (err, tag) => {
-        err && reject(new Error('tag name is not available'));
-        resolve(tag);
+      this.dbClient.serialize(() => {
+        this.dbClient.run(getTagsInsertionQuery(), tagName, () => {});
+        this.dbClient.get(getTagIdQuery(), tagName, (err, tag) => {
+          err && reject(err);
+          resolve(tag);
+        });
       });
     });
   }
 
-  addQuestionTags(questionId, tags) {
+  async addQuestionTags(questionId, tags) {
     for (let index = 0; index < tags.length; index++) {
-      this.dbClient.run(getTagsInsertionQuery(), tags[index], async () => {
-        const { id: tagId } = await this.getTagId(tags[index]);
-        this.dbClient.run(getInsertQuesTagsQuery(), [tagId, questionId]);
-      });
+      const {id: tagId} = await this.getTagId(tags[index]);
+      this.dbClient.run(getInsertQuesTagsQuery(), [tagId, questionId],()=>{});
     }
   }
 
@@ -289,39 +293,34 @@ class DataStore {
             return reject(new Error('Answer Insertion Failed!'));
           }
           resolve();
-        });
-    });
-  }
-
-  getVote(contentId, userId, contentType){
-    return new Promise((resolve, reject) => {
-      const query = contentType === 'answer' ? 
-        getAnswerVoteQuery() : getQuestionVoteQuery();
-      this.dbClient.get(
-        query,
-        [contentId, userId],
-        (err, details) => {
-          if (err) {
-            return reject(new Error('Fetching vote failed'));
-          }
-          resolve(
-            { isVoted: Boolean(details), voteType: details && details.voteType }
-          );
         }
       );
     });
   }
 
-  async getQuestionTags(quesId) {
-    const tags = await this.getRows(getQuestionTagsQuery(), quesId);
-    return tags.map((tag) => tag.tag_name);
+  getVote(contentId, userId, contentType) {
+    return new Promise((resolve, reject) => {
+      const query =
+        contentType === 'answer'
+          ? getAnswerVoteQuery()
+          : getQuestionVoteQuery();
+      this.dbClient.get(query, [contentId, userId], (err, details) => {
+        if (err) {
+          return reject(new Error('Fetching vote failed'));
+        }
+        resolve({
+          isVoted: Boolean(details),
+          voteType: details && details.voteType,
+        });
+      });
+    });
   }
 
-  async getTagsOfUser(userId) {
-    const questions = await this.getUserQuestions(userId);
-    const tags = [];
+  async getTags(questions) {
+    let tags = [];
     for (const question of questions) {
-      tags.push(...await this.getQuestionTags(question.id));
+      const newTags = await this.getRows(getQuestionTagsQuery(), question.id);
+      tags.push(...newTags.map((tag) => tag.tag_name));
     }
     return [...new Set(tags)];
   }

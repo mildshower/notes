@@ -50,6 +50,7 @@ h1 {
   border-radius: 2px;
 }
 
+#tagInputHolder,
 .newQuestionBox > input,
 .newQuestionBox > label {
   margin: 10px 0;
@@ -79,7 +80,8 @@ h1 {
 }
 
 #tagInputHolder input {
-  font-size: 25px;
+  font-size: 20px;
+  /* height: 25px; */
   padding: 5px 10px;
   height: 90%;
   outline: none;
@@ -106,8 +108,9 @@ h1 {
   background-color: rgb(220, 234, 243);
   text-decoration: none;
   cursor: pointer;
-  padding: 5px 8px;
-  margin: 5px;
+  padding:3px 5px;
+  align-items: center;
+  margin: 0px 5px;
   font-size: 18px;
   border-radius: 4px;
   border: 1px solid rgb(173, 173, 173);

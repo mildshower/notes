@@ -19,7 +19,7 @@ const serveHomePage = async function (req, res) {
   const questions = await dataStore.getLastQuestions(10);
   for (const question of questions) {
     question.created = getRelativeTime(question.created);
-    question.tags = await dataStore.getQuestionTags(question.id);
+    question.tags = await dataStore.getTags([question]);
   }
   res.render('home', {
     user: req.user,
@@ -118,7 +118,7 @@ const prepareQuestion = async function (question, user, dataStore) {
     user && await dataStore.getVote(question.id, user.user_id, 'question');
   const answers = await dataStore.getAnswersByQuestion(question.id);
   question.answers = await prepareAnswers(answers, user, dataStore);
-  question.tags = await dataStore.getQuestionTags(question.id);
+  question.tags = await dataStore.getTags([question]);
   question.lastModified = getRelativeTime(question.lastModified);
   question.created = getRelativeTime(question.created);
   return question;
@@ -191,7 +191,7 @@ const serveSearchPage = async function (req, res) {
   for (const question of questions) {
     question.created = getRelativeTime(question.created);
     question.bodyText = question.bodyText.split('\n');
-    question.tags = await dataStore.getQuestionTags(question.id);
+    question.tags = await dataStore.getTags([question]);
   }
   res.render('search', {
     questions,
@@ -220,9 +220,9 @@ const showProfilePage = async (req, res, next) => {
     req.errorMessage = 'We\'re sorry, we couldn\'t find the user you requested.';
     return next();
   }
-  const answers = await dataStore.getUserAnswers(userId);
   const questions = await dataStore.getUserQuestions(userId);
-  const tags = await dataStore.getTagsOfUser(userId);
+  const answers = await dataStore.getUserAnswers(userId);
+  const tags = await dataStore.getTags(questions);
   res.render('profile', {
     requestedUser,
     user,
@@ -241,7 +241,7 @@ const saveAnswer = function (req, res) {
     .catch(() => res.status(400).json({ isSaved: false }));
 };
 
-const serveEditProfilePage = async (req, res) => {
+const serveEditProfilePage = (req, res) => {
   res.render('editProfile', { user: req.user });
 };
 
