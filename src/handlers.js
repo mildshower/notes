@@ -124,7 +124,7 @@ const prepareQuestion = async function (question, user, dataStore) {
   return question;
 };
 
-const serveQuestionPage = async function (req, res) {
+const serveQuestionPage = async function (req, res, next) {
   const dataStore = req.app.locals.dataStore;
   try {
     let question = await dataStore.getQuestionDetails(req.query.id);
@@ -134,7 +134,8 @@ const serveQuestionPage = async function (req, res) {
       Object.assign({ user: req.user, currPath: req.originalUrl }, question)
     );
   } catch (error) {
-    res.status(400).send(error.message);
+    req.errorMessage = 'I\'m sorry! Couldn\'t found question with the given id'; 
+    next();
   }
 };
 
@@ -144,7 +145,7 @@ const serveQuestionDetails = function (req, res) {
     .then((question) => {
       return res.json(question);
     })
-    .catch((error) => res.status(400).send(error.message));
+    .catch((error) => res.status(404).json({error: error.message}));
 };
 
 const serveAnswers = function (req, res) {
@@ -245,11 +246,38 @@ const serveEditProfilePage = (req, res) => {
   res.render('editProfile', { user: req.user });
 };
 
-const updateVote = function(req, res){
-  const {voteType, contentId, contentType} = req.body;
-  req.app.locals.dataStore.updateVotes(contentId, contentType, req.user.user_id, voteType)
-    .then(updationDetails => res.json(updationDetails))
+const addQuestionVote = (req, res) => {
+  const {voteType, id: quesId} = req.body;
+  const {dataStore} = req.app.locals;
+  dataStore.addQuestionVote(quesId, req.user.user_id, voteType)
+    .then(() => dataStore.getVoteCount('question', quesId))
+    .then(currVoteCount => res.json({isSucceeded: true, currVoteCount}))
     .catch(err => res.status(400).json({error: err.message}));
+};
+
+const deleteQuestionVote = (req, res) => {
+  const {id: quesId} = req.body;
+  const {dataStore} = req.app.locals;
+  dataStore.deleteQuestionVote(quesId, req.user.user_id)
+    .then(() => dataStore.getVoteCount('question', quesId))
+    .then(currVoteCount => res.json({isSucceeded: true, currVoteCount}));
+};
+
+const addAnswerVote = (req, res) => {
+  const {voteType, id: ansId} = req.body;
+  const {dataStore} = req.app.locals;
+  dataStore.addAnswerVote(ansId, req.user.user_id, voteType)
+    .then(() => dataStore.getVoteCount('answer', ansId))
+    .then(currVoteCount => res.json({isSucceeded: true, currVoteCount}))
+    .catch(err => res.status(400).json({error: err.message}));
+};
+
+const deleteAnswerVote = (req, res) => {
+  const {id: ansId} = req.body;
+  const {dataStore} = req.app.locals;
+  dataStore.deleteAnswerVote(ansId, req.user.user_id)
+    .then(() => dataStore.getVoteCount('answer', ansId))
+    .then(currVoteCount => res.json({isSucceeded: true, currVoteCount}));
 };
 
 module.exports = {
@@ -272,5 +300,8 @@ module.exports = {
   showProfilePage,
   saveAnswer,
   serveEditProfilePage,
-  updateVote,
+  addQuestionVote,
+  addAnswerVote,
+  deleteAnswerVote,
+  deleteQuestionVote
 };

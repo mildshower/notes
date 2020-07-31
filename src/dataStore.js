@@ -40,10 +40,15 @@ const getUserUpdationQuery = () =>
     SET display_name = ?, email = ?, location = ?, bio = ?
     WHERE user_id = ?;`;
 
-const getVoteModificationQuery = contentType =>
-  `update ${contentType}_votes
+const getAnsVoteModificationQuery = () =>
+  `update answer_votes
     set vote_type = ?
-    where ${contentType}_id = ? AND user = ?`;
+    where answer_id = ? AND user = ?`;
+
+const getQuesVoteModificationQuery = () =>
+  `update question_votes
+    set vote_type = ?
+    where question_id = ? AND user = ?`;
 
 const getAnswersByUserSql = () => answerDetails + 'where ans.owner = ?';
 
@@ -98,13 +103,21 @@ const getAnswerVoteQuery = () =>
     from answer_votes
     where answer_id = ? AND user = ?`;
 
-const getVoteAdditionQuery = contentType => 
-  `insert into ${contentType}_votes (${contentType}_id, user, vote_type)
+const getAnsVoteAdditionQuery = () => 
+  `insert into answer_votes (vote_type, answer_id, user)
     values (?, ?, ?)`;
 
-const getVoteDeletionQuery = contentType => 
-  `delete from ${contentType}_votes
-    where ${contentType}_id = ? and user = ?`;
+const getQuesVoteAdditionQuery = () => 
+  `insert into question_votes (vote_type, question_id, user)
+    values (?, ?, ?)`;
+
+const getAnsVoteDeletionQuery = () => 
+  `delete from answer_votes
+    where answer_id = ? and user = ?`;
+
+const getQuesVoteDeletionQuery = () => 
+  `delete from question_votes
+    where question_id = ? and user = ?`;
 
 const getAnswerInsertionQuery = () =>
   `insert into answers (body, body_text, question, owner)
@@ -324,50 +337,52 @@ class DataStore {
     }
     return [...new Set(tags)];
   }
+
+  runQuery(query, params, rejectionContent){
+    return new Promise((resolve, reject) => {
+      this.dbClient.run(query, params, err => {
+        err && reject(rejectionContent);
+        resolve();
+      });
+    });
+  }
   
-  addVote(contentId, contentType, userId, voteType){
-    return new Promise((resolve, reject) => {
-      this.dbClient.run(
-        getVoteAdditionQuery(contentType),
-        [contentId, userId, voteType],
-        err => {
-          if(err){
-            return reject(new Error('Vote Insertion Failed'));
-          }
-          resolve(true);
-        }
-      );
-    });
+  async addQuestionVote(quesId, userId, voteType){
+    const {isVoted} = await this.getVote(quesId, userId, 'question');
+    const query = isVoted ? 
+      getQuesVoteModificationQuery() : getQuesVoteAdditionQuery();
+    await this.runQuery(
+      query, 
+      [voteType, quesId, userId],
+      new Error('Vote Addition Failed')
+    );
   }
 
-  modifyVote(contentId, contentType, userId, voteType){
-    return new Promise((resolve, reject) => {
-      this.dbClient.run(
-        getVoteModificationQuery(contentType),
-        [voteType, contentId, userId],
-        err => {
-          if(err){
-            return reject(new Error('Vote Modification Failed'));
-          }
-          resolve(true);
-        }
-      );
-    });
+  deleteQuestionVote(quesId, userId){
+    return this.runQuery(
+      getQuesVoteDeletionQuery(),
+      [quesId, userId],
+      new Error('Vote Deletion Failed')
+    );
   }
 
-  deleteVote(contentId, contentType, userId){
-    return new Promise((resolve, reject) => {
-      this.dbClient.run(
-        getVoteDeletionQuery(contentType),
-        [contentId, userId],
-        err => {
-          if(err){
-            return reject(new Error('Vote Deletion Failed'));
-          }
-          resolve(true);
-        }
-      );
-    });
+  async addAnswerVote(ansId, userId, voteType){
+    const {isVoted} = await this.getVote(ansId, userId, 'answer');
+    const query = isVoted ? 
+      getAnsVoteModificationQuery() : getAnsVoteAdditionQuery();
+    await this.runQuery(
+      query, 
+      [voteType, ansId, userId],
+      new Error('Vote Addition Failed')
+    );
+  }
+
+  deleteAnswerVote(ansId, userId){
+    return this.runQuery(
+      getAnsVoteDeletionQuery(),
+      [ansId, userId],
+      new Error('Vote Deletion Failed')
+    );
   }
 
   getVoteCount(contentType, contentId){
@@ -383,26 +398,6 @@ class DataStore {
         }
       );
     });
-  }
-
-  updateVotes(contentId, contentType, userId, voteType){
-    return this.getVote(contentId, userId, contentType)
-      .then(({isVoted, voteType: savedVoteType}) => {
-        let action = this.modifyVote.bind(this);
-        let actionName = 'added';
-        if(!isVoted){
-          action = this.addVote.bind(this);
-        }
-        if(savedVoteType === voteType){
-          actionName = 'deleted';
-          action = this.deleteVote.bind(this);
-        }
-        return action(contentId, contentType, userId, voteType)
-          .then(() => {
-            return this.getVoteCount(contentType, contentId);
-          })
-          .then(count => ({currVoteCount: count, action: actionName}));
-      });
   }
 }
 

@@ -84,9 +84,9 @@ describe('GET', () => {
       request(app)
         .get('/question?id=100')
         .set('accept', '*/*')
-        .expect(400)
+        .expect(404)
         .expect('Content-Type', /text\/html/)
-        .expect('Wrong Id Provided', done);
+        .expect(/Couldn't found question with the given id/, done);
     });
   });
 
@@ -104,9 +104,9 @@ describe('GET', () => {
       request(app)
         .get('/questionDetails?id=100')
         .set('accept', '*/*')
-        .expect(400)
-        .expect('Content-Type', /text\/html/)
-        .expect('Wrong Id Provided', done);
+        .expect(404)
+        .expect('Content-Type', 'application/json; charset=utf-8')
+        .expect(/Wrong Id Provided/, done);
     });
   });
 
@@ -303,19 +303,19 @@ describe('POST', function() {
     });
   });
 
-  context('/vote', () => {
-    it('should update votes and provide current vote count for valid details', (done) => {
+  context('/addQuestionVote', () => {
+    it('should add question vote when valid ids given', (done) => {
       const sessions = new Sessions();
       const id = sessions.addSession('1');
       app.locals.sessions = sessions;
       request(app)
-        .post('/vote')
+        .post('/addQuestionVote')
         .set('Cookie', `session=${id}`)
-        .send({contentType: 'question', contentId: 1, voteType: 1})
         .set('Content-Type', 'application/json')
+        .send({id: 1, voteType: 1})
         .expect(200)
         .expect('Content-Type', 'application/json; charset=utf-8')
-        .expect('{"currVoteCount":3,"action":"added"}', done);
+        .expect(/{"isSucceeded":true/, done);
     });
 
     it('should produce error when invalid details given', (done) => {
@@ -323,19 +323,105 @@ describe('POST', function() {
       const id = sessions.addSession('1');
       app.locals.sessions = sessions;
       request(app)
-        .post('/vote')
+        .post('/addQuestionVote')
         .set('Cookie', `session=${id}`)
-        .send({contentType: 'question', contentId: 100, voteType: 1})
         .set('Content-Type', 'application/json')
+        .send({id: 100, voteType: 100})
         .expect(400)
         .expect('Content-Type', 'application/json; charset=utf-8')
-        .expect('{"error":"Vote Insertion Failed"}', done);
+        .expect('{"error":"Vote Addition Failed"}', done);
     });
 
     it('should serve unauthorized if not logged in', (done) => {
       request(app)
-        .post('/vote')
-        .send({contentType: 'question', contentId: 1, voteType: 1})
+        .post('/addQuestionVote')
+        .send({id: 1, voteType: 1})
+        .set('Content-Type', 'application/json')
+        .expect(401, done);
+    });
+  });
+
+  context('/deleteQuestionVote', () => {
+    it('should add question vote when valid ids given', (done) => {
+      const sessions = new Sessions();
+      const id = sessions.addSession('2');
+      app.locals.sessions = sessions;
+      request(app)
+        .post('/deleteQuestionVote')
+        .set('Cookie', `session=${id}`)
+        .set('Content-Type', 'application/json')
+        .send({id: 1})
+        .expect(200)
+        .expect('Content-Type', 'application/json; charset=utf-8')
+        .expect(/{"isSucceeded":true/, done);
+    });
+
+    it('should serve unauthorized if not logged in', (done) => {
+      request(app)
+        .post('/deleteQuestionVote')
+        .send({id: 1})
+        .set('Content-Type', 'application/json')
+        .expect(401, done);
+    });
+  });
+
+  context('/addAnswerVote', () => {
+    it('should add answer vote when valid ids given', (done) => {
+      const sessions = new Sessions();
+      const id = sessions.addSession('1');
+      app.locals.sessions = sessions;
+      request(app)
+        .post('/addAnswerVote')
+        .set('Cookie', `session=${id}`)
+        .set('Content-Type', 'application/json')
+        .send({id: 1, voteType: 1})
+        .expect(200)
+        .expect('Content-Type', 'application/json; charset=utf-8')
+        .expect(/{"isSucceeded":true/, done);
+    });
+
+    it('should produce error when invalid details given', (done) => {
+      const sessions = new Sessions();
+      const id = sessions.addSession('1');
+      app.locals.sessions = sessions;
+      request(app)
+        .post('/addAnswerVote')
+        .set('Cookie', `session=${id}`)
+        .set('Content-Type', 'application/json')
+        .send({id: 100, voteType: 100})
+        .expect(400)
+        .expect('Content-Type', 'application/json; charset=utf-8')
+        .expect('{"error":"Vote Addition Failed"}', done);
+    });
+
+    it('should serve unauthorized if not logged in', (done) => {
+      request(app)
+        .post('/addAnswerVote')
+        .send({id: 1, voteType: 1})
+        .set('Content-Type', 'application/json')
+        .expect(401, done);
+    });
+  });
+
+  context('/deleteAnswerVote', () => {
+    it('should add question vote when valid ids given', (done) => {
+      const sessions = new Sessions();
+      const id = sessions.addSession('2');
+      app.locals.sessions = sessions;
+      request(app)
+        .post('/deleteAnswerVote')
+        .set('Cookie', `session=${id}`)
+        .set('Content-Type', 'application/json')
+        .send({id: 1})
+        .expect(200)
+        .expect('Content-Type', 'application/json; charset=utf-8')
+        .expect(/{"isSucceeded":true/, done);
+    });
+
+    it('should serve unauthorized if not logged in', (done) => {
+      request(app)
+        .post('/deleteAnswerVote')
+        .send({id: 1})
         .set('Content-Type', 'application/json')
         .expect(401, done);
     });
