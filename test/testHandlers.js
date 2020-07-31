@@ -165,7 +165,7 @@ describe('GET', () => {
 
     it('should redirect to error page when account doen\'t exist', (done) => {
       const stubbed = sinon.stub(fetch, 'Promise');
-      stubbed.returns(Promise.resolve({ json: () => ({ 'access_token': 1, login: 'user10' }) }));
+      stubbed.returns(Promise.resolve({ json: () => ({ 'access_token': 1, login: 'user11' }) }));
       request(app)
         .get('/login?code=1&targetPath=home')
         .set('accept', '*/*')
