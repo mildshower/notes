@@ -139,14 +139,39 @@ class DataStore {
     this.dbClient = dbClient;
   }
 
-  getUser(key, value) {
-    const query = `select * from users where ${key} = "${value}";`;
+  getRows(query, params) {
     return new Promise((resolve, reject) => {
-      this.dbClient.get(query, (err, user) => {
+      this.dbClient.all(query, params, (err, rows) => {
         if (err) {
           return reject(err);
         }
-        resolve({ user, isFound: Boolean(user) });
+        resolve(rows);
+      });
+    });
+  }
+
+  runQuery(query, params, rejectionContent){
+    return new Promise((resolve, reject) => {
+      this.dbClient.run(query, params, err => {
+        err && reject(rejectionContent || err);
+        resolve();
+      });
+    });
+  }
+
+  getRow(query, params, rejectionContent){
+    return new Promise((resolve, reject) => {
+      this.dbClient.get(query, params, (err, row) => {
+        err && reject(rejectionContent || err);
+        resolve(row);
+      });
+    });
+  }
+
+  init() {
+    return new Promise((resolve) => {
+      this.dbClient.exec(getInitiationSql(), () => {
+        resolve();
       });
     });
   }
@@ -176,46 +201,38 @@ class DataStore {
     });
   }
 
-  updateUserDetails(userId, { name, email, location, bio }) {
-    return new Promise((resolve) => {
-      this.dbClient.run(
-        getUserUpdationQuery(),
-        [name, email, location, bio || '', userId],
-        () => {
-          resolve();
-        }
-      );
-    });
+  getUser(key, value) {
+    const query = `select * from users where ${key} = ?`;
+    return this.getRow(
+      query,
+      [value]
+    )
+      .then(user => ({ user, isFound: Boolean(user) }));
   }
 
-  init() {
-    return new Promise((resolve) => {
-      this.dbClient.exec(getInitiationSql(), () => {
-        resolve();
-      });
-    });
+  updateUserDetails(userId, { name, email, location, bio }) {
+    return this.runQuery(
+      getUserUpdationQuery(),
+      [name, email, location, bio || '', userId]
+    );
   }
 
   getQuestionDetails(id) {
-    return new Promise((resolve, reject) => {
-      this.dbClient.get(getQuestionDetailsSql(id), (err, details) => {
-        if (err || !details) {
-          return reject(err || new Error('Wrong Id Provided'));
+    return this.getRow(getQuestionDetailsSql(id), [])
+      .then(details => {
+        if(!details) {
+          throw new Error('Wrong Id Provided');
         }
-        resolve(details);
+        return details;
       });
-    });
   }
 
   getLastQuestions(count) {
-    return new Promise((resolve, reject) => {
-      this.dbClient.all(getLastQuestionsSql(), (err, rows) => {
-        if (err || count < 0) {
-          return reject(err || new Error('Negative count error!'));
-        }
-        resolve(rows.slice(0, count));
-      });
-    });
+    if(count < 0){
+      return Promise.reject(new Error('Invalid Count'));
+    }
+    return this.getRows(getLastQuestionsSql(), [])
+      .then(rows => rows.slice(0, count));
   }
 
   addQuestionContent(question, owner) {
@@ -259,7 +276,7 @@ class DataStore {
   async addQuestionTags(questionId, tags) {
     for (let index = 0; index < tags.length; index++) {
       const {id: tagId} = await this.getTagId(tags[index]);
-      this.dbClient.run(getInsertQuesTagsQuery(), [tagId, questionId],()=>{});
+      this.dbClient.run(getInsertQuesTagsQuery(), [tagId, questionId], () => {});
     }
   }
 
@@ -281,34 +298,16 @@ class DataStore {
     return this.getRows(searchQuestionsSql(), { $regExp: `%${text}%` });
   }
 
-  getRows(query, params) {
-    return new Promise((resolve, reject) => {
-      this.dbClient.all(query, params, (err, rows) => {
-        if (err) {
-          return reject(err);
-        }
-        resolve(rows);
-      });
-    });
-  }
-
   getUserAnswers(id) {
     return this.getRows(getAnswersByUserSql(), [id]);
   }
 
   addAnswer(body, bodyText, quesId, owner) {
-    return new Promise((resolve, reject) => {
-      this.dbClient.run(
-        getAnswerInsertionQuery(),
-        [body, bodyText, quesId, owner],
-        (err) => {
-          if (err) {
-            return reject(new Error('Answer Insertion Failed!'));
-          }
-          resolve();
-        }
-      );
-    });
+    return this.runQuery(
+      getAnswerInsertionQuery(),
+      [body, bodyText, quesId, owner],
+      new Error('Answer Insertion Failed!')
+    );
   }
 
   getVote(contentId, userId, contentType) {
@@ -330,21 +329,12 @@ class DataStore {
   }
 
   async getTags(questions) {
-    let tags = [];
+    const tags = [];
     for (const question of questions) {
       const newTags = await this.getRows(getQuestionTagsQuery(), question.id);
       tags.push(...newTags.map((tag) => tag.tag_name));
     }
     return [...new Set(tags)];
-  }
-
-  runQuery(query, params, rejectionContent){
-    return new Promise((resolve, reject) => {
-      this.dbClient.run(query, params, err => {
-        err && reject(rejectionContent);
-        resolve();
-      });
-    });
   }
   
   async addQuestionVote(quesId, userId, voteType){

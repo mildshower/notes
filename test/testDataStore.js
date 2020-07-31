@@ -46,7 +46,7 @@ context('dataStore', () => {
   });
 
   context('#getLastQuestions', () => {
-    it("it should give last question id's if valid count is given", (done) => {
+    it('it should give last question id\'s if valid count is given', (done) => {
       const dbClient = {
         all: sinon.fake.yields(null, [
           { id: 1 },
@@ -65,19 +65,9 @@ context('dataStore', () => {
     });
 
     it('it should produce error when invalid count is provided', (done) => {
-      const dbClient = {
-        all: sinon.fake.yields(null, [
-          { id: 1 },
-          { id: 2 },
-          { id: 3 },
-          { id: 4 },
-        ]),
-      };
-      const dataStore = new DataStore(dbClient);
+      const dataStore = new DataStore({});
       dataStore.getLastQuestions(-1).catch((error) => {
-        assert.deepStrictEqual(error.message, 'Negative count error!');
-        assert.ok(dbClient.all.calledOnce);
-        assert.ok(dbClient.all.firstArg.match(/order by ques\.created DESC/));
+        assert.deepStrictEqual(error.message, 'Invalid Count');
         done();
       });
     });
@@ -131,7 +121,7 @@ context('dataStore', () => {
         assert.ok(dbClient.run.calledTwice);
         assert.deepStrictEqual(dbClient.get.args[0][1], 'tag');
         assert.deepStrictEqual(dbClient.run.args[0][1], 'tag');
-        assert.deepStrictEqual(dbClient.run.args[1][1], [1,1]);
+        assert.deepStrictEqual(dbClient.run.args[1][1], [1, 1]);
         done();
       });
     });
@@ -318,7 +308,7 @@ context('dataStore', () => {
       dataStore.getUser('github_username', 'testUser').then((actual) => {
         assert.deepStrictEqual(actual, details);
         assert.ok(dbClient.get.calledOnce);
-        assert.ok(dbClient.get.firstArg.match(/"testUser"/));
+        assert.deepStrictEqual(dbClient.get.args[0][1], ['testUser']);
         done();
       });
     });
@@ -332,7 +322,7 @@ context('dataStore', () => {
       dataStore.getUser('github_username', 'noUser').then((actual) => {
         assert.deepStrictEqual(actual, { user: undefined, isFound: false });
         assert.ok(dbClient.get.calledOnce);
-        assert.ok(dbClient.get.firstArg.match(/github_username = "noUser";/));
+        assert.deepStrictEqual(dbClient.get.args[0][1], ['noUser']);
         done();
       });
     });
@@ -351,7 +341,7 @@ context('dataStore', () => {
       const message = 'no such column: github_user';
       dataStore.getUser('github_user', 'noUser').catch((err) => {
         assert.ok(dbClient.get.calledOnce);
-        assert.ok(dbClient.get.firstArg.match(/github_user = "noUser";/));
+        assert.deepStrictEqual(dbClient.get.args[0][1], ['noUser']);
         assert.equal(err.message, message);
         done();
       });
@@ -373,6 +363,28 @@ context('dataStore', () => {
         .updateUserDetails(4, { name, email, location })
         .then((actual) => {
           assert.isUndefined(actual);
+          assert.ok(dbClient.run.calledOnce);
+          assert.deepStrictEqual(dbClient.run.args[0][1], [
+            name,
+            email,
+            location,
+            '',
+            4,
+          ]);
+          done();
+        });
+    });
+
+    it('should produce error while db query produces', (done) => {
+      const dbClient = {
+        run: sinon.fake.yields(new Error('error')),
+      };
+      const dataStore = new DataStore(dbClient);
+
+      dataStore
+        .updateUserDetails(4, { name, email, location })
+        .catch((err) => {
+          assert.deepStrictEqual(err.message, 'error');
           assert.ok(dbClient.run.calledOnce);
           assert.deepStrictEqual(dbClient.run.args[0][1], [
             name,
@@ -583,11 +595,11 @@ context('dataStore', () => {
         all: sinon.fake.yields(null, [{tag_name: 'sqlite3'}, {tag_name: 'javascript'}]),
       };
       const dataStore = new DataStore(dbClient);
-      dataStore.getTags([{id:1}])
+      dataStore.getTags([{id: 1}])
         .then(tags => {
           assert.ok(dbClient.all.calledOnce);
           assert.deepStrictEqual(dbClient.all.args[0][1], 1);
-          assert.deepStrictEqual(tags, ['sqlite3','javascript']);
+          assert.deepStrictEqual(tags, ['sqlite3', 'javascript']);
           done();
         });
     });
