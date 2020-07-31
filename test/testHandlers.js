@@ -303,6 +303,44 @@ describe('POST', function() {
     });
   });
 
+  context('/vote', () => {
+    it('should update votes and provide current vote count for valid details', (done) => {
+      const sessions = new Sessions();
+      const id = sessions.addSession('1');
+      app.locals.sessions = sessions;
+      request(app)
+        .post('/vote')
+        .set('Cookie', `session=${id}`)
+        .send({contentType: 'question', contentId: 1, voteType: 1})
+        .set('Content-Type', 'application/json')
+        .expect(200)
+        .expect('Content-Type', 'application/json; charset=utf-8')
+        .expect('{"currVoteCount":3,"action":"added"}', done);
+    });
+
+    it('should produce error when invalid details given', (done) => {
+      const sessions = new Sessions();
+      const id = sessions.addSession('1');
+      app.locals.sessions = sessions;
+      request(app)
+        .post('/vote')
+        .set('Cookie', `session=${id}`)
+        .send({contentType: 'question', contentId: 100, voteType: 1})
+        .set('Content-Type', 'application/json')
+        .expect(400)
+        .expect('Content-Type', 'application/json; charset=utf-8')
+        .expect('{"error":"Vote Insertion Failed"}', done);
+    });
+
+    it('should serve unauthorized if not logged in', (done) => {
+      request(app)
+        .post('/vote')
+        .send({contentType: 'question', contentId: 1, voteType: 1})
+        .set('Content-Type', 'application/json')
+        .expect(401, done);
+    });
+  });
+
   context('/saveAnswer', () => {
     it('should save given valid answer', (done) => {
       const sessions = new Sessions();

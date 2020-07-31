@@ -389,13 +389,20 @@ class DataStore {
   updateVotes(contentId, contentType, userId, voteType){
     return this.getVote(contentId, userId, contentType)
       .then(({isVoted, voteType: savedVoteType}) => {
+        let action = this.modifyVote.bind(this);
+        let actionName = 'added';
         if(!isVoted){
-          this.addVote(contentId, contentType, userId, voteType);
+          action = this.addVote.bind(this);
         }
         if(savedVoteType === voteType){
-          this.deleteVote(contentId, contentType, userId);
+          actionName = 'deleted';
+          action = this.deleteVote.bind(this);
         }
-        this.modifyVote(contentId, contentType, userId, voteType);
+        return action(contentId, contentType, userId, voteType)
+          .then(() => {
+            return this.getVoteCount(contentType, contentId);
+          })
+          .then(count => ({currVoteCount: count, action: actionName}));
       });
   }
 }

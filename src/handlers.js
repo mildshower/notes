@@ -108,14 +108,14 @@ const prepareAnswers = async function (answers, user, dataStore) {
   for (const answer of answers) {
     answer.created = getRelativeTime(answer.created);
     answer.userVote =
-      user && (await dataStore.getVote(answer.id, user.user_id, 'answer'));
+      user && await dataStore.getVote(answer.id, user.user_id, 'answer');
   }
   return answers;
 };
 
 const prepareQuestion = async function (question, user, dataStore) {
   question.userVote =
-    user && (await dataStore.getVote(question.id, user.user_id, 'question'));
+    user && await dataStore.getVote(question.id, user.user_id, 'question');
   const answers = await dataStore.getAnswersByQuestion(question.id);
   question.answers = await prepareAnswers(answers, user, dataStore);
   question.tags = await dataStore.getQuestionTags(question.id);
@@ -217,7 +217,7 @@ const showProfilePage = async (req, res, next) => {
   const { user: requestedUser } = await dataStore.getUser('user_id', userId);
   const { user } = req;
   if (!requestedUser) {
-    req.errorMessage = "We're sorry, we couldn't find the user you requested.";
+    req.errorMessage = 'We\'re sorry, we couldn\'t find the user you requested.';
     return next();
   }
   const answers = await dataStore.getUserAnswers(userId);
@@ -245,8 +245,11 @@ const serveEditProfilePage = async (req, res) => {
   res.render('editProfile', { user: req.user });
 };
 
-const updateVote = function (req, res) {
-  res.json({ action: 'added', currVoteCount: 10 });
+const updateVote = function(req, res){
+  const {voteType, contentId, contentType} = req.body;
+  req.app.locals.dataStore.updateVotes(contentId, contentType, req.user.user_id, voteType)
+    .then(updationDetails => res.json(updationDetails))
+    .catch(err => res.status(400).json({error: err.message}));
 };
 
 module.exports = {

@@ -84,9 +84,9 @@ const removeVoteHighlights = function(upVote, downVote){
   downVote.classList.remove('chosen');
 };
 
-const castVote = function(id, {upVote, count, downVote}, contentType) {
-  const voteType = this.className.includes('upVote') ? 1 : -1;
-  postData('/vote', {voteType, id, contentType})
+const castVote = function(contentId, {upVote, count, downVote}, contentType) {
+  const voteType = this.className.includes('upVote') ? 1 : 0;
+  postData('/vote', {voteType, contentId, contentType})
     .then(({error, action, currVoteCount}) => {
       if(error){
         return;
