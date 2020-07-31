@@ -1,6 +1,6 @@
 
-drop table if exists users;
-create table if not exists users (
+drop table users;
+create table users (
   user_id integer primary key AUTOINCREMENT,
   github_username varchar(40) not null UNIQUE,
   display_name varchar(50) DEFAULT 'USER',
@@ -12,8 +12,8 @@ create table if not exists users (
   CHECK (role = 'user' OR role = 'moderator')
 );
 
-drop table if exists questions;
-create table if not exists questions (
+drop table questions;
+create table questions (
   id integer primary key AUTOINCREMENT,
   title varchar(200) not null,
   body varchar(1000) not null,
@@ -25,8 +25,8 @@ create table if not exists questions (
     REFERENCES users (user_id)
 );
 
-drop table if exists answers;
-create table if not exists answers (
+drop table answers;
+create table answers (
   id integer primary key AUTOINCREMENT,
   body varchar(1000) not null,
   body_text varchar(1000) not null,
@@ -42,8 +42,8 @@ create table if not exists answers (
     CHECK(is_accepted=0 OR is_accepted = 1)
 );
 
-drop table if exists question_comments;
-create table if not exists question_comments (
+drop table question_comments;
+create table question_comments (
   id integer primary key AUTOINCREMENT,
   body varchar(100) not null,
   owner integer not null,
@@ -56,8 +56,8 @@ create table if not exists question_comments (
     REFERENCES questions (id)
 );
 
-drop table if exists answer_comments;
-create table if not exists answer_comments (
+drop table answer_comments;
+create table answer_comments (
   id integer primary key AUTOINCREMENT,
   body varchar(100) not null,
   owner integer not null,
@@ -70,14 +70,14 @@ create table if not exists answer_comments (
     REFERENCES answers (id)
 );
 
-drop table if exists tags;
-create table if not exists tags (
+drop table tags;
+create table tags (
   id integer primary key AUTOINCREMENT,
   tag_name varchar(30) not null unique
 );
 
-drop table if exists questions_tags;
-create table if not exists questions_tags (
+drop table questions_tags;
+create table questions_tags (
   tag_id integer not null,
   question_id integer not null,
   FOREIGN KEY (tag_id)
@@ -87,8 +87,8 @@ create table if not exists questions_tags (
   PRIMARY KEY (tag_id, question_id)
 );
 
-drop table if exists question_votes;
-create table if not exists question_votes (
+drop table question_votes;
+create table question_votes (
   question_id integer not null,
   user integer not null,
   vote_type integer not null,
@@ -100,8 +100,8 @@ create table if not exists question_votes (
   PRIMARY KEY (question_id, user)
 );
 
-drop table if exists answer_votes;
-create table if not exists answer_votes (
+drop table answer_votes;
+create table answer_votes (
   answer_id integer not null,
   user integer not null,
   vote_type integer not null,
