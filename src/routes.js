@@ -27,10 +27,8 @@ const {
   serveAnswers,
   saveAnswer,
   serveEditProfilePage,
-  addQuestionVote,
-  addAnswerVote,
-  deleteAnswerVote,
-  deleteQuestionVote
+  addVote,
+  deleteVote
 } = require('./handlers');
 
 const app = express();
@@ -62,10 +60,8 @@ app.get('/askQuestion', authorizeUser, serveAskQuestion);
 app.post('/saveDetails', authorizeUser, saveDetails);
 app.post('/saveQuestion', authorizeUser, saveQuestion);
 app.post('/saveAnswer', authorizeUser, saveAnswer);
-app.post('/addQuestionVote', authorizeUser, addQuestionVote);
-app.post('/addAnswerVote', authorizeUser, addAnswerVote);
-app.post('/deleteQuestionVote', authorizeUser, deleteQuestionVote);
-app.post('/deleteAnswerVote', authorizeUser, deleteAnswerVote);
+app.post('/addVote', authorizeUser, addVote);
+app.post('/deleteVote', authorizeUser, deleteVote);
 app.use(serveNotFound);
 
 module.exports = { app };

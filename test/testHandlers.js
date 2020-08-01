@@ -303,75 +303,27 @@ describe('POST', function() {
     });
   });
 
-  context('/addQuestionVote', () => {
+  context('/addVote', () => {
     it('should add question vote when valid ids given', (done) => {
       const sessions = new Sessions();
       const id = sessions.addSession('1');
       app.locals.sessions = sessions;
       request(app)
-        .post('/addQuestionVote')
+        .post('/addVote')
         .set('Cookie', `session=${id}`)
         .set('Content-Type', 'application/json')
-        .send({id: 1, voteType: 1})
+        .send({id: 1, voteType: 1, isQuestionVote: true})
         .expect(200)
         .expect('Content-Type', 'application/json; charset=utf-8')
         .expect(/{"isSucceeded":true/, done);
     });
 
-    it('should produce error when invalid details given', (done) => {
-      const sessions = new Sessions();
-      const id = sessions.addSession('1');
-      app.locals.sessions = sessions;
-      request(app)
-        .post('/addQuestionVote')
-        .set('Cookie', `session=${id}`)
-        .set('Content-Type', 'application/json')
-        .send({id: 100, voteType: 100})
-        .expect(400)
-        .expect('Content-Type', 'application/json; charset=utf-8')
-        .expect('{"error":"Vote Addition Failed"}', done);
-    });
-
-    it('should serve unauthorized if not logged in', (done) => {
-      request(app)
-        .post('/addQuestionVote')
-        .send({id: 1, voteType: 1})
-        .set('Content-Type', 'application/json')
-        .expect(401, done);
-    });
-  });
-
-  context('/deleteQuestionVote', () => {
-    it('should add question vote when valid ids given', (done) => {
-      const sessions = new Sessions();
-      const id = sessions.addSession('2');
-      app.locals.sessions = sessions;
-      request(app)
-        .post('/deleteQuestionVote')
-        .set('Cookie', `session=${id}`)
-        .set('Content-Type', 'application/json')
-        .send({id: 1})
-        .expect(200)
-        .expect('Content-Type', 'application/json; charset=utf-8')
-        .expect(/{"isSucceeded":true/, done);
-    });
-
-    it('should serve unauthorized if not logged in', (done) => {
-      request(app)
-        .post('/deleteQuestionVote')
-        .send({id: 1})
-        .set('Content-Type', 'application/json')
-        .expect(401, done);
-    });
-  });
-
-  context('/addAnswerVote', () => {
     it('should add answer vote when valid ids given', (done) => {
       const sessions = new Sessions();
       const id = sessions.addSession('1');
       app.locals.sessions = sessions;
       request(app)
-        .post('/addAnswerVote')
+        .post('/addVote')
         .set('Cookie', `session=${id}`)
         .set('Content-Type', 'application/json')
         .send({id: 1, voteType: 1})
@@ -385,10 +337,10 @@ describe('POST', function() {
       const id = sessions.addSession('1');
       app.locals.sessions = sessions;
       request(app)
-        .post('/addAnswerVote')
+        .post('/addVote')
         .set('Cookie', `session=${id}`)
         .set('Content-Type', 'application/json')
-        .send({id: 100, voteType: 100})
+        .send({id: 100, voteType: 100, isQuestionVote: true})
         .expect(400)
         .expect('Content-Type', 'application/json; charset=utf-8')
         .expect('{"error":"Vote Addition Failed"}', done);
@@ -396,20 +348,34 @@ describe('POST', function() {
 
     it('should serve unauthorized if not logged in', (done) => {
       request(app)
-        .post('/addAnswerVote')
-        .send({id: 1, voteType: 1})
+        .post('/addVote')
+        .send({id: 1, voteType: 1, isQuestionVote: true})
         .set('Content-Type', 'application/json')
         .expect(401, done);
     });
   });
 
-  context('/deleteAnswerVote', () => {
-    it('should add question vote when valid ids given', (done) => {
+  context('/deleteVote', () => {
+    it('should delete question vote when valid ids given', (done) => {
       const sessions = new Sessions();
       const id = sessions.addSession('2');
       app.locals.sessions = sessions;
       request(app)
-        .post('/deleteAnswerVote')
+        .post('/deleteVote')
+        .set('Cookie', `session=${id}`)
+        .set('Content-Type', 'application/json')
+        .send({id: 1, isQuestionVote: true})
+        .expect(200)
+        .expect('Content-Type', 'application/json; charset=utf-8')
+        .expect(/{"isSucceeded":true/, done);
+    });
+
+    it('should delete answer vote when valid ids given', (done) => {
+      const sessions = new Sessions();
+      const id = sessions.addSession('2');
+      app.locals.sessions = sessions;
+      request(app)
+        .post('/deleteVote')
         .set('Cookie', `session=${id}`)
         .set('Content-Type', 'application/json')
         .send({id: 1})
@@ -420,7 +386,7 @@ describe('POST', function() {
 
     it('should serve unauthorized if not logged in', (done) => {
       request(app)
-        .post('/deleteAnswerVote')
+        .post('/deleteVote')
         .send({id: 1})
         .set('Content-Type', 'application/json')
         .expect(401, done);

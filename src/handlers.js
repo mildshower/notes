@@ -70,14 +70,14 @@ const isValidVerificationReq = async function (req, res, next) {
     return res.redirect('/home');
   }
   req.userDetails = await getGithubDetails(req.query.code);
-  req.user = (
+  req.enteringUser = (
     await dataStore.getUser('github_username', req.userDetails.login)
   ).user;
   next();
 };
 
 const handleSignUp = async function (req, res, next) {
-  if (req.user) {
+  if (req.enteringUser) {
     req.responseStatus = 409;
     req.errorMessage = `It seems Github username ${req.userDetails.login} already has an account.`;
     return next();
@@ -90,13 +90,13 @@ const handleSignUp = async function (req, res, next) {
 };
 
 const handleLogin = function (req, res, next) {
-  if (!req.user) {
+  if (!req.enteringUser) {
     req.responseStatus = 400;
     req.errorMessage = `It seems there is no account for Github username ${req.userDetails.login}.`;
     return next();
   }
   const { sessions } = req.app.locals;
-  res.cookie('session', sessions.addSession(req.user.user_id));
+  res.cookie('session', sessions.addSession(req.enteringUser.user_id));
   res.redirect(req.query.targetPath);
 };
 
@@ -246,38 +246,34 @@ const serveEditProfilePage = (req, res) => {
   res.render('editProfile', { user: req.user });
 };
 
-const addQuestionVote = (req, res) => {
-  const {voteType, id: quesId} = req.body;
+const addVote = (req, res) => {
+  const {voteType, id, isQuestionVote} = req.body;
   const {dataStore} = req.app.locals;
-  dataStore.addQuestionVote(quesId, req.user.user_id, voteType)
-    .then(() => dataStore.getQuestionVoteCount( quesId).voteCount)
-    .then(currVoteCount => res.json({isSucceeded: true, currVoteCount}))
-    .catch(err => res.status(400).json({error: err.message}));
+  if(isQuestionVote){
+    dataStore.addQuestionVote(id, req.user.user_id, voteType)
+      .then(() => dataStore.getQuestionVoteCount( id))
+      .then(({voteCount}) => res.json({isSucceeded: true, voteCount}))
+      .catch(err => res.status(400).json({error: err.message}));
+  }else{
+    dataStore.addAnswerVote(id, req.user.user_id, voteType)
+      .then(() => dataStore.getAnswerVoteCount(id))
+      .then(({voteCount}) => res.json({isSucceeded: true, voteCount}))
+      .catch(err => res.status(400).json({error: err.message}));
+  }
 };
 
-const deleteQuestionVote = (req, res) => {
-  const {id: quesId} = req.body;
+const deleteVote = (req, res) => {
+  const {id, isQuestionVote} = req.body;
   const {dataStore} = req.app.locals;
-  dataStore.deleteQuestionVote(quesId, req.user.user_id)
-    .then(() => dataStore.getQuestionVoteCount( quesId).voteCount)
-    .then(currVoteCount => res.json({isSucceeded: true, currVoteCount}));
-};
-
-const addAnswerVote = (req, res) => {
-  const {voteType, id: ansId} = req.body;
-  const {dataStore} = req.app.locals;
-  dataStore.addAnswerVote(ansId, req.user.user_id, voteType)
-    .then(() => dataStore.getAnswerVoteCount(ansId).voteCount)
-    .then(currVoteCount => res.json({isSucceeded: true, currVoteCount}))
-    .catch(err => res.status(400).json({error: err.message}));
-};
-
-const deleteAnswerVote = (req, res) => {
-  const {id: ansId} = req.body;
-  const {dataStore} = req.app.locals;
-  dataStore.deleteAnswerVote(ansId, req.user.user_id)
-    .then(() => dataStore.getAnswerVoteCount(ansId).voteCount)
-    .then(currVoteCount => res.json({isSucceeded: true, currVoteCount}));
+  if(isQuestionVote){
+    dataStore.deleteQuestionVote(id, req.user.user_id)
+      .then(() => dataStore.getQuestionVoteCount( id))
+      .then(({voteCount}) => res.json({isSucceeded: true, voteCount}));
+  }else{
+    dataStore.deleteAnswerVote(id, req.user.user_id)
+      .then(() => dataStore.getAnswerVoteCount(id))
+      .then(({voteCount}) => res.json({isSucceeded: true, voteCount}));
+  }
 };
 
 module.exports = {
@@ -300,8 +296,6 @@ module.exports = {
   showProfilePage,
   saveAnswer,
   serveEditProfilePage,
-  addQuestionVote,
-  addAnswerVote,
-  deleteAnswerVote,
-  deleteQuestionVote
+  addVote,
+  deleteVote
 };

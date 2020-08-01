@@ -84,56 +84,35 @@ const removeVoteHighlights = function(upVote, downVote){
   downVote.classList.remove('chosen');
 };
 
-// const castVote = function(contentId, {upVote, count, downVote}, contentType) {
-//   const voteType = this.className.includes('upVote') ? 1 : 0;
-//   postData('/vote', {voteType, contentId, contentType})
-//     .then(({error, action, currVoteCount}) => {
-//       if(error){
-//         return;
-//       }
-//       removeVoteHighlights(upVote, downVote);
-//       count.innerText = currVoteCount;
-//       if(action === 'added'){
-//         this.classList.add('chosen');
-//       }
-//     });
-// };
-
-const handleVote = function(paths, id, voteBox){
+const handleVote = function(id, voteBox, isQuestionVote){
   const {count, upVote, downVote} = voteBox;
-  let endPoint = paths.addPath;
+  let endPoint = '/addVote';
   const isDeletion = this.className.includes('chosen');
   if(isDeletion){
-    endPoint = paths.deletePath;
+    endPoint = '/deleteVote';
   }
   const voteType = this.className.includes('upVote') ? 1 : 0;
-  postData(endPoint, {id, voteType})
-    .then(({currVoteCount, isSucceeded}) => {
+  postData(endPoint, {id, voteType, isQuestionVote})
+    .then(({voteCount, isSucceeded}) => {
       if(isSucceeded){
         removeVoteHighlights(upVote, downVote);
-        count.innerText = currVoteCount;
+        count.innerText = voteCount;
         !isDeletion && this.classList.add('chosen');
       }
     });
 };
 
-const questionVotePaths = 
-  {addPath: '/addQuestionVote', deletePath: '/deleteQuestionVote'};
-
-const answerVotePaths = 
-  {addPath: '/addAnswerVote', deletePath: '/deleteAnswerVote'};
-
-const addVoteListener = function(ancestorQuery, votePaths, id){
+const addVoteListener = function(ancestorQuery, id, isQuestionVote){
   const voteBox = getVoteElements(ancestorQuery);
   const {upVote, downVote} = voteBox;
-  upVote.onclick = handleVote.bind(upVote, votePaths, id, voteBox);
-  downVote.onclick = handleVote.bind(downVote, votePaths, id, voteBox);
+  upVote.onclick = handleVote.bind(upVote, id, voteBox, isQuestionVote);
+  downVote.onclick = handleVote.bind(downVote, id, voteBox, isQuestionVote);
 };
 
 const attachVoteListeners = function(){
-  addVoteListener('.questionBox', questionVotePaths, getQuestionBox().id);
+  addVoteListener('.questionBox', getQuestionBox().id, true);
   getAnswers().forEach(({id}) => {
-    addVoteListener(`.answerBox[id="${id}"]`, answerVotePaths, id);
+    addVoteListener(`.answerBox[id="${id}"]`, id, false);
   });
 };
 
