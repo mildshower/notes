@@ -108,14 +108,14 @@ const prepareAnswers = async function (answers, user, dataStore) {
   for (const answer of answers) {
     answer.created = getRelativeTime(answer.created);
     answer.userVote =
-      user && await dataStore.getAnswerVote(answer.id, user.user_id);
+      user && await dataStore.getVote(answer.id, user.user_id);
   }
   return answers;
 };
 
 const prepareQuestion = async function (question, user, dataStore) {
   question.userVote =
-    user && await dataStore.getQuestionVote(question.id, user.user_id);
+    user && await dataStore.getVote(question.id, user.user_id, true);
   const answers = await dataStore.getAnswersByQuestion(question.id);
   question.answers = await prepareAnswers(answers, user, dataStore);
   question.tags = await dataStore.getTags([question]);
@@ -249,31 +249,18 @@ const serveEditProfilePage = (req, res) => {
 const addVote = (req, res) => {
   const {voteType, id, isQuestionVote} = req.body;
   const {dataStore} = req.app.locals;
-  if(isQuestionVote){
-    dataStore.addQuestionVote(id, req.user.user_id, voteType)
-      .then(() => dataStore.getQuestionVoteCount( id))
-      .then(({voteCount}) => res.json({isSucceeded: true, voteCount}))
-      .catch(err => res.status(400).json({error: err.message}));
-  }else{
-    dataStore.addAnswerVote(id, req.user.user_id, voteType)
-      .then(() => dataStore.getAnswerVoteCount(id))
-      .then(({voteCount}) => res.json({isSucceeded: true, voteCount}))
-      .catch(err => res.status(400).json({error: err.message}));
-  }
+  dataStore.addVote(id, req.user.user_id, voteType, isQuestionVote)
+    .then(() => dataStore.getVoteCount(id, isQuestionVote))
+    .then(({voteCount}) => res.json({isSucceeded: true, voteCount}))
+    .catch(err => res.status(400).json({error: err.message}));
 };
 
 const deleteVote = (req, res) => {
   const {id, isQuestionVote} = req.body;
   const {dataStore} = req.app.locals;
-  if(isQuestionVote){
-    dataStore.deleteQuestionVote(id, req.user.user_id)
-      .then(() => dataStore.getQuestionVoteCount( id))
-      .then(({voteCount}) => res.json({isSucceeded: true, voteCount}));
-  }else{
-    dataStore.deleteAnswerVote(id, req.user.user_id)
-      .then(() => dataStore.getAnswerVoteCount(id))
-      .then(({voteCount}) => res.json({isSucceeded: true, voteCount}));
-  }
+  dataStore.deleteVote(id, req.user.user_id, isQuestionVote)
+    .then(() => dataStore.getVoteCount(id, isQuestionVote))
+    .then(({voteCount}) => res.json({isSucceeded: true, voteCount}));
 };
 
 module.exports = {

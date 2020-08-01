@@ -40,16 +40,6 @@ module.exports.userUpdation =
     SET display_name = ?, email = ?, location = ?, bio = ?
     WHERE user_id = ?;`;
 
-module.exports.ansVoteToggle =
-  `update answer_votes
-    set vote_type = ?
-    where answer_id = ? AND user = ?`;
-
-module.exports.quesVoteToggle = 
-  `update question_votes
-    set vote_type = ?
-    where question_id = ? AND user = ?`;
-
 module.exports.answersByUser = answerDetails + 'where ans.owner = ?';
 
 module.exports.answerByQuestion = answerDetails + 'where ans.question = ?';
@@ -101,13 +91,22 @@ module.exports.answerVoteByUser =
     from answer_votes
     where answer_id = ? AND user = ?`;
 
-module.exports.ansVoteAddition = 
-  `insert into answer_votes (vote_type, answer_id, user)
-    values (?, ?, ?)`;
-
-module.exports.quesVoteAddition =
-  `insert into question_votes (vote_type, question_id, user)
-    values (?, ?, ?)`;
+module.exports.voteQueries = {
+  ques: {
+    addition: `insert into question_votes (vote_type, question_id, user)
+      values (?, ?, ?)`,
+    toggle: `update question_votes
+      set vote_type = ?
+      where question_id = ? AND user = ?`
+  },
+  ans: {
+    addition: `insert into answer_votes (vote_type, answer_id, user)
+      values (?, ?, ?)`,
+    toggle: `update answer_votes
+      set vote_type = ?
+      where answer_id = ? AND user = ?`
+  }
+};
 
 module.exports.ansVoteDeletion = 
   `delete from answer_votes

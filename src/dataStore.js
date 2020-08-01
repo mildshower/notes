@@ -176,21 +176,10 @@ class DataStore {
     );
   }
 
-  getQuestionVote(quesId, userId) {
+  getVote(id, userId, isQuesVote) {
     return this.getRow(
-      query.questionVoteByUser,
-      [quesId, userId],
-      new Error('Fetching vote failed')
-    ).then(details => ({
-      isVoted: Boolean(details),
-      voteType: details && details.voteType,
-    }));
-  }
-
-  getAnswerVote(ansId, userId) {
-    return this.getRow(
-      query.answerVoteByUser,
-      [ansId, userId],
+      isQuesVote ? query.questionVoteByUser : query.answerVoteByUser,
+      [id, userId],
       new Error('Fetching vote failed')
     ).then(details => ({
       isVoted: Boolean(details),
@@ -207,56 +196,30 @@ class DataStore {
     return [...new Set(tags)];
   }
   
-  async addQuestionVote(quesId, userId, voteType){
-    const {isVoted} = await this.getQuestionVote(quesId, userId);
-    const additionQuery = isVoted ? 
-      query.quesVoteToggle : query.quesVoteAddition;
+  async addVote(id, userId, voteType, isQuesVote){
+    const {isVoted} = await this.getVote(id, userId, isQuesVote);
+    const voteQueries = isQuesVote ?
+      query.voteQueries.ques : query.voteQueries.ans;
+    const chosenQuery = isVoted ? voteQueries.toggle : voteQueries.addition;
     await this.runQuery(
-      additionQuery, 
-      [voteType, quesId, userId],
+      chosenQuery, 
+      [voteType, id, userId],
       new Error('Vote Addition Failed')
     );
   }
 
-  deleteQuestionVote(quesId, userId){
+  deleteVote(id, userId, isQuesVote){
     return this.runQuery(
-      query.quesVoteDeletion,
-      [quesId, userId],
+      isQuesVote ? query.quesVoteDeletion : query.ansVoteDeletion,
+      [id, userId],
       new Error('Vote Deletion Failed')
     );
   }
 
-  async addAnswerVote(ansId, userId, voteType){
-    const {isVoted} = await this.getAnswerVote(ansId, userId);
-    const additionQuery = isVoted ? 
-      query.ansVoteToggle : query.ansVoteAddition;
-    await this.runQuery(
-      additionQuery, 
-      [voteType, ansId, userId],
-      new Error('Vote Addition Failed')
-    );
-  }
-
-  deleteAnswerVote(ansId, userId){
-    return this.runQuery(
-      query.ansVoteDeletion,
-      [ansId, userId],
-      new Error('Vote Deletion Failed')
-    );
-  }
-
-  getQuestionVoteCount(quesId){
+  getVoteCount(id, isQuesVote){
     return this.getRow(
-      query.questionVoteCount,
-      [quesId],
-      new Error('Vote Count Fetching Error')
-    );
-  }
-
-  getAnswerVoteCount(ansId){
-    return this.getRow(
-      query.answerVoteCount,
-      [ansId],
+      isQuesVote ? query.questionVoteCount : query.answerVoteCount,
+      [id],
       new Error('Vote Count Fetching Error')
     );
   }

@@ -461,60 +461,32 @@ context('dataStore', () => {
     });
   });
 
-  context('#getQuestionVote', function () {
+  context('#getVote', function () {
     it('should give voteType when valid user and question id given', (done) => {
       const dbClient = {
         get: sinon.fake.yields(null, { voteType: 0 }),
       };
       const dataStore = new DataStore(dbClient);
 
-      dataStore.getQuestionVote(1, 1).then((actual) => {
+      dataStore.getVote(1, 1, true).then((actual) => {
         assert.deepStrictEqual(actual, { isVoted: true, voteType: 0 });
         assert.ok(dbClient.get.calledOnce);
+        assert.ok(dbClient.get.args[0][0].match(/question/));
         assert.deepStrictEqual(dbClient.get.args[0][1], [1, 1]);
         done();
       });
     });
 
-    it('should give no vote if invalid ids given', (done) => {
-      const dbClient = {
-        get: sinon.fake.yields(null, undefined),
-      };
-      const dataStore = new DataStore(dbClient);
-
-      dataStore.getQuestionVote(300, 300).then((actual) => {
-        assert.deepStrictEqual(actual, { isVoted: false, voteType: undefined });
-        assert.ok(dbClient.get.calledOnce);
-        assert.deepStrictEqual(dbClient.get.args[0][1], [300, 300]);
-        done();
-      });
-    });
-
-    it('should produce error if database produces', (done) => {
-      const dbClient = {
-        get: sinon.fake.yields(new Error('error')),
-      };
-      const dataStore = new DataStore(dbClient);
-
-      dataStore.getQuestionVote(300, 300).catch((err) => {
-        assert.deepStrictEqual(err.message, 'Fetching vote failed');
-        assert.ok(dbClient.get.calledOnce);
-        assert.deepStrictEqual(dbClient.get.args[0][1], [300, 300]);
-        done();
-      });
-    });
-  });
-
-  context('#getAnswerVote', function () {
     it('should give voteType when valid user and answer id given', (done) => {
       const dbClient = {
         get: sinon.fake.yields(null, { voteType: 0 }),
       };
       const dataStore = new DataStore(dbClient);
 
-      dataStore.getAnswerVote(1, 1).then((actual) => {
+      dataStore.getVote(1, 1).then((actual) => {
         assert.deepStrictEqual(actual, { isVoted: true, voteType: 0 });
         assert.ok(dbClient.get.calledOnce);
+        assert.ok(dbClient.get.args[0][0].match(/answer/));
         assert.deepStrictEqual(dbClient.get.args[0][1], [1, 1]);
         done();
       });
@@ -526,7 +498,7 @@ context('dataStore', () => {
       };
       const dataStore = new DataStore(dbClient);
 
-      dataStore.getAnswerVote(300, 300).then((actual) => {
+      dataStore.getVote(300, 300).then((actual) => {
         assert.deepStrictEqual(actual, { isVoted: false, voteType: undefined });
         assert.ok(dbClient.get.calledOnce);
         assert.deepStrictEqual(dbClient.get.args[0][1], [300, 300]);
@@ -540,7 +512,7 @@ context('dataStore', () => {
       };
       const dataStore = new DataStore(dbClient);
 
-      dataStore.getAnswerVote(300, 300).catch((err) => {
+      dataStore.getVote(300, 300).catch((err) => {
         assert.deepStrictEqual(err.message, 'Fetching vote failed');
         assert.ok(dbClient.get.calledOnce);
         assert.deepStrictEqual(dbClient.get.args[0][1], [300, 300]);
@@ -635,23 +607,44 @@ context('dataStore', () => {
     });
   });
 
-  context('#addQuestionVote', function() {
+  context('#addVote', function() {
     this.afterEach(() => sinon.restore());
     it('should add a question vote when valid credentials given', (done) => {
       const dbClient = {
         run: sinon.fake.yields(null)
       };
       const dataStore = new DataStore(dbClient);
-      const stubbedGetQuestionVote = sinon.stub(dataStore, 'getQuestionVote').resolves({isVoted: false});
+      const stubbedGetVote = sinon.stub(dataStore, 'getVote').resolves({isVoted: false});
 
-      dataStore.addQuestionVote(1, 1, 1)
+      dataStore.addVote(1, 1, 1, true)
         .then(actual => {
           assert.isUndefined(actual);
           assert.ok(dbClient.run.calledOnce);
-          assert.ok(stubbedGetQuestionVote.calledOnce);
+          assert.ok(stubbedGetVote.calledOnce);
+          assert.ok(dbClient.run.args[0][0].match(/question/));
           assert.deepStrictEqual(dbClient.run.args[0][1], [1, 1, 1]);
           assert.ok(dbClient.run.args[0][0].match(/insert/));
-          assert.deepStrictEqual(stubbedGetQuestionVote.args[0], [1, 1]);
+          assert.deepStrictEqual(stubbedGetVote.args[0], [1, 1, true]);
+          done();
+        });
+    });
+
+    it('should add a answer vote when valid credentials given', (done) => {
+      const dbClient = {
+        run: sinon.fake.yields(null)
+      };
+      const dataStore = new DataStore(dbClient);
+      const stubbedGetVote = sinon.stub(dataStore, 'getVote').resolves({isVoted: false});
+
+      dataStore.addVote(1, 1, 1, false)
+        .then(actual => {
+          assert.isUndefined(actual);
+          assert.ok(dbClient.run.calledOnce);
+          assert.ok(stubbedGetVote.calledOnce);
+          assert.ok(dbClient.run.args[0][0].match(/answer/));
+          assert.deepStrictEqual(dbClient.run.args[0][1], [1, 1, 1]);
+          assert.ok(dbClient.run.args[0][0].match(/insert/));
+          assert.deepStrictEqual(stubbedGetVote.args[0], [1, 1, false]);
           done();
         });
     });
@@ -661,57 +654,17 @@ context('dataStore', () => {
         run: sinon.fake.yields(null)
       };
       const dataStore = new DataStore(dbClient);
-      const stubbedGetQuestionVote = sinon.stub(dataStore, 'getQuestionVote').resolves({isVoted: true});
+      const stubbedGetVote = sinon.stub(dataStore, 'getVote').resolves({isVoted: true});
 
-      dataStore.addQuestionVote(1, 1, 1)
+      dataStore.addVote(1, 1, 1, true)
         .then(actual => {
           assert.isUndefined(actual);
           assert.ok(dbClient.run.calledOnce);
-          assert.ok(stubbedGetQuestionVote.calledOnce);
+          assert.ok(stubbedGetVote.calledOnce);
           assert.ok(dbClient.run.args[0][0].match(/set/));
+          assert.ok(dbClient.run.args[0][0].match(/question/));
           assert.deepStrictEqual(dbClient.run.args[0][1], [1, 1, 1]);
-          assert.deepStrictEqual(stubbedGetQuestionVote.args[0], [1, 1]);
-          done();
-        });
-    });
-
-    it('should produce error when running query makes error', (done) => {
-      const dbClient = {
-        run: sinon.fake.yields(new Error())
-      };
-      const dataStore = new DataStore(dbClient);
-      const stubbedQuestionGetVote = sinon.stub(dataStore, 'getQuestionVote').resolves({isVoted: true});
-
-      dataStore.addQuestionVote(1, 1, 1)
-        .catch(err => {
-          assert.deepStrictEqual(err.message, 'Vote Addition Failed');
-          assert.ok(dbClient.run.calledOnce);
-          assert.ok(stubbedQuestionGetVote.calledOnce);
-          assert.ok(dbClient.run.args[0][0].match(/set/));
-          assert.deepStrictEqual(dbClient.run.args[0][1], [1, 1, 1]);
-          assert.deepStrictEqual(stubbedQuestionGetVote.args[0], [1, 1]);
-          done();
-        });
-    });
-  });
-
-  context('#addAnswerVote', function() {
-    this.afterEach(() => sinon.restore());
-    it('should add a answer vote when valid credentials given', (done) => {
-      const dbClient = {
-        run: sinon.fake.yields(null)
-      };
-      const dataStore = new DataStore(dbClient);
-      const stubbedGetAnswerVote = sinon.stub(dataStore, 'getAnswerVote').resolves({isVoted: false});
-
-      dataStore.addAnswerVote(1, 1, 1)
-        .then(actual => {
-          assert.isUndefined(actual);
-          assert.ok(dbClient.run.calledOnce);
-          assert.ok(stubbedGetAnswerVote.calledOnce);
-          assert.deepStrictEqual(dbClient.run.args[0][1], [1, 1, 1]);
-          assert.ok(dbClient.run.args[0][0].match(/insert/));
-          assert.deepStrictEqual(stubbedGetAnswerVote.args[0], [1, 1]);
+          assert.deepStrictEqual(stubbedGetVote.args[0], [1, 1, true]);
           done();
         });
     });
@@ -721,16 +674,17 @@ context('dataStore', () => {
         run: sinon.fake.yields(null)
       };
       const dataStore = new DataStore(dbClient);
-      const stubbedGetAnswerVote = sinon.stub(dataStore, 'getAnswerVote').resolves({isVoted: true});
+      const stubbedGetVote = sinon.stub(dataStore, 'getVote').resolves({isVoted: true});
 
-      dataStore.addAnswerVote(1, 1, 1)
+      dataStore.addVote(1, 1, 1, false)
         .then(actual => {
           assert.isUndefined(actual);
           assert.ok(dbClient.run.calledOnce);
-          assert.ok(stubbedGetAnswerVote.calledOnce);
+          assert.ok(stubbedGetVote.calledOnce);
           assert.ok(dbClient.run.args[0][0].match(/set/));
+          assert.ok(dbClient.run.args[0][0].match(/answer/));
           assert.deepStrictEqual(dbClient.run.args[0][1], [1, 1, 1]);
-          assert.deepStrictEqual(stubbedGetAnswerVote.args[0], [1, 1]);
+          assert.deepStrictEqual(stubbedGetVote.args[0], [1, 1, false]);
           done();
         });
     });
@@ -740,32 +694,49 @@ context('dataStore', () => {
         run: sinon.fake.yields(new Error())
       };
       const dataStore = new DataStore(dbClient);
-      const stubbedGetAnswerVote = sinon.stub(dataStore, 'getAnswerVote').resolves({isVoted: true});
+      const stubbedGetVote = sinon.stub(dataStore, 'getVote').resolves({isVoted: true});
 
-      dataStore.addAnswerVote(1, 1, 1)
+      dataStore.addVote(1, 1, 1, false)
         .catch(err => {
           assert.deepStrictEqual(err.message, 'Vote Addition Failed');
           assert.ok(dbClient.run.calledOnce);
-          assert.ok(stubbedGetAnswerVote.calledOnce);
+          assert.ok(stubbedGetVote.calledOnce);
           assert.ok(dbClient.run.args[0][0].match(/set/));
           assert.deepStrictEqual(dbClient.run.args[0][1], [1, 1, 1]);
-          assert.deepStrictEqual(stubbedGetAnswerVote.args[0], [1, 1]);
+          assert.deepStrictEqual(stubbedGetVote.args[0], [1, 1, false]);
           done();
         });
     });
   });
 
-  context('#deleteQuestionVote', function() {
+  context('#deleteVote', function() {
     it('should delete a question vote when valid credentials given', (done) => {
       const dbClient = {
         run: sinon.fake.yields(null)
       };
       const dataStore = new DataStore(dbClient);
 
-      dataStore.deleteQuestionVote(1, 1)
+      dataStore.deleteVote(1, 1, true)
         .then(actual => {
           assert.isUndefined(actual);
           assert.ok(dbClient.run.calledOnce);
+          assert.ok(dbClient.run.args[0][0].match(/question/));
+          assert.deepStrictEqual(dbClient.run.args[0][1], [1, 1]);
+          done();
+        });
+    });
+
+    it('should delete a answer vote when valid credentials given', (done) => {
+      const dbClient = {
+        run: sinon.fake.yields(null)
+      };
+      const dataStore = new DataStore(dbClient);
+
+      dataStore.deleteVote(1, 1)
+        .then(actual => {
+          assert.isUndefined(actual);
+          assert.ok(dbClient.run.calledOnce);
+          assert.ok(dbClient.run.args[0][0].match(/answer/));
           assert.deepStrictEqual(dbClient.run.args[0][1], [1, 1]);
           done();
         });
@@ -777,7 +748,7 @@ context('dataStore', () => {
       };
       const dataStore = new DataStore(dbClient);
 
-      dataStore.deleteQuestionVote(100, 100)
+      dataStore.deleteVote(100, 100)
         .catch(err => {
           assert.deepStrictEqual(err.message, 'Vote Deletion Failed');
           assert.ok(dbClient.run.calledOnce);
@@ -787,49 +758,34 @@ context('dataStore', () => {
     });
   });
 
-  context('#deleteAnswerVote', function() {
-    it('should delete a question vote when valid credentials given', (done) => {
-      const dbClient = {
-        run: sinon.fake.yields(null)
-      };
-      const dataStore = new DataStore(dbClient);
-
-      dataStore.deleteAnswerVote(1, 1)
-        .then(actual => {
-          assert.isUndefined(actual);
-          assert.ok(dbClient.run.calledOnce);
-          assert.deepStrictEqual(dbClient.run.args[0][1], [1, 1]);
-          done();
-        });
-    });
-
-    it('should produce error when invalid credentials given', (done) => {
-      const dbClient = {
-        run: sinon.fake.yields(new Error())
-      };
-      const dataStore = new DataStore(dbClient);
-
-      dataStore.deleteAnswerVote(100, 100)
-        .catch(err => {
-          assert.deepStrictEqual(err.message, 'Vote Deletion Failed');
-          assert.ok(dbClient.run.calledOnce);
-          assert.deepStrictEqual(dbClient.run.args[0][1], [100, 100]);
-          done();
-        });
-    });
-  });
-
-  context('#getQuestionVoteCount', function() {
-    it('should give vote count for the content', (done) => {
+  context('#getVoteCount', function() {
+    it('should give question vote count for a question', (done) => {
       const dbClient = {
         get: sinon.fake.yields(null, {voteCount: 10})
       };
       const dataStore = new DataStore(dbClient);
 
-      dataStore.getQuestionVoteCount( 1)
+      dataStore.getVoteCount( 1, true)
         .then(voteCount => {
           assert.deepStrictEqual(voteCount, {voteCount: 10});
           assert.ok(dbClient.get.calledOnce);
+          assert.ok(dbClient.get.args[0][0].match(/question/));
+          assert.deepStrictEqual(dbClient.get.args[0][1], [1]);
+          done();
+        });
+    });
+
+    it('should give answer vote count for a answer', (done) => {
+      const dbClient = {
+        get: sinon.fake.yields(null, {voteCount: 10})
+      };
+      const dataStore = new DataStore(dbClient);
+
+      dataStore.getVoteCount( 1)
+        .then(voteCount => {
+          assert.deepStrictEqual(voteCount, {voteCount: 10});
+          assert.ok(dbClient.get.calledOnce);
+          assert.ok(dbClient.get.args[0][0].match(/answer/));
           assert.deepStrictEqual(dbClient.get.args[0][1], [1]);
           done();
         });
@@ -841,7 +797,7 @@ context('dataStore', () => {
       };
       const dataStore = new DataStore(dbClient);
 
-      dataStore.getQuestionVoteCount( 100)
+      dataStore.getVoteCount( 100)
         .catch(err => {
           assert.deepStrictEqual(err.message, 'Vote Count Fetching Error');
           assert.ok(dbClient.get.calledOnce);
@@ -850,37 +806,4 @@ context('dataStore', () => {
         });
     });
   });
-
-  context('#getAnswerVoteCount', function() {
-    it('should give vote count for the content', (done) => {
-      const dbClient = {
-        get: sinon.fake.yields(null, {voteCount: 10})
-      };
-      const dataStore = new DataStore(dbClient);
-
-      dataStore.getAnswerVoteCount( 1)
-        .then(voteCount => {
-          assert.deepStrictEqual(voteCount, {voteCount: 10});
-          assert.ok(dbClient.get.calledOnce);
-          assert.deepStrictEqual(dbClient.get.args[0][1], [1]);
-          done();
-        });
-    });
-
-    it('should produce error when database produces', (done) => {
-      const dbClient = {
-        get: sinon.fake.yields(new Error(), {})
-      };
-      const dataStore = new DataStore(dbClient);
-
-      dataStore.getAnswerVoteCount( 100)
-        .catch(err => {
-          assert.deepStrictEqual(err.message, 'Vote Count Fetching Error');
-          assert.ok(dbClient.get.calledOnce);
-          assert.deepStrictEqual(dbClient.get.args[0][1], [100]);
-          done();
-        });
-    });
-  });
-
 });
