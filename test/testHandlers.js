@@ -378,7 +378,7 @@ describe('POST', function() {
         .post('/deleteVote')
         .set('Cookie', `session=${id}`)
         .set('Content-Type', 'application/json')
-        .send({id: 1})
+        .send({ id: 1 })
         .expect(200)
         .expect('Content-Type', 'application/json; charset=utf-8')
         .expect(/{"isSucceeded":true/, done);

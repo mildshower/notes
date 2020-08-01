@@ -44,7 +44,7 @@ module.exports.answersByUser = answerDetails + 'where ans.owner = ?';
 
 module.exports.answerByQuestion = answerDetails + 'where ans.question = ?';
 
-module.exports.lastQuestions = 
+module.exports.lastQuestions =
   questionDetails + 'order by ques.created DESC;';
 
 module.exports.questionDetails =
@@ -52,11 +52,15 @@ module.exports.questionDetails =
 
 module.exports.userQuestions = questionDetails + 'where ques.owner = ?;';
 
-module.exports.searchQuestions = 
+module.exports.searchQuestionsByText =
   questionDetails +
   'where ques.title like $regExp or ques.body_text like $regExp;';
 
-module.exports.questionInsertion = 
+module.exports.searchQuestionsByUserName =
+  questionDetails +
+  'where ownerName like $regExp;';
+
+module.exports.questionInsertion =
   `insert into questions (title, body, body_text, owner)
     values (?, ?, ?, ?);`;
 
@@ -64,7 +68,7 @@ module.exports.userInsertion =
   `insert into users (github_username, avatar) 
     values (?, ?);`;
 
-module.exports.tagsInsertion = 
+module.exports.tagsInsertion =
   `insert into tags (tag_name)
     values (?);`;
 
@@ -108,7 +112,7 @@ module.exports.voteQueries = {
   }
 };
 
-module.exports.ansVoteDeletion = 
+module.exports.ansVoteDeletion =
   `delete from answer_votes
     where answer_id = ? and user = ?`;
 
@@ -125,7 +129,7 @@ module.exports.questionTags =
    left join questions_tags as ques_tags
    on ques_tags.tag_id = tags.id
    where ques_tags.question_id = ?;`;
-   
+
 module.exports.questionVoteCount =
   `select COALESCE(sum(REPLACE(vote_type,0,-1)),0) as voteCount
     from question_votes

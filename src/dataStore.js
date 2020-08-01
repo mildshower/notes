@@ -16,7 +16,7 @@ class DataStore {
     });
   }
 
-  runQuery(query, params, rejectionContent){
+  runQuery(query, params, rejectionContent) {
     return new Promise((resolve, reject) => {
       this.dbClient.run(query, params, err => {
         err && reject(rejectionContent || err);
@@ -25,7 +25,7 @@ class DataStore {
     });
   }
 
-  getRow(query, params, rejectionContent){
+  getRow(query, params, rejectionContent) {
     return new Promise((resolve, reject) => {
       this.dbClient.get(query, params, (err, row) => {
         err && reject(rejectionContent || err);
@@ -86,7 +86,7 @@ class DataStore {
   getQuestionDetails(id) {
     return this.getRow(query.questionDetails, [id])
       .then(details => {
-        if(!details) {
+        if (!details) {
           throw new Error('Wrong Id Provided');
         }
         return details;
@@ -94,7 +94,7 @@ class DataStore {
   }
 
   getLastQuestions(count) {
-    if(count < 0){
+    if (count < 0) {
       return Promise.reject(new Error('Invalid Count'));
     }
     return this.getRows(query.lastQuestions, [])
@@ -130,7 +130,7 @@ class DataStore {
   getTagId(tagName) {
     return new Promise((resolve, reject) => {
       this.dbClient.serialize(() => {
-        this.dbClient.run(query.tagsInsertion, tagName, () => {});
+        this.dbClient.run(query.tagsInsertion, tagName, () => { });
         this.dbClient.get(query.tagIdByTagName, tagName, (err, tag) => {
           err && reject(err);
           resolve(tag);
@@ -141,8 +141,8 @@ class DataStore {
 
   async addQuestionTags(questionId, tags) {
     for (let index = 0; index < tags.length; index++) {
-      const {id: tagId} = await this.getTagId(tags[index]);
-      this.dbClient.run(query.insertQuesTags, [tagId, questionId], () => {});
+      const { id: tagId } = await this.getTagId(tags[index]);
+      this.dbClient.run(query.insertQuesTags, [tagId, questionId], () => { });
     }
   }
 
@@ -160,8 +160,15 @@ class DataStore {
     return this.getRows(query.answerByQuestion, [id]);
   }
 
-  getMatchedQuestions(text) {
-    return this.getRows(query.searchQuestions, { $regExp: `%${text}%` });
+  getMatchedQuestions(searchText) {
+    const [, userName, text] = searchText.match(/(^:.*)?(.*)?/);
+    let searchQuery = query.searchQuestionsByText;
+    let searchExp = text;
+    if (userName) {
+      searchQuery = query.searchQuestionsByUserName;
+      searchExp = userName.slice(1);
+    }
+    return this.getRows(searchQuery, { $regExp: `%${searchExp}%` });
   }
 
   getUserAnswers(id) {

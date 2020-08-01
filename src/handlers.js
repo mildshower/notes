@@ -2,7 +2,7 @@ require('dotenv').config();
 const fetch = require('node-fetch');
 const Moment = require('moment');
 
-const getRelativeTime = function (time) {
+const getRelativeTime = function(time) {
   return new Moment(time).fromNow();
 };
 
@@ -14,7 +14,7 @@ const handleSessions = async (req, res, next) => {
   next();
 };
 
-const serveHomePage = async function (req, res) {
+const serveHomePage = async function(req, res) {
   const { dataStore } = req.app.locals;
   const questions = await dataStore.getLastQuestions(10);
   for (const question of questions) {
@@ -64,7 +64,7 @@ const getGithubDetails = async (code) => {
   return await details.json();
 };
 
-const isValidVerificationReq = async function (req, res, next) {
+const isValidVerificationReq = async function(req, res, next) {
   const { dataStore } = req.app.locals;
   if (req.query.error) {
     return res.redirect('/home');
@@ -104,7 +104,7 @@ const serveSignUpPage = (req, res) => {
   res.render('signUp', { targetPath: req.query.targetPath });
 };
 
-const prepareAnswers = async function (answers, user, dataStore) {
+const prepareAnswers = async function(answers, user, dataStore) {
   for (const answer of answers) {
     answer.created = getRelativeTime(answer.created);
     answer.userVote =
@@ -113,7 +113,7 @@ const prepareAnswers = async function (answers, user, dataStore) {
   return answers;
 };
 
-const prepareQuestion = async function (question, user, dataStore) {
+const prepareQuestion = async function(question, user, dataStore) {
   question.userVote =
     user && await dataStore.getVote(question.id, user.user_id, true);
   const answers = await dataStore.getAnswersByQuestion(question.id);
@@ -124,7 +124,7 @@ const prepareQuestion = async function (question, user, dataStore) {
   return question;
 };
 
-const serveQuestionPage = async function (req, res, next) {
+const serveQuestionPage = async function(req, res, next) {
   const dataStore = req.app.locals.dataStore;
   try {
     let question = await dataStore.getQuestionDetails(req.query.id);
@@ -134,21 +134,21 @@ const serveQuestionPage = async function (req, res, next) {
       Object.assign({ user: req.user, currPath: req.originalUrl }, question)
     );
   } catch (error) {
-    req.errorMessage = 'I\'m sorry! Couldn\'t found question with the given id'; 
+    req.errorMessage = 'I\'m sorry! Couldn\'t found question with the given id';
     next();
   }
 };
 
-const serveQuestionDetails = function (req, res) {
+const serveQuestionDetails = function(req, res) {
   req.app.locals.dataStore
     .getQuestionDetails(req.query.id)
     .then((question) => {
       return res.json(question);
     })
-    .catch((error) => res.status(404).json({error: error.message}));
+    .catch((error) => res.status(404).json({ error: error.message }));
 };
 
-const serveAnswers = function (req, res) {
+const serveAnswers = function(req, res) {
   req.app.locals.dataStore
     .getAnswersByQuestion(req.query.id)
     .then((answers) => {
@@ -156,7 +156,7 @@ const serveAnswers = function (req, res) {
     });
 };
 
-const serveAskQuestion = function (req, res) {
+const serveAskQuestion = function(req, res) {
   res.render('askQuestion', { user: req.user });
 };
 
@@ -175,7 +175,7 @@ const saveQuestion = async (req, res) => {
   res.json(insertionDetails);
 };
 
-const authorizeUser = function (req, res, next) {
+const authorizeUser = function(req, res, next) {
   if (req.user) {
     return next();
   }
@@ -185,7 +185,7 @@ const authorizeUser = function (req, res, next) {
   });
 };
 
-const serveSearchPage = async function (req, res) {
+const serveSearchPage = async function(req, res) {
   const { dataStore } = req.app.locals;
   const questions = await dataStore.getMatchedQuestions(req.query.searchQuery);
 
@@ -203,7 +203,7 @@ const serveSearchPage = async function (req, res) {
   });
 };
 
-const serveNotFound = function (req, res) {
+const serveNotFound = function(req, res) {
   res.status(req.responseStatus || 404).render('error', {
     user: req.user,
     errorMessage:
@@ -216,7 +216,6 @@ const showProfilePage = async (req, res, next) => {
   const { userId } = req.query;
   const { dataStore } = req.app.locals;
   const { user: requestedUser } = await dataStore.getUser('user_id', userId);
-  const { user } = req;
   if (!requestedUser) {
     req.errorMessage = 'We\'re sorry, we couldn\'t find the user you requested.';
     return next();
@@ -224,17 +223,10 @@ const showProfilePage = async (req, res, next) => {
   const questions = await dataStore.getUserQuestions(userId);
   const answers = await dataStore.getUserAnswers(userId);
   const tags = await dataStore.getTags(questions);
-  res.render('profile', {
-    requestedUser,
-    user,
-    questions,
-    tags,
-    answers,
-    currPath: `/profile?userId=${userId}`,
-  });
+  res.render('profile', { requestedUser, user: req.user, questions, tags, answers, currPath: `/profile?userId=${userId}` });
 };
 
-const saveAnswer = function (req, res) {
+const saveAnswer = function(req, res) {
   const { body, bodyText, quesId } = req.body;
   req.app.locals.dataStore
     .addAnswer(body, bodyText, quesId, req.user.user_id)

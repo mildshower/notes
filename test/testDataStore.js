@@ -210,11 +210,11 @@ context('dataStore', () => {
     it('it should add question', (done) => {
       const dbClient = {
         run: sinon.fake.yields(null),
-        get: sinon.fake.yields(null, {id: 1}),
+        get: sinon.fake.yields(null, { id: 1 }),
         serialize: (cb) => cb()
       };
       const dataStore = new DataStore(dbClient);
-      dataStore.addQuestion({title: 'title', body: 'body', bodyText: 'bodyText', tags: ['tag']}, 1)
+      dataStore.addQuestion({ title: 'title', body: 'body', bodyText: 'bodyText', tags: ['tag'] }, 1)
         .then(details => {
           assert.ok(dbClient.run.calledThrice);
           assert.ok(dbClient.get.calledTwice);
@@ -222,13 +222,13 @@ context('dataStore', () => {
           assert.deepStrictEqual(dbClient.run.args[1][1], 'tag');
           assert.deepStrictEqual(dbClient.run.args[2][1], [1, 1]);
           assert.deepStrictEqual(dbClient.get.args[1][1], 'tag');
-          assert.deepStrictEqual(details, {id: 1});
+          assert.deepStrictEqual(details, { id: 1 });
           done();
         });
     });
   });
 
-  context('#addNewUser', function () {
+  context('#addNewUser', function() {
     const name = 'testUser';
     const avatarUrl = 'avatarUrl.com/u/58025792?v=4';
 
@@ -283,7 +283,7 @@ context('dataStore', () => {
     });
   });
 
-  describe('#getUser', function () {
+  describe('#getUser', function() {
     it('should get user details when the user is in present', (done) => {
       const details = {
         user: {
@@ -348,7 +348,7 @@ context('dataStore', () => {
     });
   });
 
-  context('#updateUserDetails', function () {
+  context('#updateUserDetails', function() {
     const name = 'testUser';
     const email = 'testUser.com';
     const location = 'Bangalore';
@@ -398,7 +398,7 @@ context('dataStore', () => {
     });
   });
 
-  context('#getUserQuestions', function () {
+  context('#getUserQuestions', function() {
     it('should give all the questions of a particular', (done) => {
       const questions = [
         {
@@ -421,7 +421,7 @@ context('dataStore', () => {
     });
   });
 
-  context('#getMatchedQuestions', function () {
+  context('#getMatchedQuestions', function() {
     it('should give all the questions of a particular query', (done) => {
       const questions = [
         {
@@ -442,9 +442,31 @@ context('dataStore', () => {
         done();
       });
     });
+
+    it('should give all the questions of a particular user', (done) => {
+      const questions = [
+        {
+          id: 1,
+          title: 'How to write arrow functions',
+          body_text: 'here is a sample function',
+          ownerName: 'john'
+        },
+      ];
+      const dbClient = {
+        all: sinon.fake.yields(null, questions),
+      };
+      const dataStore = new DataStore(dbClient);
+
+      dataStore.getMatchedQuestions(':john').then((actual) => {
+        assert.deepStrictEqual(actual, questions);
+        assert.ok(dbClient.all.calledOnce);
+        assert.deepStrictEqual(dbClient.all.args[0][1], { $regExp: '%john%' });
+        done();
+      });
+    });
   });
 
-  context('#getAnswersByQuestion', function () {
+  context('#getAnswersByQuestion', function() {
     it('should give all the answers of a particular question', (done) => {
       const answers = [{ id: 1 }];
       const dbClient = {
@@ -521,7 +543,7 @@ context('dataStore', () => {
     });
   });
 
-  context('#getUserAnswers', function () {
+  context('#getUserAnswers', function() {
     it('should give all the answers of a particular user', (done) => {
       const answers = [{ id: 1 }];
       const dbClient = {
@@ -552,7 +574,7 @@ context('dataStore', () => {
     });
   });
 
-  context('#addAnswer', function () {
+  context('#addAnswer', function() {
     it('should add the answer without throwing error', (done) => {
       const dbClient = {
         run: sinon.fake.yields(null),
@@ -594,10 +616,10 @@ context('dataStore', () => {
   context('#getTags', () => {
     it('should give all the tags used in questions', (done) => {
       const dbClient = {
-        all: sinon.fake.yields(null, [{tag_name: 'sqlite3'}, {tag_name: 'javascript'}]),
+        all: sinon.fake.yields(null, [{ tag_name: 'sqlite3' }, { tag_name: 'javascript' }]),
       };
       const dataStore = new DataStore(dbClient);
-      dataStore.getTags([{id: 1}])
+      dataStore.getTags([{ id: 1 }])
         .then(tags => {
           assert.ok(dbClient.all.calledOnce);
           assert.deepStrictEqual(dbClient.all.args[0][1], 1);
@@ -761,13 +783,13 @@ context('dataStore', () => {
   context('#getVoteCount', function() {
     it('should give question vote count for a question', (done) => {
       const dbClient = {
-        get: sinon.fake.yields(null, {voteCount: 10})
+        get: sinon.fake.yields(null, { voteCount: 10 })
       };
       const dataStore = new DataStore(dbClient);
 
       dataStore.getVoteCount( 1, true)
         .then(voteCount => {
-          assert.deepStrictEqual(voteCount, {voteCount: 10});
+          assert.deepStrictEqual(voteCount, { voteCount: 10 });
           assert.ok(dbClient.get.calledOnce);
           assert.ok(dbClient.get.args[0][0].match(/question/));
           assert.deepStrictEqual(dbClient.get.args[0][1], [1]);
@@ -777,13 +799,13 @@ context('dataStore', () => {
 
     it('should give answer vote count for a answer', (done) => {
       const dbClient = {
-        get: sinon.fake.yields(null, {voteCount: 10})
+        get: sinon.fake.yields(null, { voteCount: 10 })
       };
       const dataStore = new DataStore(dbClient);
 
       dataStore.getVoteCount( 1)
         .then(voteCount => {
-          assert.deepStrictEqual(voteCount, {voteCount: 10});
+          assert.deepStrictEqual(voteCount, { voteCount: 10 });
           assert.ok(dbClient.get.calledOnce);
           assert.ok(dbClient.get.args[0][0].match(/answer/));
           assert.deepStrictEqual(dbClient.get.args[0][1], [1]);
