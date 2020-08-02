@@ -3,7 +3,7 @@
 }
 
 body {
-  margin: 0 5px;
+  margin: 0 2px;
 }
 
 a {
@@ -12,14 +12,14 @@ a {
 
 /* Style for header */
 .header {
-  height: 100px;
-  background-image: linear-gradient(rgb(255, 255, 255), rgb(240, 240, 240));
+  height: 80px;
   display: flex;
   align-items: center;
   position: sticky;
   top: 0px;
   z-index: 100;
   padding: 0 2vw 0 0;
+  background: #a6e3e9;
 }
 
 /* Style for Icon */
@@ -36,7 +36,7 @@ a {
 
 #icon:hover,
 #icon:focus {
-  filter: drop-shadow(4px 4px 3px rgb(138, 138, 138));
+  filter: drop-shadow(4px 4px 2px rgba(66, 66, 66, 0.3));
 }
 /* style for icon ends */
 
@@ -46,15 +46,15 @@ a {
   height: 42%;
   display: flex;
   align-items: center;
-  background-color: white;
+  background-color: #e3fdfd;
   border-radius: 5px;
   flex-grow: 1;
   margin: 0 5vw;
-  border: 1px solid rgb(202, 202, 202);
+  border: 1px solid #a6e3e9;
 }
 
 #searchBar:focus-within {
-  border: 1px solid rgb(161, 161, 161);
+  border: 1px solid #71c9ce;
 }
 
 #searchBar > form{
@@ -67,11 +67,15 @@ a {
   border: hidden;
   padding-left: 5px;
   outline: none;
-  font-size: 22px;
+  background-color: #e3fdfd;
+  color: #0a4a4d;
+  font-size: 19px;
 }
 
 #searchBar input::placeholder {
-  color: rgb(202, 202, 202);
+  font-weight: 100;
+  color: #71c9ce;
+  font-size: 18px;
 }
 
 #searchBar > img {
@@ -83,17 +87,16 @@ a {
 
 
 .headerButton {
-  margin: 0 0.5vw;
-  height: 27px;
-  font-size: 24px;
+  font-weight: 100;
+  margin: 0 2px;
+  height: 20px;
+  font-size: 18px;
   display: flex;
   align-items: center;
   outline: none;
   cursor: pointer;
-  border-radius: 3px;
   padding: 8px 10px;
-  border: 1px solid rgb(185, 185, 185);
-  color: rgb(61, 61, 61);
+  color: #0a4a4d;
   flex-shrink: 0;
 }
 
@@ -105,8 +108,7 @@ a {
 
 .headerButton:hover,
 .headerButton:focus {
-  background-color: rgb(228, 228, 228);
+  background-color: #8fdbdf;
   color: black;
-  border: 1px solid rgb(107, 107, 107);
 }
 /* styles for headerActions ends */
