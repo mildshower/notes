@@ -45,22 +45,18 @@ h1 {
   border-top: none;
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;
+  background: white;
+}
+
+.ql-toolbar{
+  background: white !important;
 }
 
 .newQuestionBox {
-  /* border: 1px solid rgb(92, 92, 92);
-  margin: 0 10vw;
-  padding: 40px;
-  display: flex;
-  border-radius: 2px; */
-  
   flex-direction: column;
   margin: 20px 10vw;
   display: flex;
-  background-color: white;
   border-radius: 2px;
-  box-shadow: 1px 1px 8px rgba(1,1,1,0.1);
-  padding: 20px;
 }
 
 #tagInputHolder,
@@ -70,8 +66,8 @@ h1 {
 }
 
 .newQuestionBox > label {
-  font-size: 23px;
-  font-weight: 300px;
+  font-size: 25px;
+  color: rgb(61, 61, 61);
 }
 
 #titleField, #tagInputHolder {
@@ -82,7 +78,13 @@ h1 {
   outline: none;
   border-radius: 5px;
   overflow-x: scroll;
+  background: white;
 }
+
+ #tagInputHolder{
+   height: 36px;
+   align-items: center;
+ }
 
 
 #titleField:focus {
@@ -94,7 +96,7 @@ h1 {
 }
 
 #tagInputHolder input {
-  font-size: 20px;
+  font-size: 18px;
   /* height: 25px; */
   padding: 5px 10px;
   height: 90%;
@@ -118,7 +120,7 @@ h1 {
 }
 
 .tag{
-  color: rgb(44, 87, 119);
+  /* color: rgb(44, 87, 119);
   background-color: rgb(220, 234, 243);
   text-decoration: none;
   cursor: pointer;
@@ -127,7 +129,18 @@ h1 {
   margin: 0px 5px;
   font-size: 18px;
   border-radius: 4px;
-  border: 1px solid rgb(173, 173, 173);
+  border: 1px solid rgb(173, 173, 173); */
+
+  color: #0a4a4d;
+  background-color: #ccf0f3;
+  text-decoration: none;
+  cursor: pointer;
+  padding: 4px 8px;
+  margin: 5px;
+  font-size: 14px;
+  border-top-right-radius: 8px;
+  border-bottom-left-radius: 8px;
+  font-weight: 400;
 }
 
 .tag:focus,
