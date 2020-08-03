@@ -3,6 +3,7 @@ head
   meta(charset='UTF-8')
   meta(name='viewport' content='width=device-width, initial-scale=1.0')
   title heapOverflow | Edit profile
+  link(rel='icon' href='images/favicon.svg')
   link(rel='stylesheet' href='css/editProfile.css')
 body
   include header.pug
@@ -35,5 +36,5 @@ body
             input#bio(type='bio' name='bio' placeholder='ex. I am a developer.')
         .bottom-lane
           button#submit(type='submit') Save
-          input#cancel(type='button' value='Cancel' onclick=`window.location.href='/profile?userId=${user.user_id}'`)
+          a#cancel(href=`/profile?userId=${user.user_id}`) Cancel
 
