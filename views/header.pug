@@ -12,9 +12,8 @@ script(src="scripts/header.js")
       else
         input(type='search' id='searchField' onsearch='search()' autocomplete="off" placeholder='Search..' name='searchQuery')
   if (user)
-    a#profileButton.headerButton(href=`/profile?userId=${user.user_id}`)
+    a#profileButton(href=`/profile?userId=${user.user_id}`)
       img(src=user.avatar alt='avatar')
-      ='Profile'
   else
     a.headerButton#login(href=`/entry?type=login&targetPath=${currPath}`)
       ='Login'

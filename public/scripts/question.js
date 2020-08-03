@@ -33,9 +33,9 @@ const getEditorConfig = () => ({
   ],
   modules: {
     toolbar: [
-      ['bold', 'italic', 'underline', { script: 'sub' }, { script: 'super' }],
+      ['bold', 'underline'],
       ['blockquote', 'code-block'],
-      [{ color: [] }, 'link', { header: [false, 1, 2, 3, 4, 5, 6] }],
+      ['link', { header: [false, 1, 2, 3, 4, 5, 6] }],
     ],
     syntax: true,
   },

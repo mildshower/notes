@@ -27,16 +27,10 @@ body
       .tagStrip
         each tag in tags
           .tag #{tag}
-      .modifier
-        .options
-          //- .editButton
-          //- .commentsBox
-          //- .commentBar
-        .ownerInfo
-          p modified #{lastModified}
-          p 
-            | by 
-            a.strong(href=`/profile?userId=${owner}`) #{ownerName}
+      .options
+        //- .editButton
+        //- .commentsBox
+        //- .commentBar
   p#answersHead Answers (#{answers.length})
   each answer in answers
     .answerBox(id=answer.id)
@@ -49,17 +43,14 @@ body
             img(src=`images/arrow.svg` alt="voteUp" onclick= user?'':`showPopUp('${currPath}')`)
       .body
         .editor
-        .modifier
-          .options
-            //- .editButton
-            //- .commentsBox
-            //- .commentBar
-          .ownerInfo
-            p answered #{answer.created}
-            p 
-              | by 
-              a.strong(href=`/profile?userId=${answer.owner}`) #{answer.ownerName}
-    hr.separator
+        .options
+          //- .editButton
+          //- .commentsBox
+          //- .commentBar
+        p.status
+          img.smallAvatar(src=answer.ownerAvatar)
+          a.strong(href=`/profile?userId=${answer.owner}`) #{answer.ownerName}
+          | &nbsp;&nbsp;#{answer.created}
   if(user)
     #answerBody
       #editor

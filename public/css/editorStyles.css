@@ -1,5 +1,5 @@
 .ql-editor {
-  font-size: 19px;
+  font-size: 17px;
   line-height: 1.5;
 }
 
@@ -19,13 +19,14 @@
 }
 
 .ql-snow.ql-toolbar {
-  border: 1px solid rgb(163, 163, 163);
+  border: 1px solid rgb(202, 202, 202));
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
 }
 
 .ql-snow .ql-editor pre.ql-syntax {
   background-color: #eff0f1;
+  background-color: #f1f9fa;
   color: black;
   overflow: visible;
   border-radius: 5px;

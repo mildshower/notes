@@ -8,6 +8,7 @@ include popUp.pug
     a#askQuestionBtn(onclick= 'showPopUp(\'/askQuestion\')') Ask Question
 if created
   p#questionStatus
-    span Asked&nbsp;
-    | #{created}
+    img.smallAvatar(src=ownerAvatar)
+    a.strong(href=`/profile?userId=${owner}`) #{ownerName}
+    | &nbsp;&nbsp;#{created}
 hr.separator

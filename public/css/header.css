@@ -101,10 +101,17 @@ a {
   flex-shrink: 0;
 }
 
-.headerButton > img {
-  height: 85%;
-  margin: 0 8px 0 0;
+#profileButton{
+  height: 35px;
+  width: 35px;
   border-radius: 50%;
+  overflow: hidden;
+  border: 1px solid #26868b;
+}
+
+#profileButton > img {
+  height: 100%;
+  width: 100%;
 }
 
 .headerButton:hover,

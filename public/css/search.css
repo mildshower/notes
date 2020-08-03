@@ -99,8 +99,9 @@ body{
   font-weight: 400;
 }
 
-.questionBox > .details > .tags > .tag:hover {
-   background-color: rgb(186, 219, 238);
+.questionBox > .details > .tags > .tag:hover,
+.questionBox > .details > .tags > .tag:focus {
+  background-color: #bbe4e7;
 }
 
 .questionBox > .details > .status{
@@ -158,16 +159,3 @@ body{
   height: 28px;
   margin: 0 8px 0 0;
 }
-
-/* .answersCount.hasCorrect{
-  background-color: rgba(0, 153, 0, 1);
-  color: white;
-} */
-
-/* .questionBox > .counts > .answersCount{
-  border: 2px solid rgba(0, 153, 0, 1);
-}
-
-.questionBox > .counts > .voteCount{
-  border: 2px solid rgb(53, 155, 233);
-} */
