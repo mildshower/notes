@@ -1,5 +1,5 @@
 *{
-  font-family: sans-serif;
+  font-family: 'Mulish', sans-serif;
 }
 
 .errorContainer {
@@ -12,7 +12,7 @@
 
 .errorContainer > h1 {
   font-size: 170px;
-  font-weight: 100;
+  font-weight: 400;
   color: rgb(80, 80, 80);
   margin: 10px;
 }

@@ -1,5 +1,5 @@
 * {
-  font-family: sans-serif;
+  font-family: 'Mulish', sans-serif;
 }
 
 a {
@@ -8,45 +8,43 @@ a {
 
 #titleBar{
   display: flex;
-  margin: 30px 10vw 10px;
-  /* align-items: center; */
+  margin: 30px 10vw 0px;
 }
 
 #titleBar h1 {
-  font-weight: 100;
-  font-size: 35px;
+  font-weight: 400;
+  font-size: 32px;
   margin: 20px 25px 20px 0;
   flex-grow: 1;
+  color: #0a4a4d;
   /* word-break: break-all; */
 }
 
 #titleBar a {
   margin: 20px 1vw 20px 5vw;
-  font-size: 23px;
-  font-weight: lighter;
+  font-size: 20px;
+  font-weight: 400;
   outline: none;
   text-align: center;
   flex-shrink: 0;
   cursor: pointer;
   border-radius: 3px;
   padding: 8px 10px;
-  border: 1px solid rgb(185, 185, 185);
-  color: rgb(61, 61, 61);
-  /* width: 162.71px; */
-  height: 26.94px;
+  color: #0a4a4d;
+  background: #cbf1f5;
 }
 
 #titleBar a:focus,
 #titleBar a:hover {
-  background-color: rgb(228, 228, 228);
+  background-color: #a6e3e9;
   color: black;
-  border: 1px solid rgb(107, 107, 107);
 }
 
 #questionStatus{
   margin: 0px 10vw 10px;
-  font-size: 25px;
-  font-weight: 100;
+  padding: 0 10px;
+  font-size: 20px;
+  font-weight: 400;
   color: gray;
 }
 
@@ -55,5 +53,7 @@ a {
 }
 
 .separator{
-  margin: 20px 10vw;
+  margin: 10px 10vw;
+  border-top: 1px solid #0a4a4d;
+  border-bottom: none;
 }

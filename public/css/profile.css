@@ -1,6 +1,6 @@
 
 *{
-  font-family: sans-serif;
+  font-family: 'Mulish', sans-serif;
 }
 
 .outerContainer{
@@ -141,6 +141,6 @@
   margin: 0;
   padding-bottom: 5px;
   color: rgb(59, 59, 59);
-  font-weight: 100;
+  font-weight: 400;
   border-bottom: 1px solid rgb(175, 175, 175);
 }

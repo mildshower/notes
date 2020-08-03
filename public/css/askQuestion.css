@@ -1,5 +1,5 @@
 * {
-  font-family: sans-serif;
+  font-family: 'Mulish', sans-serif;
 }
 
 .ql-editor {
@@ -9,7 +9,7 @@
 }
 
 h1 {
-  font-weight: 100;
+  font-weight: 400;
   margin: 30px 10vw;
   font-size: 40px;
 }

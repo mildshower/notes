@@ -1,5 +1,5 @@
 * {
-  font-family: sans-serif;
+  font-family: 'Mulish', sans-serif;
 }
 
 body {
@@ -28,6 +28,7 @@ a {
   margin: 0 25px;
   cursor: pointer;
   transition: filter 0.13s ease-in-out;
+  outline: none;
 }
 
 #icon > img {
@@ -73,7 +74,7 @@ a {
 }
 
 #searchBar input::placeholder {
-  font-weight: 100;
+  font-weight: 400;
   color: #71c9ce;
   font-size: 18px;
 }
@@ -87,7 +88,7 @@ a {
 
 
 .headerButton {
-  font-weight: 100;
+  font-weight: 400;
   margin: 0 2px;
   height: 20px;
   font-size: 18px;

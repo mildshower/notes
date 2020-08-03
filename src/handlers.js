@@ -23,7 +23,7 @@ const serveHomePage = async function(req, res) {
   }
   res.render('home', {
     user: req.user,
-    title: 'Last 10 Questions',
+    title: 'Latest Questions',
     questions,
     currPath: '/home',
   });

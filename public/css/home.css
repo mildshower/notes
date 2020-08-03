@@ -29,6 +29,7 @@ a{
   align-items: center;
   display: flex;
   font-size: 18px;
+  font-weight: 500;
 }
 
 .topQuestionsBox > .questionDetails{
@@ -48,6 +49,7 @@ a{
   color: rgb(0, 99, 190);
   font-size: 25px;
   line-height: 35px;
+  font-weight: 500;
 }
 
 .topQuestionsBox > .questionDetails > .questionTitle > a:visited{
