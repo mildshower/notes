@@ -2,6 +2,10 @@
   font-family: 'Mulish', sans-serif;
 }
 
+body{
+  background-color: #f1fcfc;
+}
+
 .ql-editor {
   min-height: 200px;
   max-height: 350px;
@@ -9,60 +13,70 @@
 }
 
 h1 {
-  font-weight: 400;
+  font-weight: 300;
   margin: 30px 10vw;
-  font-size: 40px;
+  font-size: 30px;
 }
 
 #postButton {
-  margin: 30px 10vw;
-  font-size: 23px;
-  font-weight: lighter;
-  box-shadow: none;
+  margin: 0px 10vw 150px;
+  font-size: 20px;
+  font-weight: 400;
   outline: none;
+  text-align: center;
+  flex-shrink: 0;
   cursor: pointer;
   border-radius: 3px;
   padding: 8px 10px;
-  border: 1px solid rgb(185, 185, 185);
-  color: rgb(61, 61, 61);
+  color: #0a4a4d;
+  background: #a6e3e9;
+  height: fit-content;
+  border: none;
 }
 
 #postButton:focus,
 #postButton:hover {
-   background-color: rgb(228, 228, 228);
+  background-color: #82d5dd;
   color: black;
-  border: 1px solid rgb(107, 107, 107);
 }
 
 #bodyField {
-  border: 1px solid rgb(163, 163, 163);
+  border: 1px solid rgb(202, 202, 202);
   border-top: none;
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;
 }
 
 .newQuestionBox {
-  border: 1px solid rgb(92, 92, 92);
+  /* border: 1px solid rgb(92, 92, 92);
   margin: 0 10vw;
   padding: 40px;
   display: flex;
+  border-radius: 2px; */
+  
   flex-direction: column;
+  margin: 20px 10vw;
+  display: flex;
+  background-color: white;
   border-radius: 2px;
+  box-shadow: 1px 1px 8px rgba(1,1,1,0.1);
+  padding: 20px;
 }
 
 #tagInputHolder,
 .newQuestionBox > input,
 .newQuestionBox > label {
-  margin: 10px 0;
+  margin: 5px 0;
 }
 
 .newQuestionBox > label {
-  font-size: 35px;
+  font-size: 23px;
+  font-weight: 300px;
 }
 
 #titleField, #tagInputHolder {
-  font-size: 25px;
-  padding: 5px 10px;
+  font-size: 18px;
+  padding: 0 10px;
   display: flex;
   border: 1px solid rgb(163, 163, 163);
   outline: none;
