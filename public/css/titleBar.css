@@ -31,12 +31,13 @@ a {
   border-radius: 3px;
   padding: 8px 10px;
   color: #0a4a4d;
-  background: #cbf1f5;
+  background: #a6e3e9;
+  /* box-shadow: 1px 1px 8px rgba(1,1,1,0.1); */
 }
 
 #titleBar a:focus,
 #titleBar a:hover {
-  background-color: #a6e3e9;
+  background-color: #82d5dd;
   color: black;
 }
 

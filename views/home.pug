@@ -15,22 +15,19 @@ body
   else
     each question in questions
       .topQuestionsBox(id=question.id)
-        p.voteCount
-          | #{question.voteCount}
-          br
-          | Votes
-        p(class=`answerCount ${question.hasCorrectAnswer?'hasCorrect':''}`)
-          | #{question.answerCount}
-          br
-          | Answers
         .questionDetails
           .questionTitle
             a(href='/question?id='+question.id) #{question.title}
-          .otherDetails
-            .tags
-              each tag in question.tags
-                .tag #{tag}
-            p.status
-              | Asked #{question.created} by 
-              a.strong(href=`/profile?userId=${question.owner}`) #{question.ownerName}
-      hr.separator
+          .tags
+            each tag in question.tags
+              .tag #{tag}
+          p.status
+            img.smallAvatar(src=question.ownerAvatar)
+            a.strong(href=`/profile?userId=${question.owner}`) #{question.ownerName}
+            | &nbsp;&nbsp;#{question.created} 
+        .answerCount
+          p.count(class= question.hasCorrectAnswer?'hasCorrect':'') #{question.answerCount}
+          p.countType Answers 
+        .voteCount
+          p.count #{question.voteCount}
+          p.countType Votes 

@@ -2,39 +2,51 @@ a{
   text-decoration: none;
 }
 
+body{
+  background-color: #f1fcfc;
+}
+
+
 .strong {
-  font-weight: bold;
-  color: black;
+  font-weight: 500;
+  color: #03292b;
+  font-size: 17px;
+  border-bottom: 1px solid transparent;
 }
 
 .strong:hover{
-  border-bottom: 2px solid black;
+  border-bottom: 1px solid #03292b;
 }
 
 .topQuestionsBox{
-  margin: 10px 10vw;
+  margin: 20px 10vw;
   display: flex;
-  padding: 20px 5px;
+  /* padding: 20px 5px; */
+  /* background-color: #f1fcfc; */
+  background-color: white;
+  border-radius: 2px;
+  /* border: 1px solid #0a4a4d; */
+  box-shadow: 1px 1px 8px rgba(1,1,1,0.1);
 }
 
 .topQuestionsBox > .voteCount,
 .topQuestionsBox > .answerCount{
-  width: 85px;
-  height: 70px;
+  width: fit-content;
+  /* height: 70px; */
   border-radius: 15px;
-  margin:  0 10px;
+  margin:  15px 20px;
   flex-shrink: 0;
   text-align: center;
   justify-content: center;
   align-items: center;
   display: flex;
-  font-size: 18px;
+  flex-direction: column;
   font-weight: 500;
 }
 
 .topQuestionsBox > .questionDetails{
-  background-color: aliceblue;
-  margin:  0 10px;
+  /* background-color: aliceblue; */
+  /* margin:  0 10px; */
   flex-grow: 1;
   display: flex;
   flex-direction: column;
@@ -46,48 +58,54 @@ a{
 }
 
 .topQuestionsBox > .questionDetails > .questionTitle > a{
-  color: rgb(0, 99, 190);
-  font-size: 25px;
+  color: #10757a;
+  font-size: 22px;
   line-height: 35px;
   font-weight: 500;
 }
 
+
 .topQuestionsBox > .questionDetails > .questionTitle > a:visited{
-  color: rgb(0, 99, 190);
+  color: #10757a;
 }
 
-.topQuestionsBox > .questionDetails > .otherDetails{
-  flex-shrink: 0;
-  display: flex;
+.topQuestionsBox > .questionDetails > .questionTitle > a:hover,
+.topQuestionsBox > .questionDetails > .questionTitle > a:focus{
+  color: #0a4a4d;
 }
 
-.topQuestionsBox > .questionDetails > .otherDetails > .tags{
+.topQuestionsBox > .questionDetails > .tags{
   flex-grow: 1;
   display: flex;
 }
 
-.topQuestionsBox > .questionDetails > .otherDetails > .tags > .tag {
-  color: rgb(44, 87, 119);
-  background-color: rgb(220, 234, 243);
+.topQuestionsBox > .questionDetails > .tags > .tag {
+  color: #0a4a4d;
+  background-color: #ccf0f3;
   text-decoration: none;
   cursor: pointer;
-  padding: 5px;
+  padding: 4px 8px;
   margin: 5px;
-  font-size: 17px;
-  border-radius: 4px;
-  border: 1px solid rgb(173, 173, 173);
+  font-size: 14px;
+  border-top-right-radius: 8px;
+  border-bottom-left-radius: 8px;
+  font-weight: 400;
+  /* border: 1px solid rgb(173, 173, 173); */
 }
 
-.topQuestionsBox > .questionDetails > .otherDetails > .tags > .tag:hover {
-   background-color: rgb(186, 219, 238);
+.topQuestionsBox > .questionDetails > .tags > .tag:hover,
+.topQuestionsBox > .questionDetails > .tags > .tag:focus {
+  background-color: #bbe4e7;
 }
 
-.topQuestionsBox > .questionDetails > .otherDetails > .status{
+.topQuestionsBox > .questionDetails > .status{
   flex-shrink: 1;
   width: fit-content;
-  margin: 10px 0px 10px 15px;
-  font-size: large;
-  color: rgb(41, 41, 41);
+  margin: 10px 0px 5px 5px;
+  font-size: 14px;
+  color: rgb(167, 167, 167);
+  display: flex;
+  align-items: center;
 }
 
 .noQuestion{
@@ -99,15 +117,37 @@ a{
   border-radius: 5px;
 }
 
-.topQuestionsBox > .answerCount{
-  border: 2px solid rgba(0, 153, 0, 1);
+.count{
+  margin: 0;
+  height: 45px;
+  width: 45px;
+  border-radius: 50%;
+  border: 1px solid rgb(184, 184, 184);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 500;
 }
 
-.topQuestionsBox > .answerCount.hasCorrect{
-  background-color: rgba(0, 153, 0, 1);
+.countType{
+  font-size: 15px;
+  margin: 5px 0;
+  color: rgb(95, 95, 95);
+}
+
+.count.hasCorrect{
+  background-color: rgba(30, 190, 158, 1);
   color: white;
+  border: 1px solid rgba(30, 190, 158, 1);
 }
 
-.topQuestionsBox > .voteCount{
-  border: 2px solid rgb(53, 155, 233);
+
+.status > .smallAvatar{
+  width: 28px;
+  border-radius: 50%;
+  border: 1px solid #0a4a4d;
+  height: 28px;
+  margin: 0 8px 0 0;
 }

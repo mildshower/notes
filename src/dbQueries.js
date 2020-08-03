@@ -10,6 +10,8 @@ const questionDetails = `select
   ques.last_modified as lastModified, 
   (select display_name from users 
     where users.user_id = ques.owner) as ownerName, 
+  (select avatar from users 
+    where users.user_id = ques.owner) as ownerAvatar,
   (select count(*) from answers 
     where answers.question = ques.id) as answerCount, 
   (select count(*) from answers ans
@@ -29,6 +31,8 @@ const answerDetails = `select
   ans.last_modified as lastModified, 
   (select display_name from users 
     where users.user_id = ans.owner) as ownerName,
+  (select avatar from users 
+    where users.user_id = ans.owner) as ownerAvatar,
   (select title from questions 
     where questions.id = ans.question) as questionTitle,  
   (select COALESCE(sum(REPLACE(vote_type,0,-1)),0) from answer_votes 
