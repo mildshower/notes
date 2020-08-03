@@ -13,26 +13,26 @@ if(questions.length == 0)
 else
   each question in questions
     .questionBox
-      .counts
-        p(class=`answersCount ${question.hasCorrectAnswer?'hasCorrect':''}`)
-          | #{question.answerCount}
-          br
-          | Answers
-        p.voteCount
-          | #{question.voteCount}
-          br
-          | Votes
       .details
         a.title(href=`/question?id=${question.id}`) #{question.title}
         p.bodyText
-          each line in question.bodyText.slice(0,3)
+          each line in question.bodyText.slice(0,2)
             | #{line}
             br
-        .tagsAndStatus
-          .tags
-            each tag in question.tags
-              .tag #{tag}
-          p.status
-            | Asked #{question.created} 
-            a.strong(href=`/profile?userId=${question.owner}`) #{question.ownerName}
-    hr.separator
+        .tags
+          each tag in question.tags
+            .tag #{tag}
+        p.status
+          img.smallAvatar(src=question.ownerAvatar)
+          a.strong(href=`/profile?userId=${question.owner}`) #{question.ownerName}
+          | &nbsp;&nbsp;#{question.created}
+
+          //- | Asked #{question.created} 
+          //- a.strong(href=`/profile?userId=${question.owner}`) #{question.ownerName}
+      .counts
+        .answersCount
+          p.count(class= question.hasCorrectAnswer?'hasCorrect':'') #{question.answerCount}
+          p.countType Answers
+        .voteCount
+          p.count #{question.voteCount}
+          p.countType Votes

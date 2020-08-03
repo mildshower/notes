@@ -2,43 +2,50 @@
   font-family: 'Mulish', sans-serif;
 }
 
+body{
+  background-color: #f1fcfc;
+}
+
+
 .strong {
-  font-weight: bold;
-  color: black;
+  font-weight: 500;
+  color: #03292b;
+  font-size: 17px;
+  border-bottom: 1px solid transparent;
 }
 
 .strong:hover{
-  border-bottom: 2px solid black;
+  border-bottom: 1px solid #03292b;
 }
 
 .questionBox {
-  margin: 50px 10vw 30px;
+  margin: 20px 10vw;
   display: flex;
+  background-color: white;
+  border-radius: 2px;
+  box-shadow: 1px 1px 8px rgba(1,1,1,0.1);
 }
 
 .questionBox > .counts{
   flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px 15px;
 }
 
 .questionBox > .counts > .answersCount,
 .questionBox > .counts > .voteCount{
+  width: fit-content;
   border-radius: 15px;
-  height: 60px;
-  margin: 8px 18px;
+  margin:  8px 20px;
+  flex-shrink: 0;
   text-align: center;
   justify-content: center;
   align-items: center;
   display: flex;
-  font-size: 18px;
-  width: 85px;
-}
-
-.questionBox > .counts > .answersCount{
-  border: 2px solid rgba(0, 153, 0, 1);
-}
-
-.questionBox > .counts > .voteCount{
-  border: 2px solid rgb(53, 155, 233);
+  flex-direction: column;
+  font-weight: 500;
 }
 
 .questionBox > .details{
@@ -46,60 +53,63 @@
   flex-direction: column;
   flex-grow: 1;
   padding: 10px 15px;
-  background-color: aliceblue;
+  height: fit-content;
 }
 
 .questionBox > .details > .title{
-  font-size: 25px;
-  text-decoration: none;
   flex-shrink: 0;
-  color: rgb(0, 99, 190);
+  color: #10757a;
+  font-size: 22px;
+  line-height: 35px;
+  font-weight: 500;
 }
 
 .questionBox > .details > .title:visited{
-  color: rgb(0, 99, 190);
+  color: #10757a;
+}
+
+.questionBox > .details > .title:hover,
+.questionBox > .details > .title:focus{
+  color: #0a4a4d;
 }
 
 .questionBox > .details > .bodyText{
-  color: gray;
-  margin: 15px 30px;
-  font-size: 21px;
+  color: rgb(165, 165, 165);
+  margin: 5px 15px;
+  font-size: 17px;
   flex-grow: 1;
+  line-height: 22px;
 }
 
-.questionBox > .details > .tagsAndStatus{
-  height: 40px;
-  display: flex;
-  align-items: center;
-}
-
-.questionBox > .details > .tagsAndStatus > .tags{
+.questionBox > .details > .tags{
   flex-grow: 1;
   display: flex;
 }
 
-.questionBox > .details > .tagsAndStatus > .tags > .tag {
-  color: rgb(44, 87, 119);
-  background-color: rgb(220, 234, 243);
+.questionBox > .details > .tags > .tag {
+  color: #0a4a4d;
+  background-color: #ccf0f3;
   text-decoration: none;
   cursor: pointer;
-  padding: 5px;
+  padding: 4px 8px;
   margin: 5px;
-  font-size: 17px;
-  border-radius: 4px;
-  border: 1px solid rgb(173, 173, 173);
+  font-size: 14px;
+  border-top-right-radius: 8px;
+  border-bottom-left-radius: 8px;
+  font-weight: 400;
 }
 
-.questionBox > .details > .tagsAndStatus > .tags > .tag:hover {
+.questionBox > .details > .tags > .tag:hover {
    background-color: rgb(186, 219, 238);
 }
 
-.questionBox > .details > .tagsAndStatus > .status{
-  flex-shrink: 0;
-  margin: 0;
-  font-size: 18px;
-  font-weight: 400;
-  color: rgb(29, 29, 29);
+.questionBox > .details > .status{
+  width: fit-content;
+  margin: 10px 0px 5px 5px;
+  font-size: 14px;
+  color: rgb(167, 167, 167);
+  display: flex;
+  align-items: center;
 }
 
 .separator{
@@ -115,7 +125,49 @@
   border-radius: 5px;
 }
 
-.answersCount.hasCorrect{
+.count{
+  margin: 0;
+  height: 45px;
+  width: 45px;
+  border-radius: 50%;
+  border: 1px solid rgb(184, 184, 184);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.countType{
+  font-size: 15px;
+  margin: 5px 0;
+  color: rgb(95, 95, 95);
+}
+
+.count.hasCorrect{
+  background-color: rgba(30, 190, 158, 1);
+  color: white;
+  border: 1px solid rgba(30, 190, 158, 1);
+}
+
+.status > .smallAvatar{
+  width: 28px;
+  border-radius: 50%;
+  border: 1px solid #0a4a4d;
+  height: 28px;
+  margin: 0 8px 0 0;
+}
+
+/* .answersCount.hasCorrect{
   background-color: rgba(0, 153, 0, 1);
   color: white;
+} */
+
+/* .questionBox > .counts > .answersCount{
+  border: 2px solid rgba(0, 153, 0, 1);
 }
+
+.questionBox > .counts > .voteCount{
+  border: 2px solid rgb(53, 155, 233);
+} */

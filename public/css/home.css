@@ -21,18 +21,14 @@ body{
 .topQuestionsBox{
   margin: 20px 10vw;
   display: flex;
-  /* padding: 20px 5px; */
-  /* background-color: #f1fcfc; */
   background-color: white;
   border-radius: 2px;
-  /* border: 1px solid #0a4a4d; */
   box-shadow: 1px 1px 8px rgba(1,1,1,0.1);
 }
 
 .topQuestionsBox > .voteCount,
 .topQuestionsBox > .answerCount{
   width: fit-content;
-  /* height: 70px; */
   border-radius: 15px;
   margin:  15px 20px;
   flex-shrink: 0;
@@ -45,8 +41,6 @@ body{
 }
 
 .topQuestionsBox > .questionDetails{
-  /* background-color: aliceblue; */
-  /* margin:  0 10px; */
   flex-grow: 1;
   display: flex;
   flex-direction: column;
@@ -90,7 +84,6 @@ body{
   border-top-right-radius: 8px;
   border-bottom-left-radius: 8px;
   font-weight: 400;
-  /* border: 1px solid rgb(173, 173, 173); */
 }
 
 .topQuestionsBox > .questionDetails > .tags > .tag:hover,
@@ -99,7 +92,6 @@ body{
 }
 
 .topQuestionsBox > .questionDetails > .status{
-  flex-shrink: 1;
   width: fit-content;
   margin: 10px 0px 5px 5px;
   font-size: 14px;
