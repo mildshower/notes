@@ -161,12 +161,16 @@ class DataStore {
   }
 
   getMatchedQuestions(searchText) {
-    const [, userName, text] = searchText.match(/(^:.*)?(.*)?/);
+    const [, userName, tagName, text] = searchText.match(/(^:.*)?(^#.*)?(.*)?/);
     let searchQuery = query.searchQuestionsByText;
     let searchExp = text;
     if (userName) {
       searchQuery = query.searchQuestionsByUserName;
       searchExp = userName.slice(1);
+    }
+    if (tagName) {
+      searchQuery = query.searchQuestionsByTagName;
+      searchExp = tagName.slice(1);
     }
     return this.getRows(searchQuery, { $regExp: `%${searchExp}%` });
   }

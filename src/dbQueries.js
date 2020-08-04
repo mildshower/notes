@@ -65,6 +65,11 @@ module.exports.searchQuestionsByUserName =
   questionDetails +
   'where ownerName like $regExp;';
 
+module.exports.searchQuestionsByTagName =
+  questionDetails +
+  'where ques.id in (select question_id from questions_tags ' +
+  'where tag_id = (select id from tags where tag_name like $regExp));';
+
 module.exports.questionInsertion =
   `insert into questions (title, body, body_text, owner)
     values (?, ?, ?, ?);`;
