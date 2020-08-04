@@ -17,6 +17,9 @@ const getVoteElements = boxQuery => {
   return {upVote, downVote, count};
 };
 
+const getCommentBar = ancestor => 
+  document.querySelector(`${ancestor} .commentBar`);
+
 const removeAllTickHighlights = function(){
   getClickableTicks().forEach(tick => {
     tick.classList.remove('accepted');
@@ -148,6 +151,20 @@ const addAcceptanceListeners = function(){
   });
 };
 
+const addCommentListener = function(ancestor){
+  const commentBar = getCommentBar(ancestor);
+  const [toggler, body, poster, cancel] = commentBar.children;
+  toggler.onclick = () => commentBar.classList.remove('closed');
+  cancel.onclick = () => commentBar.classList.add('closed');
+};
+
+const addCommentListeners = function(){
+  addCommentListener('.questionBox');
+  getAnswers().forEach(ans => {
+    addCommentListener(`.answerBox[id='${ans.id}']`);
+  });
+};
+
 const main = function () {
   loadQuestion();
   loadAnswers();
@@ -155,6 +172,7 @@ const main = function () {
     const newAnswer = new Quill('#answerBody > #editor', getEditorConfig());
     getAnswerButton().onclick = saveAnswer.bind(null, newAnswer);
     attachVoteListeners();
+    addCommentListeners();
   }
   addAcceptanceListeners();
 };

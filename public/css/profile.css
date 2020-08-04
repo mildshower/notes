@@ -67,6 +67,7 @@ body{
 
 .stats{
   padding: 10px 0vw 15px 5vw;
+  flex-grow: 1;
 }
 
 #editProfileButton,
@@ -161,5 +162,9 @@ body{
   padding-bottom: 5px;
   color: rgb(59, 59, 59);
   font-weight: 400;
-  /* border-bottom: 1px solid rgb(175, 175, 175); */
+}
+
+.empty{
+  margin: 15px 5px 8px;
+  text-align: center;
 }

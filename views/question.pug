@@ -28,15 +28,18 @@ body
         each tag in tags
           .tag #{tag}
       //- .editButton
-      if(comments.length > 0)
-        p.commentHead Comments
-        .commentsBox
-          each comment in comments
-            p.comment
-              | #{comment.body}&nbsp;&nbsp;-&nbsp
-              a.strong(href=`/profile?userId=${comment.owner}`) #{comment.ownerName}
-              span.commentTime &nbsp;&nbsp;#{comment.created}
-      //- .commentBar
+      p.commentHead Comments
+      .commentsBox
+        each comment in comments
+          p.comment
+            | #{comment.body}&nbsp;&nbsp;-&nbsp
+            a.strong(href=`/profile?userId=${comment.owner}`) #{comment.ownerName}
+            span.commentTime &nbsp;&nbsp;#{comment.created}
+      .commentBar.closed
+        p.commentBarOpener(onclick= user?'':`showPopUp('${currPath}')`) add a comment
+        input.newComment(type='text' placeholder='Your comment here..')
+        button.newCommentButton Post Comment
+        button.cancelButton Cancel
   p#answersHead Answers (#{answers.length})
   each answer in answers
     .answerBox(id=answer.id)
@@ -55,15 +58,18 @@ body
           a.strong(href=`/profile?userId=${answer.owner}`) #{answer.ownerName}
           img.smallAvatar(src=answer.ownerAvatar)
         //- .editButton
-        if(answer.comments.length > 0)
-          p.commentHead Comments
-          .commentsBox
-            each comment in answer.comments
-              p.comment
-                | #{comment.body}&nbsp;&nbsp;-&nbsp;
-                a.strong(href=`/profile?userId=${comment.owner}`) #{comment.ownerName}
-                span.commentTime &nbsp;&nbsp;#{comment.created}
-        //- .commentBar
+        p.commentHead Comments
+        .commentsBox
+          each comment in answer.comments
+            p.comment
+              | #{comment.body}&nbsp;&nbsp;-&nbsp;
+              a.strong(href=`/profile?userId=${comment.owner}`) #{comment.ownerName}
+              span.commentTime &nbsp;&nbsp;#{comment.created}
+        .commentBar.closed
+          p.commentBarOpener(onclick= user?'':`showPopUp('${currPath}')`) add a comment
+          input.newComment(type='text' placeholder='Your comment here..')
+          button.newCommentButton Post Comment
+          button.cancelButton Cancel
   if(user)
     #answerBody
       #editor

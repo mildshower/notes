@@ -30,16 +30,25 @@ body
     .stats
       p.laneTitle Tags (#{tags.length})
       .tags
-        .contents
-          each tag in tags
-            a.tag(href='') #{tag}
+        if(tags.length > 0)
+          .contents
+            each tag in tags
+              a.tag(href='') #{tag}
+        else
+          p.empty No Tags Yet
       p.laneTitle Questions (#{questions.length})
       #questions
-        .contents
-          each question in questions
-            a(href=`/question?id=${question.id}`) #{question.title}
+        if(questions.length > 0)
+          .contents
+            each question in questions
+              a(href=`/question?id=${question.id}`) #{question.title}
+        else
+          p.empty No Questions Yet
       p.laneTitle Answers (#{answers.length})
       #answers
-        .contents
-          each answer in answers
-            a(href=`question?id=${answer.quesId}`) #{answer.questionTitle}
+        if(answers.length > 0)
+          .contents
+            each answer in answers
+              a(href=`question?id=${answer.quesId}`) #{answer.questionTitle}
+        else
+          p.empty No Answers Yet
