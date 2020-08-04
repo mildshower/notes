@@ -130,7 +130,7 @@ class DataStore {
   getTagId(tagName) {
     return new Promise((resolve, reject) => {
       this.dbClient.serialize(() => {
-        this.dbClient.run(query.tagsInsertion, tagName, () => { });
+        this.dbClient.run(query.tagsInsertion, tagName, () => {});
         this.dbClient.get(query.tagIdByTagName, tagName, (err, tag) => {
           err && reject(err);
           resolve(tag);

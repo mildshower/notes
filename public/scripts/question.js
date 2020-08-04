@@ -6,10 +6,21 @@ const getAnswerBody = () => document.querySelector('#answerBody');
 
 const getAnswers = () => document.querySelectorAll('.answerBox');
 
+const getClickableTicks = () => document.querySelectorAll('.clickable');
+
+const getClickableTick = ancestor => 
+  document.querySelector(ancestor + ' .clickable');
+
 const getVoteElements = boxQuery => {
   const voteBox = document.querySelector(`${boxQuery} .votes`);
   const [upVote, count, downVote] = voteBox.children;
   return {upVote, downVote, count};
+};
+
+const removeAllTickHighlights = function(){
+  getClickableTicks().forEach(tick => {
+    tick.classList.remove('accepted');
+  });
 };
 
 const disableToolbar = ancestor => {
@@ -116,6 +127,27 @@ const attachVoteListeners = function(){
   });
 };
 
+const addAcceptanceListeners = function(){
+  const clickableTicks = getAnswers();
+  clickableTicks.forEach(answer => {
+    const tick = getClickableTick(`.answerBox[id='${answer.id}']`);
+    if(!tick){
+      return;
+    }
+    const isRejection = tick.className.includes('accepted');
+    const path = isRejection ? '/rejectAnswer' : '/acceptAnswer';
+    tick.onclick = () => {
+      postData(path, {answerId: answer.id})
+        .then(({isSucceeded}) => {
+          if(isSucceeded){
+            removeAllTickHighlights();
+            !isRejection && tick.classList.add('accepted');
+          }
+        });
+    };
+  });
+};
+
 const main = function () {
   loadQuestion();
   loadAnswers();
@@ -124,6 +156,7 @@ const main = function () {
     getAnswerButton().onclick = saveAnswer.bind(null, newAnswer);
     attachVoteListeners();
   }
+  addAcceptanceListeners();
 };
 
 window.onload = main;

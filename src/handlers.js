@@ -255,6 +255,14 @@ const deleteVote = (req, res) => {
     .then(({voteCount}) => res.json({isSucceeded: true, voteCount}));
 };
 
+const acceptAnswer = (req, res) => {
+  res.json({isSucceeded: true});
+};
+
+const rejectAnswer = (req, res) => {
+  res.json({isSucceeded: true});
+};
+
 module.exports = {
   handleSessions,
   serveHomePage,
@@ -276,5 +284,7 @@ module.exports = {
   saveAnswer,
   serveEditProfilePage,
   addVote,
-  deleteVote
+  deleteVote,
+  acceptAnswer,
+  rejectAnswer
 };
