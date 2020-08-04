@@ -239,7 +239,15 @@ class DataStore {
     return this.runQuery(
       query.rejectAnswer,
       [id],
-      new Error('Rejection failed')
+      new Error('Answer rejection failed')
+    );
+  }
+
+  acceptAnswer(id){
+    return this.runQuery(
+      query.acceptAnswer,
+      {$ansId: id},
+      new Error('Could not accept the answer')
     );
   }
 }

@@ -256,7 +256,8 @@ const deleteVote = (req, res) => {
 };
 
 const acceptAnswer = (req, res) => {
-  res.json({isSucceeded: true});
+  req.app.locals.dataStore.acceptAnswer(req.body.answerId)
+    .then(() => res.json({isSucceeded: true}));
 };
 
 const rejectAnswer = (req, res) => {

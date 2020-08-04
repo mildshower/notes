@@ -154,3 +154,12 @@ module.exports.rejectAnswer =
   `update answers
     set is_accepted = 0
     where id = ?`;
+
+module.exports.acceptAnswer =
+  `UPDATE answers
+  set is_accepted = 
+    case id
+      when $ansId then 1
+      else 0
+    END
+  where question = (select question from answers where id = $ansId );`;

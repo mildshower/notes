@@ -481,5 +481,35 @@ describe('POST', function() {
         .expect(401, done);
     });
   });
+
+  context('/acceptAnswer', () => {
+    it('should accept the answer', (done) => {
+      const sessions = new Sessions();
+      const id = sessions.addSession('1');
+      app.locals.sessions = sessions;
+      request(app)
+        .post('/acceptAnswer')
+        .set('Cookie', `session=${id}`)
+        .send({answerId: 1})
+        .expect(200)
+        .expect('Content-Type', /json/)
+        .expect('{"isSucceeded":true}', done);
+    });
+  });
+
+  context('/rejectAnswer', () => {
+    it('should reject the answer', (done) => {
+      const sessions = new Sessions();
+      const id = sessions.addSession('1');
+      app.locals.sessions = sessions;
+      request(app)
+        .post('/rejectAnswer')
+        .set('Cookie', `session=${id}`)
+        .send({answerId: 1})
+        .expect(200)
+        .expect('Content-Type', /json/)
+        .expect('{"isSucceeded":true}', done);
+    });
+  });
 });
 

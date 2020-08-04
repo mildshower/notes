@@ -46,7 +46,7 @@ context('dataStore', () => {
   });
 
   context('#getLastQuestions', () => {
-    it("it should give last question id's if valid count is given", (done) => {
+    it('it should give last question id\'s if valid count is given', (done) => {
       const dbClient = {
         all: sinon.fake.yields(null, [
           { id: 1 },
@@ -854,6 +854,36 @@ context('dataStore', () => {
         assert.deepStrictEqual(err.message, 'Vote Count Fetching Error');
         assert.ok(dbClient.get.calledOnce);
         assert.deepStrictEqual(dbClient.get.args[0][1], [100]);
+        done();
+      });
+    });
+  });
+
+  context('#rejectAnswer', function () {
+    it('should reject an answer', (done) => {
+      const dbClient = {
+        run: sinon.fake.yields(null),
+      };
+      const dataStore = new DataStore(dbClient);
+
+      dataStore.rejectAnswer(1).then(() => {
+        assert.ok(dbClient.run.calledOnce);
+        assert.deepStrictEqual(dbClient.run.args[0][1], [1]);
+        done();
+      });
+    });
+  });
+
+  context('#acceptAnswer', function () {
+    it('should accept an answer', (done) => {
+      const dbClient = {
+        run: sinon.fake.yields(null),
+      };
+      const dataStore = new DataStore(dbClient);
+
+      dataStore.acceptAnswer(1).then(() => {
+        assert.ok(dbClient.run.calledOnce);
+        assert.deepStrictEqual(dbClient.run.args[0][1], {$ansId: 1});
         done();
       });
     });
