@@ -1,5 +1,5 @@
-const getLoginBtn = () => document.querySelector('#pop-up-container > .popUp > div > #login');
-const getSignUpBtn = () => document.querySelector('#pop-up-container > .popUp > div > #signUp');
+const getLoginBtn = () => document.querySelector('#pop-up-container > .popUp > #login');
+const getSignUpBtn = () => document.querySelector('#pop-up-container > .popUp > #signUp');
 const getContainer = () => document.querySelector('#pop-up-container');
 
 const showPopUp = function(targetPath){

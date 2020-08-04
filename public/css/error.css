@@ -2,6 +2,10 @@
   font-family: 'Mulish', sans-serif;
 }
 
+body{
+  background-color: #f1fcfc;
+}
+
 .errorContainer {
   margin: 10vh auto;
   width: 60vw;
@@ -11,17 +15,39 @@
 }
 
 .errorContainer > h1 {
-  font-size: 170px;
-  font-weight: 400;
-  color: rgb(80, 80, 80);
+  font-size: 100px;
+  font-weight: 300;
+  color: #0a4a4d;
   margin: 10px;
 }
 
 .errorContainer > p{
-  font-size: 45px;
+  font-size: 35px;
   text-align: center;
+  color: #0a4a4d;
+  font-weight: 200;
 }
 
 .errorContainer > a{
-  font-size: 40px;
+  font-size: 27px;
+  font-weight: 300;
+  outline: none;
+  text-align: center;
+  flex-shrink: 0;
+  cursor: pointer;
+  border-radius: 3px;
+  padding: 8px 10px;
+  color: #0a4a4d;
+  background: #a6e3e9;
+  height: fit-content;
+}
+
+.errorContainer > a:visited{
+  color: #0a4a4d;
+}
+
+.errorContainer > a:hover,
+.errorContainer > a:focus{
+  background-color: #82d5dd;
+  color: black;
 }

@@ -27,21 +27,19 @@ body
           p#bio.default (About me for this profile is currently blank.)
         if(user && user.user_id == requestedUser.user_id)
           a#editProfileButton(href=`/editProfile`) Click here to edit
-    .lanes
-      .leftLane
-        #questions
-          p.laneTitle Questions (#{questions.length})
-          .contents
-            each question in questions
-              a(href=`/question?id=${question.id}`) #{question.title}
-      .rightLane
-        .tags
-          p.laneTitle Tags (#{tags.length})
-          .contents
-            each tag in tags
-              a.tag(href='') #{tag}
-        #answers
-          p.laneTitle Answers (#{answers.length})
-          .contents
-            each answer in answers
-              a(href=`question?id=${answer.quesId}`) #{answer.questionTitle}
+    .stats
+      p.laneTitle Tags (#{tags.length})
+      .tags
+        .contents
+          each tag in tags
+            a.tag(href='') #{tag}
+      p.laneTitle Questions (#{questions.length})
+      #questions
+        .contents
+          each question in questions
+            a(href=`/question?id=${question.id}`) #{question.title}
+      p.laneTitle Answers (#{answers.length})
+      #answers
+        .contents
+          each answer in answers
+            a(href=`question?id=${answer.quesId}`) #{answer.questionTitle}
