@@ -265,6 +265,20 @@ const rejectAnswer = (req, res) => {
     .then(() => res.json({isSucceeded: true}));
 };
 
+const verifyAnswerAcceptance = async function(req, res, next){
+  try{
+    const {dataStore} = req.app.locals;
+    const {quesId} = await dataStore.getAnswerById(req.body.answerId);
+    const {owner} = await dataStore.getQuestionDetails(quesId);
+    if(owner !== req.user.user_id){
+      throw new Error('Not applicable for answer acceptance');
+    }
+    next();
+  }catch(err){
+    res.status(406).json({error: err.message});
+  }
+};
+
 module.exports = {
   handleSessions,
   serveHomePage,
@@ -288,5 +302,6 @@ module.exports = {
   addVote,
   deleteVote,
   acceptAnswer,
-  rejectAnswer
+  rejectAnswer,
+  verifyAnswerAcceptance
 };

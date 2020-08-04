@@ -30,16 +30,15 @@ const {
   addVote,
   deleteVote,
   acceptAnswer,
-  rejectAnswer
+  rejectAnswer,
+  verifyAnswerAcceptance
 } = require('./handlers');
 
 const app = express();
 
 app.locals.dataStore = new DataStore(dbClient);
 app.locals.dataStore.init();
-const session = new Sessions();
-session.addSession('1');
-app.locals.sessions = session;//new Sessions();
+app.locals.sessions = new Sessions();
 
 app.set('view engine', 'pug');
 app.use(morgan('dev'));
@@ -66,8 +65,8 @@ app.post('/saveQuestion', authorizeUser, saveQuestion);
 app.post('/saveAnswer', authorizeUser, saveAnswer);
 app.post('/addVote', authorizeUser, addVote);
 app.post('/deleteVote', authorizeUser, deleteVote);
-app.post('/acceptAnswer', authorizeUser, acceptAnswer);
-app.post('/rejectAnswer', authorizeUser, rejectAnswer);
+app.post('/acceptAnswer', authorizeUser, verifyAnswerAcceptance, acceptAnswer);
+app.post('/rejectAnswer', authorizeUser, verifyAnswerAcceptance, rejectAnswer);
 app.use(serveNotFound);
 
 module.exports = { app };

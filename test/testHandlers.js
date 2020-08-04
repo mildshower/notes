@@ -495,6 +495,19 @@ describe('POST', function() {
         .expect('Content-Type', /json/)
         .expect('{"isSucceeded":true}', done);
     });
+
+    it('should not accept if someone else tries to accept', (done) => {
+      const sessions = new Sessions();
+      const id = sessions.addSession('2');
+      app.locals.sessions = sessions;
+      request(app)
+        .post('/acceptAnswer')
+        .set('Cookie', `session=${id}`)
+        .send({answerId: 1})
+        .expect(406)
+        .expect('Content-Type', /json/)
+        .expect(/error/, done);
+    });
   });
 
   context('/rejectAnswer', () => {
