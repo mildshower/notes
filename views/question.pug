@@ -41,7 +41,7 @@ body
           p.voteCount #{answer.voteCount}
           button.downVote(class=answer.userVote && answer.userVote.voteType==0 && 'chosen')
             img(src=`images/arrow.svg` alt="voteUp" onclick= user?'':`showPopUp('${currPath}')`)
-        img.acceptance(class=answer.isAccepted?'accepted':'' src='images/tick.svg')
+        img.acceptance(class=`${answer.isAccepted?'accepted':''} ${user&&user.user_id===owner?'clickable':''}`)
       .body
         .editor
         .options

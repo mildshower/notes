@@ -75,8 +75,8 @@ body{
 
   .questionBox > .stats > .votes > button:hover ,
   .answerBox > .stats > .votes > button:hover,
-  .acceptance:hover,
-  .acceptance:focus{
+  .clickable:hover,
+  .clickable:focus{
     filter: brightness(70%);
   }
 
@@ -221,7 +221,11 @@ body{
 .acceptance{
   width: 30px;
   margin: 30px 0;
+}
+
+.clickable{
   cursor: pointer;
+  content: url('/images/tick.svg');
 }
 
 .acceptance.accepted{
