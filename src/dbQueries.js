@@ -39,6 +39,17 @@ const answerDetails = `select
     where answer_votes.answer_id = ans.id) as voteCount 
   from answers ans `;
 
+const commentDetails = 
+`SELECT
+  comments.id,
+  comments.body,
+  comments.owner,
+  comments.question as quesId,
+  comments.created,
+  comments.last_modified as lastModified,
+  (SELECT display_name from users
+  where user_id = comments.owner) as ownerName`;
+
 module.exports.userUpdation =
   `UPDATE users
     SET display_name = ?, email = ?, location = ?, bio = ?
@@ -166,3 +177,11 @@ module.exports.acceptAnswer =
 
 module.exports.answerById =
   answerDetails + 'where ans.id = ?';
+
+module.exports.questionComments =
+  commentDetails + `from question_comments comments
+   where comments.question = ? `;
+
+module.exports.answerComments =
+   commentDetails + `from answer_comments comments
+    where comments.answer = ? `;

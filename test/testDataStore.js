@@ -918,4 +918,36 @@ context('dataStore', () => {
       });
     });
   });
+
+  context('#getComments', function () {
+    it('should serve question comments when isQuestion is true', (done) => {
+      const dbClient = {
+        all: sinon.fake.yields(null, [{id: 1}]),
+      };
+      const dataStore = new DataStore(dbClient);
+
+      dataStore.getComments(1, true).then(details => {
+        assert.deepStrictEqual(details, [{id: 1}]);
+        assert.ok(dbClient.all.calledOnce);
+        assert.ok(dbClient.all.args[0][0].match('question'));
+        assert.deepStrictEqual(dbClient.all.args[0][1], [1]);
+        done();
+      });
+    });
+
+    it('should serve answer comments when isQuestion is false', (done) => {
+      const dbClient = {
+        all: sinon.fake.yields(null, [{id: 1}]),
+      };
+      const dataStore = new DataStore(dbClient);
+
+      dataStore.getComments(1, false).then(details => {
+        assert.deepStrictEqual(details, [{id: 1}]);
+        assert.ok(dbClient.all.calledOnce);
+        assert.ok(dbClient.all.args[0][0].match('answer'));
+        assert.deepStrictEqual(dbClient.all.args[0][1], [1]);
+        done();
+      });
+    });
+  });
 });

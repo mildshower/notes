@@ -29,8 +29,8 @@ body
           .tag #{tag}
       .options
         //- .editButton
-        //- .commentsBox
-        //- .commentBar
+        .commentsBox
+        .commentBar
   p#answersHead Answers (#{answers.length})
   each answer in answers
     .answerBox(id=answer.id)
@@ -44,14 +44,14 @@ body
         img.acceptance(class=`${answer.isAccepted?'accepted':''} ${user&&user.user_id===owner?'clickable':''}`)
       .body
         .editor
-        .options
-          //- .editButton
-          //- .commentsBox
-          //- .commentBar
         p.status
           img.smallAvatar(src=answer.ownerAvatar)
           a.strong(href=`/profile?userId=${answer.owner}`) #{answer.ownerName}
           | &nbsp;&nbsp;#{answer.created}
+        .options
+          //- .editButton
+          .commentsBox
+          .commentBar
   if(user)
     #answerBody
       #editor

@@ -260,6 +260,13 @@ class DataStore {
       new Error('Could not accept the answer')
     );
   }
+
+  getComments(id, isQuestion){
+    return this.getRows(
+      isQuestion ? query.questionComments : query.answerComments,
+      [id]
+    );
+  }
 }
 
 module.exports = DataStore;

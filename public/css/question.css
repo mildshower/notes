@@ -36,7 +36,6 @@ body{
 
 .questionBox > .stats ,
   .answerBox > .stats {
-  height: 300px;
   width: 50px;
   flex-shrink: 0;
   padding: 15px 0;
@@ -97,6 +96,7 @@ body{
 .answerBox > .body {
   flex-grow: 1;
   margin: 5px 0;
+  height: fit-content;
 }
 
 .questionBox > .body > .editor,
@@ -149,6 +149,7 @@ body{
 .questionBox > .body > .options > .commentsBox,
 .answerBox > .body > .options > .commentsBox {
   height: 50px;
+  background-color: #a6e3e9;
 }
 
 .hidden{
