@@ -46,7 +46,8 @@ module.exports.userUpdation =
 
 module.exports.answersByUser = answerDetails + 'where ans.owner = ?';
 
-module.exports.answerByQuestion = answerDetails + 'where ans.question = ?';
+module.exports.answerByQuestion = 
+  answerDetails + 'where ans.question = ? ORDER BY isAccepted DESC';
 
 module.exports.lastQuestions =
   questionDetails + 'order by ques.created DESC;';

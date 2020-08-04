@@ -35,7 +35,9 @@ const app = express();
 
 app.locals.dataStore = new DataStore(dbClient);
 app.locals.dataStore.init();
-app.locals.sessions = new Sessions();
+const session = new Sessions();
+session.addSession('1');
+app.locals.sessions = session;//new Sessions();
 
 app.set('view engine', 'pug');
 app.use(morgan('dev'));
