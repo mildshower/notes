@@ -19,14 +19,13 @@
 }
 
 .ql-snow.ql-toolbar {
-  border: 1px solid rgb(202, 202, 202));
+  border: 1px solid rgb(202, 202, 202);
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
 }
 
 .ql-snow .ql-editor pre.ql-syntax {
-  background-color: #eff0f1;
-  background-color: #f1f9fa;
+  background-color: #f4f9fa;
   color: black;
   overflow: visible;
   border-radius: 5px;

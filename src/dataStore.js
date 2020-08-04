@@ -160,6 +160,16 @@ class DataStore {
     return this.getRows(query.answerByQuestion, [id]);
   }
 
+  getAnswerById(id){
+    return this.getRow(query.answerById, [id])
+      .then(details => {
+        if (!details) {
+          throw new Error('Wrong Id Provided');
+        }
+        return details;
+      });
+  }
+
   getMatchedQuestions(searchText) {
     const [, userName, tagName, text] = searchText.match(/(^:.*)?(^#.*)?(.*)?/);
     let searchQuery = query.searchQuestionsByText;

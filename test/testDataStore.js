@@ -888,4 +888,34 @@ context('dataStore', () => {
       });
     });
   });
+
+  context('#getAnswerById', function () {
+    it('should serve answer Details', (done) => {
+      const dbClient = {
+        get: sinon.fake.yields(null, {id: 1}),
+      };
+      const dataStore = new DataStore(dbClient);
+
+      dataStore.getAnswerById(1).then(details => {
+        assert.deepStrictEqual(details, {id: 1});
+        assert.ok(dbClient.get.calledOnce);
+        assert.deepStrictEqual(dbClient.get.args[0][1], [1]);
+        done();
+      });
+    });
+
+    it('should produce error while invalid id is given', (done) => {
+      const dbClient = {
+        get: sinon.fake.yields(null, undefined),
+      };
+      const dataStore = new DataStore(dbClient);
+
+      dataStore.getAnswerById(100).catch(err => {
+        assert.deepStrictEqual(err.message, 'Wrong Id Provided');
+        assert.ok(dbClient.get.calledOnce);
+        assert.deepStrictEqual(dbClient.get.args[0][1], [100]);
+        done();
+      });
+    });
+  });
 });

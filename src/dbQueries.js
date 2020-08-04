@@ -163,3 +163,6 @@ module.exports.acceptAnswer =
       else 0
     END
   where question = (select question from answers where id = $ansId );`;
+
+module.exports.answerById =
+  answerDetails + 'where ans.id = ?';
