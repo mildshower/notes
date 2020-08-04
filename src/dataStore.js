@@ -234,6 +234,14 @@ class DataStore {
       new Error('Vote Count Fetching Error')
     );
   }
+
+  rejectAnswer(id){
+    return this.runQuery(
+      query.rejectAnswer,
+      [id],
+      new Error('Rejection failed')
+    );
+  }
 }
 
 module.exports = DataStore;

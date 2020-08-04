@@ -260,7 +260,8 @@ const acceptAnswer = (req, res) => {
 };
 
 const rejectAnswer = (req, res) => {
-  res.json({isSucceeded: true});
+  req.app.locals.dataStore.rejectAnswer(req.body.answerId)
+    .then(() => res.json({isSucceeded: true}));
 };
 
 module.exports = {

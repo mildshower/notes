@@ -149,3 +149,8 @@ module.exports.answerVoteCount =
   `select COALESCE(sum(REPLACE(vote_type,0,-1)),0) as voteCount
     from answer_votes
     where answer_id = ?`;
+
+module.exports.rejectAnswer =
+  `update answers
+    set is_accepted = 0
+    where id = ?`;
