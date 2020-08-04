@@ -41,12 +41,7 @@ const answerDetails = `select
 
 const commentDetails = 
 `SELECT
-  comments.id,
-  comments.body,
-  comments.owner,
-  comments.question as quesId,
-  comments.created,
-  comments.last_modified as lastModified,
+  comments.*,
   (SELECT display_name from users
   where user_id = comments.owner) as ownerName`;
 
@@ -179,9 +174,9 @@ module.exports.answerById =
   answerDetails + 'where ans.id = ?';
 
 module.exports.questionComments =
-  commentDetails + `from question_comments comments
+  commentDetails + ` from question_comments comments
    where comments.question = ? `;
 
 module.exports.answerComments =
-   commentDetails + `from answer_comments comments
+   commentDetails + ` from answer_comments comments
     where comments.answer = ? `;

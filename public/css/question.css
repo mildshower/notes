@@ -18,6 +18,7 @@ body{
 .strong {
   font-weight: bold;
   color: black;
+  cursor: pointer;
 }
 
 .strong:hover{
@@ -130,26 +131,20 @@ body{
   background-color: #bbe4e7;
 }
 
-.questionBox > .body > .options,
-.answerBox  > .body > .options {
-  flex-grow: 1;
-}
-
-.questionBox > .body > .options > .editButton,
-.answerBox > .body > .options > .editButton {
+.questionBox > .body > .editButton,
+.answerBox > .body > .editButton {
   background-color: skyblue;
   height: 30px;
 }
 
-.questionBox > .body > .options > .commentBar,
-.answerBox > .body > .options > .commentBar {
+.questionBox > .body > .commentBar,
+.answerBox > .body > .commentBar {
   background-color: rgb(24, 146, 79);
   height: 60px;
 }
-.questionBox > .body > .options > .commentsBox,
-.answerBox > .body > .options > .commentsBox {
-  height: 50px;
-  background-color: #a6e3e9;
+.questionBox > .body > .commentsBox,
+.answerBox > .body > .commentsBox {
+  /* margin: 0 15px; */
 }
 
 .hidden{
@@ -210,13 +205,13 @@ body{
 }
 
 .status{
-  width: fit-content;
-  margin: 10px 0px 5px 5px;
+  /* width: fit-content; */
   font-size: 14px;
   color: rgb(167, 167, 167);
   display: flex;
   align-items: center;
-  margin: 15px 15px 5px;
+  margin: 15px 25px 5px;
+  flex-direction: row-reverse;
 }
 
 .acceptance{
@@ -231,4 +226,29 @@ body{
 
 .acceptance.accepted{
   content: url('/images/chosenTick.svg');
+}
+
+.commentHead{
+  font-weight: 600;
+  margin: 15px 5px 3px;
+  font-size: 18px;
+  /* border-bottom: 1px solid black; */
+  width: fit-content;
+  color: #0a4a4d;
+}
+
+.comment{
+  margin: 10px 40px 0 15px;
+  font-size: 15px;
+  padding: 5px 15px 0;
+  border-top: 1px solid rgb(236, 236, 236);
+}
+
+.commentTime{
+  color: rgb(185, 185, 185);
+}
+
+.commentsBox .strong{
+  font-size: 17px;
+  font-weight: 500;
 }

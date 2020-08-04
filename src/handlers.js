@@ -109,6 +109,10 @@ const prepareAnswers = async function(answers, user, dataStore) {
     answer.created = getRelativeTime(answer.created);
     answer.userVote =
       user && await dataStore.getVote(answer.id, user.user_id);
+    answer.comments = await dataStore.getComments(answer.id);
+    answer.comments.forEach(comment => {
+      comment.created = getRelativeTime(comment.created);
+    });
   }
   return answers;
 };
@@ -121,6 +125,10 @@ const prepareQuestion = async function(question, user, dataStore) {
   question.tags = await dataStore.getTags([question]);
   question.lastModified = getRelativeTime(question.lastModified);
   question.created = getRelativeTime(question.created);
+  question.comments = await dataStore.getComments(question.id, true);
+  question.comments.forEach(comment => {
+    comment.created = getRelativeTime(comment.created);
+  });
   return question;
 };
 

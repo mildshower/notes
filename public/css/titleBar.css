@@ -47,6 +47,7 @@ a {
   color: rgb(167, 167, 167);
   display: flex;
   align-items: center;
+  padding: 0 5px;
 }
 
 .separator{

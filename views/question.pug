@@ -27,10 +27,16 @@ body
       .tagStrip
         each tag in tags
           .tag #{tag}
-      .options
-        //- .editButton
+      //- .editButton
+      if(comments.length > 0)
+        p.commentHead Comments
         .commentsBox
-        .commentBar
+          each comment in comments
+            p.comment
+              | #{comment.body}&nbsp;&nbsp;-&nbsp
+              a.strong(href=`/profile?userId=${comment.owner}`) #{comment.ownerName}
+              span.commentTime &nbsp;&nbsp;#{comment.created}
+      //- .commentBar
   p#answersHead Answers (#{answers.length})
   each answer in answers
     .answerBox(id=answer.id)
@@ -45,13 +51,19 @@ body
       .body
         .editor
         p.status
-          img.smallAvatar(src=answer.ownerAvatar)
-          a.strong(href=`/profile?userId=${answer.owner}`) #{answer.ownerName}
           | &nbsp;&nbsp;#{answer.created}
-        .options
-          //- .editButton
+          a.strong(href=`/profile?userId=${answer.owner}`) #{answer.ownerName}
+          img.smallAvatar(src=answer.ownerAvatar)
+        //- .editButton
+        if(answer.comments.length > 0)
+          p.commentHead Comments
           .commentsBox
-          .commentBar
+            each comment in answer.comments
+              p.comment
+                | #{comment.body}&nbsp;&nbsp;-&nbsp;
+                a.strong(href=`/profile?userId=${comment.owner}`) #{comment.ownerName}
+                span.commentTime &nbsp;&nbsp;#{comment.created}
+        //- .commentBar
   if(user)
     #answerBody
       #editor
