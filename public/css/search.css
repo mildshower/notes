@@ -1,11 +1,10 @@
-*{
+* {
   font-family: 'Mulish', sans-serif;
 }
 
-body{
+body {
   background-color: #f1fcfc;
 }
-
 
 .strong {
   font-weight: 500;
@@ -14,7 +13,7 @@ body{
   border-bottom: 1px solid transparent;
 }
 
-.strong:hover{
+.strong:hover {
   border-bottom: 1px solid #03292b;
 }
 
@@ -23,10 +22,10 @@ body{
   display: flex;
   background-color: white;
   border-radius: 2px;
-  box-shadow: 1px 1px 8px rgba(1,1,1,0.1);
+  box-shadow: 1px 1px 8px rgba(1, 1, 1, 0.1);
 }
 
-.questionBox > .counts{
+.questionBox > .counts {
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
@@ -35,10 +34,10 @@ body{
 }
 
 .questionBox > .counts > .answersCount,
-.questionBox > .counts > .voteCount{
+.questionBox > .counts > .voteCount {
   width: fit-content;
   border-radius: 15px;
-  margin:  8px 20px;
+  margin: 8px 20px;
   flex-shrink: 0;
   text-align: center;
   justify-content: center;
@@ -48,7 +47,7 @@ body{
   font-weight: 500;
 }
 
-.questionBox > .details{
+.questionBox > .details {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
@@ -56,7 +55,7 @@ body{
   height: fit-content;
 }
 
-.questionBox > .details > .title{
+.questionBox > .details > .title {
   flex-shrink: 0;
   color: #10757a;
   font-size: 22px;
@@ -64,16 +63,16 @@ body{
   font-weight: 500;
 }
 
-.questionBox > .details > .title:visited{
+.questionBox > .details > .title:visited {
   color: #10757a;
 }
 
 .questionBox > .details > .title:hover,
-.questionBox > .details > .title:focus{
+.questionBox > .details > .title:focus {
   color: #0a4a4d;
 }
 
-.questionBox > .details > .bodyText{
+.questionBox > .details > .bodyText {
   color: rgb(165, 165, 165);
   margin: 5px 15px;
   font-size: 17px;
@@ -81,7 +80,7 @@ body{
   line-height: 22px;
 }
 
-.questionBox > .details > .tags{
+.questionBox > .details > .tags {
   flex-grow: 1;
   display: flex;
 }
@@ -104,7 +103,7 @@ body{
   background-color: #bbe4e7;
 }
 
-.questionBox > .details > .status{
+.questionBox > .details > .status {
   width: fit-content;
   margin: 10px 0px 5px 5px;
   font-size: 14px;
@@ -113,11 +112,11 @@ body{
   align-items: center;
 }
 
-.separator{
+.separator {
   margin: 20px 10vw;
 }
 
-.noQuestion{
+.noQuestion {
   margin: 20px 10vw;
   text-align: center;
   font-size: 20px;
@@ -126,7 +125,7 @@ body{
   border-radius: 5px;
 }
 
-.count{
+.count {
   margin: 0;
   height: 45px;
   width: 45px;
@@ -140,22 +139,23 @@ body{
   font-weight: 500;
 }
 
-.countType{
+.countType {
   font-size: 15px;
   margin: 5px 0;
   color: rgb(95, 95, 95);
 }
 
-.count.hasCorrect{
+.count.hasCorrect {
   background-color: rgba(30, 190, 158, 1);
   color: white;
   border: 1px solid rgba(30, 190, 158, 1);
 }
 
-.status > .smallAvatar{
+.status > .smallAvatar {
   width: 28px;
   border-radius: 50%;
   border: 1px solid #0a4a4d;
   height: 28px;
   margin: 0 8px 0 0;
 }
+

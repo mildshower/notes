@@ -46,19 +46,25 @@ a {
 #searchBar {
   height: 42%;
   display: flex;
-  align-items: center;
   background-color: #e3fdfd;
   border-radius: 5px;
   flex-grow: 1;
   margin: 0 5vw;
   border: 1px solid #a6e3e9;
+  position: relative;
+}
+
+#searchBar{
+  display: flex;
+  align-items: center;
+  position: relative;
 }
 
 #searchBar:focus-within {
   border: 1px solid #71c9ce;
 }
 
-#searchBar > form{
+#searchBar form{
   flex-grow: 1;
 }
 
@@ -67,6 +73,7 @@ a {
   width: 100%;
   border: hidden;
   padding-left: 5px;
+  flex-grow: 1;
   outline: none;
   background-color: #e3fdfd;
   color: #0a4a4d;
@@ -79,10 +86,54 @@ a {
   font-size: 18px;
 }
 
-#searchBar > img {
+#searchBar img {
   height: 100%;
   padding-top: 10px;
   padding-left: 5px;
+}
+
+
+#searchBar .dropDown,
+#searchBar .dropDown * {
+  visibility: hidden;
+}
+
+#searchBar:focus-within .dropDown,
+#searchBar:focus-within .dropDown * {
+  visibility: unset;
+}
+
+#searchBar .dropDown {
+  position: absolute;
+  display: block;
+  top: 130%;
+}
+
+#searchBar:focus-within .dropDown {
+  background-color:white;
+  border-radius: 4px;
+  padding:0px 60px 0px 15px;
+  box-shadow: 0px 0px 3px 1px rgb(218, 218, 218);
+}
+
+#searchBar .dropDownArrow {
+  top: -10px;
+  left: 32px;
+  position: absolute;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-bottom: 10px solid white;
+}
+
+#searchMenu .option {
+  font-size: 18px;
+  color:#10757a;
+  margin:0px 10px 0px 2px;
+}
+
+#searchMenu .description {
+  font-size: 16px;
+  color: rgb(192, 190, 190);
 }
 /* Style for searchBar ends */
 

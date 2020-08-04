@@ -4,13 +4,24 @@ script(src="scripts/header.js")
 .header
   a#icon(href='/home' alt='home' title='heapOverFlow')
     img(src='images/appIcon.png' alt='heapOverflow Icon')
-  #searchBar
+  div#searchBar
     img(src='images/search.svg' alt='search icon')
     form(action="/search" id="searchForm")
       if(searchQuery)
-        input(value=searchQuery type='search' id='searchField' onsearch='search()' autocomplete="off" placeholder='Search..' name='searchQuery')
+        input(value=searchQuery type='search' id='searchField' onsearch='search()' autocomplete="off"  placeholder='Search..' name='searchQuery')
       else
         input(type='search' id='searchField' onsearch='search()' autocomplete="off" placeholder='Search..' name='searchQuery')
+    #searchMenu.dropDown
+      .dropDownArrow
+      p 
+        span.option #tag 
+        span.description search by tag
+      p 
+        span.option :user 
+        span.description search by author
+      p 
+        span.option "words here" 
+        span.description search by phrase
   if (user)
     a#profileButton(href=`/profile?userId=${user.user_id}`)
       img(src=user.avatar alt='avatar')
