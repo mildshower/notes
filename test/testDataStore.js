@@ -46,7 +46,7 @@ context('dataStore', () => {
   });
 
   context('#getLastQuestions', () => {
-    it("it should give last question id's if valid count is given", (done) => {
+    it('it should give last question id\'s if valid count is given', (done) => {
       const dbClient = {
         all: sinon.fake.yields(null, [
           { id: 1 },
@@ -464,7 +464,7 @@ context('dataStore', () => {
       };
       const dataStore = new DataStore(dbClient);
 
-      dataStore.getMatchedQuestions(':john').then((actual) => {
+      dataStore.getMatchedQuestions('@john').then((actual) => {
         assert.deepStrictEqual(actual, questions);
         assert.ok(dbClient.all.calledOnce);
         assert.deepStrictEqual(dbClient.all.args[0][1], { $regExp: '%john%' });

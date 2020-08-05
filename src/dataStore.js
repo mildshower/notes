@@ -171,7 +171,7 @@ class DataStore {
   }
 
   getMatchedQuestions(searchText) {
-    const [, userName, tagName, text] = searchText.match(/(^:.*)?(^#.*)?(.*)?/);
+    const [, userName, tagName, text] = searchText.match(/(^@.*)?(^#.*)?(.*)?/);
     let searchQuery = query.searchQuestionsByText;
     let searchExp = text;
     if (userName) {

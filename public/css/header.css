@@ -179,7 +179,6 @@ a {
   position: absolute;
   top: 120%;
   right: 0%;
-  z-index: 10000;
   display: flex;
   visibility: hidden;
   flex-direction: column;
