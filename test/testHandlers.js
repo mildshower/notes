@@ -56,6 +56,16 @@ describe('GET', () => {
     });
   });
 
+  context('/tags', () => {
+    it('should get all matched popular tags', (done) => {
+      request(app)
+        .get('/tags?exp=j')
+        .expect(200)
+        .expect('Content-Type', 'application/json; charset=utf-8')
+        .expect('["javascript","node.js"]', done);
+    });
+  })
+
   context('/question', () => {
     it('should serve question page for valid question id', (done) => {
       request(app)

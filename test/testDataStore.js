@@ -46,7 +46,7 @@ context('dataStore', () => {
   });
 
   context('#getLastQuestions', () => {
-    it('it should give last question id\'s if valid count is given', (done) => {
+    it("it should give last question id's if valid count is given", (done) => {
       const dbClient = {
         all: sinon.fake.yields(null, [
           { id: 1 },
@@ -489,7 +489,9 @@ context('dataStore', () => {
       dataStore.getMatchedQuestions('#javascript').then((actual) => {
         assert.deepStrictEqual(actual, questions);
         assert.ok(dbClient.all.calledOnce);
-        assert.deepStrictEqual(dbClient.all.args[0][1], { $regExp: '%javascript%' });
+        assert.deepStrictEqual(dbClient.all.args[0][1], {
+          $regExp: '%javascript%',
+        });
         done();
       });
     });
@@ -928,7 +930,7 @@ context('dataStore', () => {
 
       dataStore.acceptAnswer(1).then(() => {
         assert.ok(dbClient.run.calledOnce);
-        assert.deepStrictEqual(dbClient.run.args[0][1], {$ansId: 1});
+        assert.deepStrictEqual(dbClient.run.args[0][1], { $ansId: 1 });
         done();
       });
     });
@@ -937,12 +939,12 @@ context('dataStore', () => {
   context('#getAnswerById', function () {
     it('should serve answer Details', (done) => {
       const dbClient = {
-        get: sinon.fake.yields(null, {id: 1}),
+        get: sinon.fake.yields(null, { id: 1 }),
       };
       const dataStore = new DataStore(dbClient);
 
-      dataStore.getAnswerById(1).then(details => {
-        assert.deepStrictEqual(details, {id: 1});
+      dataStore.getAnswerById(1).then((details) => {
+        assert.deepStrictEqual(details, { id: 1 });
         assert.ok(dbClient.get.calledOnce);
         assert.deepStrictEqual(dbClient.get.args[0][1], [1]);
         done();
@@ -955,7 +957,7 @@ context('dataStore', () => {
       };
       const dataStore = new DataStore(dbClient);
 
-      dataStore.getAnswerById(100).catch(err => {
+      dataStore.getAnswerById(100).catch((err) => {
         assert.deepStrictEqual(err.message, 'Wrong Id Provided');
         assert.ok(dbClient.get.calledOnce);
         assert.deepStrictEqual(dbClient.get.args[0][1], [100]);
@@ -967,12 +969,12 @@ context('dataStore', () => {
   context('#getComments', function () {
     it('should serve question comments when isQuestion is true', (done) => {
       const dbClient = {
-        all: sinon.fake.yields(null, [{id: 1}]),
+        all: sinon.fake.yields(null, [{ id: 1 }]),
       };
       const dataStore = new DataStore(dbClient);
 
-      dataStore.getComments(1, true).then(details => {
-        assert.deepStrictEqual(details, [{id: 1}]);
+      dataStore.getComments(1, true).then((details) => {
+        assert.deepStrictEqual(details, [{ id: 1 }]);
         assert.ok(dbClient.all.calledOnce);
         assert.ok(dbClient.all.args[0][0].match('question'));
         assert.deepStrictEqual(dbClient.all.args[0][1], [1]);
@@ -982,15 +984,31 @@ context('dataStore', () => {
 
     it('should serve answer comments when isQuestion is false', (done) => {
       const dbClient = {
-        all: sinon.fake.yields(null, [{id: 1}]),
+        all: sinon.fake.yields(null, [{ id: 1 }]),
       };
       const dataStore = new DataStore(dbClient);
 
-      dataStore.getComments(1, false).then(details => {
-        assert.deepStrictEqual(details, [{id: 1}]);
+      dataStore.getComments(1, false).then((details) => {
+        assert.deepStrictEqual(details, [{ id: 1 }]);
         assert.ok(dbClient.all.calledOnce);
         assert.ok(dbClient.all.args[0][0].match('answer'));
         assert.deepStrictEqual(dbClient.all.args[0][1], [1]);
+        done();
+      });
+    });
+  });
+
+  context('#getPopularTags', function () {
+    it('should get all matched popular tags', (done) => {
+      const dbClient = {
+        all: sinon.fake.yields(null, [{ tag_name: 'javascript' }]),
+      };
+      const dataStore = new DataStore(dbClient);
+
+      dataStore.getPopularTags('java').then((details) => {
+        assert.deepStrictEqual(details, [{ tag_name: 'javascript' }]);
+        assert.ok(dbClient.all.calledOnce);
+        assert.deepStrictEqual(dbClient.all.args[0][1], { $regExp: '%java%' });
         done();
       });
     });
