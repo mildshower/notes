@@ -1,6 +1,5 @@
 link(rel='stylesheet' href='css/header.css')
 link(href="https://fonts.googleapis.com/css2?family=Mulish:wght@200;300;400;500;600&display=swap" rel="stylesheet")
-script(src="scripts/header.js")
 .header
   a#icon(href='/home' alt='home' title='heapOverFlow')
     img(src='images/appIcon.png' alt='heapOverflow Icon')
@@ -8,9 +7,9 @@ script(src="scripts/header.js")
     img(src='images/search.svg' alt='search icon')
     form(action="/search" id="searchForm")
       if(searchQuery)
-        input(value=searchQuery type='search' id='searchField' onsearch='search()' autocomplete="off"  placeholder='Search..' name='searchQuery')
+        input(value=searchQuery type='search' id='searchField' autocomplete="off"  placeholder='Search..' name='searchQuery')
       else
-        input(type='search' id='searchField' onsearch='search()' autocomplete="off" placeholder='Search..' name='searchQuery')
+        input(type='search' id='searchField' autocomplete="off" placeholder='Search..' name='searchQuery')
     #searchMenu.dropDown
       .dropDownArrow
       p 
