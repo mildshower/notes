@@ -3,17 +3,17 @@ const getQuestionTitle = () => document.querySelector('#titleField').value;
 const getTagHolder = () => document.querySelector('#tagsHolder');
 const getTagInput = () => document.querySelector('#tagsField');
 const getAllTags = () => document.querySelectorAll('#tagsHolder.tags .tag');
-const getSuggestionBox = () => document.querySelector('#suggestionBox .tags');
+const getSuggestionBox = () => document.querySelector('#suggestionBox');
 
-const addTag = function (tag) {
-  const div = document.createElement('div');
-  div.className = 'tag';
-  div.innerText = tag.value.replace(' ', '');
-  div.innerText && getTagHolder().prepend(div);
-  tag.value = '';
+const addTag = function(tagInput) {
+  const tag = document.createElement('div');
+  tag.className = 'tag';
+  tag.innerText = tagInput.value.replace(' ', '');
+  tag.innerText && getTagHolder().prepend(tag);
+  tagInput.value = '';
 };
 
-const removeTag = function () {
+const removeTag = function() {
   const currentTag = getTagInput().value;
   const tags = getAllTags();
   const lastTag = Array.from(tags).pop();
@@ -25,34 +25,41 @@ const removeTag = function () {
   getTagInput().value = currentTagValue;
 };
 
-const selectSuggestion = function (event) {
-  const tag = document.createElement('div')
+const selectSuggestion = function(event) {
+  const tag = document.createElement('div');
   tag.className = 'tag';
   tag.innerText = event.target.innerText;
-  console.log(getTagHolder(), getTagInput());
   getTagHolder().prepend(tag);
-  getTagInput().value = '';
-}
+  const tagInput = getTagInput();
+  tagInput.value = '';
+  tagInput.focus();
+};
 
-const showTagsSuggestion = function (tags) {
+const showTagsSuggestion = function(tags) {
   const suggestionsBox = getSuggestionBox();
-  Array.from(suggestionsBox.children).forEach(prevTag => prevTag.remove());
+  if (!tags.length) {
+    suggestionsBox.style.visibility = 'hidden';
+    return;
+  }
+  suggestionsBox.style.visibility = 'unset';
+  const tagsBox = suggestionsBox.querySelector('.tags');
+  Array.from(tagsBox.children).forEach(prevTag => prevTag.remove());
   tags.forEach((tagName) => {
-    const tag = document.createElement('div')
+    const tag = document.createElement('div');
     tag.className = 'tag';
     tag.innerText = tagName;
     tag.onclick = selectSuggestion;
-    suggestionsBox.appendChild(tag);
-  })
+    tagsBox.appendChild(tag);
+  });
 };
 
-const showSuggestion = function (tag) {
+const showSuggestion = function(tag) {
   fetch(`/tags?exp=${tag.value}`)
     .then((res) => res.json())
     .then(showTagsSuggestion);
 };
 
-const manageTags = function (event) {
+const manageTags = function(event) {
   const tag = getTagInput();
   showSuggestion(tag);
   if (event.keyCode === 32) {
@@ -87,13 +94,13 @@ const getEditorConfig = () => ({
   },
 });
 
-const getQuestionTags = function () {
+const getQuestionTags = function() {
   const tags = Array.from(getAllTags(), (tag) => tag.innerText);
   return [...new Set(tags)];
 };
 
-const saveQuestion = function (editor) {
-  getPostButton().onclick = () => {};
+const saveQuestion = function(editor) {
+  getPostButton().onclick = () => { };
   const question = { title: getQuestionTitle() };
   question.body = JSON.stringify(editor.getContents());
   question.bodyText = editor.getText();
@@ -103,7 +110,7 @@ const saveQuestion = function (editor) {
   });
 };
 
-const main = function () {
+const main = function() {
   const editor = new Quill('#bodyField', getEditorConfig());
   getPostButton().onclick = saveQuestion.bind(null, editor);
   getTagInput().addEventListener('keyup', manageTags);
