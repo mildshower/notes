@@ -6,15 +6,13 @@ const getAllTags = () => document.querySelectorAll('#tagsHolder.tags .tag');
 const getSuggestionBox = () => document.querySelector('#suggestionBox');
 
 const createCrossButton = function() {
-  const button = document.createElement('a');
   const cross = document.createElement('img');
   cross.src = '/images/crossButton.svg';
-  button.append(cross);
-  button.onclick = (event) => {
-    event.target.parentNode.parentNode.remove();
+  cross.onclick = (event) => {
+    event.target.parentNode.remove();
     getTagInput().focus();
   };
-  return button;
+  return cross;
 };
 
 const addTag = function(tagInput) {
@@ -54,10 +52,10 @@ const selectSuggestion = function(event) {
 const showTagsSuggestion = function(tags) {
   const suggestionsBox = getSuggestionBox();
   if (!tags.length) {
-    suggestionsBox.style.visibility = 'hidden';
+    suggestionsBox.style.display = 'none';
     return;
   }
-  suggestionsBox.style.visibility = 'unset';
+  suggestionsBox.style.display = 'block';
   const tagsBox = suggestionsBox.querySelector('.tags');
   Array.from(tagsBox.children).forEach(prevTag => prevTag.remove());
   tags.forEach((tagName) => {
