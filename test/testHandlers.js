@@ -165,7 +165,7 @@ describe('GET', () => {
     afterEach(() => sinon.restore());
     it('should redirect to targetPath when right credentials given', (done) => {
       const stubbed = sinon.stub(fetch, 'Promise');
-      stubbed.returns(Promise.resolve({ json: () => ({ 'access_token': 1, login: 'user1' }) }));
+      stubbed.returns(Promise.resolve({ json: () => ({ 'access_token': 1, login: 'user2' }) }));
       request(app)
         .get('/login?code=1&targetPath=/home')
         .set('accept', '*/*')
@@ -213,7 +213,7 @@ describe('GET', () => {
       const stubbed = sinon.stub(fetch, 'Promise');
       stubbed.returns(Promise.resolve({
         json: () =>
-          ({ 'access_token': 1, login: 'user1', avatar_url: 'avatar' })
+          ({ 'access_token': 1, login: 'user2', avatar_url: 'avatar' })
       }));
       request(app)
         .get('/signUp?code=1&targetPath=home')

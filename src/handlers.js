@@ -296,7 +296,7 @@ const getTagsSuggestion = async function (req, res) {
 const saveComment = function(req, res){
   const {id, body, isQuestionComment} = req.body;
   const {user_id: owner, display_name: ownerName} = req.user;
-  const creationTime = Moment().format('YYYY-MM-DD hh:mm:ss');
+  const creationTime = Moment().format('YYYY-MM-DD HH:mm:ss');
   const created = getRelativeTime(creationTime);
   const comment = {id, body, owner, ownerName, creationTime, created};
   req.app.locals.dataStore.saveComment(comment, isQuestionComment)

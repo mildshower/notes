@@ -188,7 +188,7 @@ a {
 }
 
 .profileDropDown > a{
-  padding: 5px;
+  padding: 5px 10px;
   color: #0a4a4d;
   font-size: 16px;
   font-weight: 300;
@@ -206,7 +206,7 @@ a {
 }
 
 .profileDropDown .dropDownArrow{
-  left: 47px;
+  left: 57px;
 }
 
 #profileButton:focus .profileDropDown,
