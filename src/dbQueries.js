@@ -77,6 +77,14 @@ module.exports = {
   'where ques.id in (select question_id from questions_tags ' +
   'where tag_id = (select id from tags where tag_name like $regExp));',
 
+  searchQuestionsByCorrectAns:
+  questionDetails +
+  'where hasCorrectAnswer like $regExp;',
+
+  searchQuestionsByAnsCount:
+  questionDetails +
+  'where answerCount like $regExp;',
+
   questionInsertion:
   `insert into questions (title, body, body_text, owner)
     values (?, ?, ?, ?);`,
