@@ -9,7 +9,7 @@ const addTag = function (tag) {
   const div = document.createElement('div');
   div.className = 'tag';
   div.innerText = tag.value.replace(' ', '');
-  div.innerText && getTagHolder().appendChild(div);
+  div.innerText && getTagHolder().prepend(div);
   tag.value = '';
 };
 
@@ -25,6 +25,15 @@ const removeTag = function () {
   getTagInput().value = currentTagValue;
 };
 
+const selectSuggestion = function (event) {
+  const tag = document.createElement('div')
+  tag.className = 'tag';
+  tag.innerText = event.target.innerText;
+  console.log(getTagHolder(), getTagInput());
+  getTagHolder().prepend(tag);
+  getTagInput().value = '';
+}
+
 const showTagsSuggestion = function (tags) {
   const suggestionsBox = getSuggestionBox();
   Array.from(suggestionsBox.children).forEach(prevTag => prevTag.remove());
@@ -32,6 +41,7 @@ const showTagsSuggestion = function (tags) {
     const tag = document.createElement('div')
     tag.className = 'tag';
     tag.innerText = tagName;
+    tag.onclick = selectSuggestion;
     suggestionsBox.appendChild(tag);
   })
 };

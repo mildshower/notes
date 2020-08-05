@@ -95,6 +95,7 @@ h1 {
   top:42px;
   left:0px;
   width:40%;
+  visibility: hidden;
   background-color:white;
   border-radius: 4px;
   padding:0px 60px 20px 15px;
@@ -116,14 +117,9 @@ h1 {
   border: 1px solid black;
 }
 
-#tagInputHolder #suggestionBox,
-#tagInputHolder #suggestionBox * {
-  visibility: hidden;
-}
-
 #tagInputHolder:focus-within #suggestionBox,
-#tagInputHolder:focus-within #suggestionBox * {
-  visibility: unset;
+#suggestionBox:hover {
+  visibility: inherit;
 }
 
 #tagInputHolder input {
@@ -141,6 +137,16 @@ h1 {
   display: flex;
   flex-wrap: wrap;
   overflow:scroll;
+}
+
+#tagsHolder {
+  overflow-x: scroll;
+  flex-wrap: nowrap;
+  flex-direction: row-reverse;
+}
+
+#tagsHolder::-webkit-scrollbar{
+  display: none;
 }
 
 #tagName {
