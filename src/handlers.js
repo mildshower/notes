@@ -290,8 +290,19 @@ const verifyAnswerAcceptance = async function(req, res, next){
 const getTagsSuggestion = async function (req, res) {
   const {exp} = req.query;
   const tags = await req.app.locals.dataStore.getPopularTags(exp);
-  res.json(Array.from(tags,(tag)=>tag.tag_name).slice(0,10));
-}
+  res.json(Array.from(tags, (tag) => tag.tag_name).slice(0, 10));
+};
+
+const saveComment = function(req, res){
+  const {id, body, isQuestionComment} = req.body;
+  const {user_id: owner, display_name: ownerName} = req.user;
+  const creationTime = Moment().format('YYYY-MM-DD hh:mm:ss');
+  const created = getRelativeTime(creationTime);
+  const comment = {id, body, owner, ownerName, creationTime, created};
+  req.app.locals.dataStore.saveComment(comment, isQuestionComment)
+    .then(() => res.json({isSucceeded: true, comment}))
+    .catch(err => res.status(406).json({error: err.message}));
+};
 
 module.exports = {
   handleSessions,
@@ -318,5 +329,6 @@ module.exports = {
   acceptAnswer,
   rejectAnswer,
   verifyAnswerAcceptance,
-  getTagsSuggestion
+  getTagsSuggestion,
+  saveComment
 };

@@ -271,6 +271,14 @@ class DataStore {
   getPopularTags(exp) {
     return this.getRows(query.popularTags, {$regExp: `%${exp}%`});
   }
+  
+  saveComment({body, owner, creationTime, id}, isQuestionComment){
+    return this.runQuery(
+      isQuestionComment ? query.saveQuesComment : query.saveAnsComment,
+      [body, owner, id, creationTime, creationTime],
+      new Error('Comment Insertion Failed!')
+    );
+  }
 }
 
 module.exports = DataStore;

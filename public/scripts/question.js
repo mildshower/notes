@@ -20,6 +20,9 @@ const getVoteElements = boxQuery => {
 const getCommentBar = ancestor => 
   document.querySelector(`${ancestor} .commentBar`);
 
+const getCommentBox = ancestor => 
+  document.querySelector(`${ancestor} .commentsBox`);
+
 const removeAllTickHighlights = function(){
   getClickableTicks().forEach(tick => {
     tick.classList.remove('accepted');
@@ -151,17 +154,41 @@ const addAcceptanceListeners = function(){
   });
 };
 
-const addCommentListener = function(ancestor){
+const showComment = function(commentBox, {body, created, ownerName, owner}){
+  const commentElement = document.createElement('p');
+  commentElement.innerHTML = 
+    `${body}&nbsp;&nbsp;-&nbsp;` +
+    `<a class="strong" href="/profile?userId=${owner}">${ownerName}</a>` +
+    `<span class="commentTime">&nbsp;&nbsp;${created}</span>`;
+  commentElement.classList.add('comment');
+  commentBox.appendChild(commentElement);
+};
+
+const addCommentListener = function(ancestor, id, isQuestionComment){
   const commentBar = getCommentBar(ancestor);
-  const [toggler, body, poster, cancel] = commentBar.children;
-  toggler.onclick = () => commentBar.classList.remove('closed');
+  const commentBox = getCommentBox(ancestor);
+  const [opener, body, poster, cancel] = commentBar.children;
+  opener.onclick = () => {
+    commentBar.classList.remove('closed');
+    body.focus();
+  };
   cancel.onclick = () => commentBar.classList.add('closed');
+  poster.onclick = () => {
+    postData('/saveComment', {body: body.value, id, isQuestionComment })
+      .then(({isSucceeded, comment}) => {
+        if(isSucceeded){
+          showComment(commentBox, comment);
+        }
+        commentBar.classList.add('closed');
+        body.value = '';
+      });
+  };
 };
 
 const addCommentListeners = function(){
-  addCommentListener('.questionBox');
+  addCommentListener('.questionBox', getQuestionBox().id, true);
   getAnswers().forEach(ans => {
-    addCommentListener(`.answerBox[id='${ans.id}']`);
+    addCommentListener(`.answerBox[id='${ans.id}']`, ans.id, false);
   });
 };
 

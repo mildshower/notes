@@ -642,6 +642,51 @@ context('dataStore', () => {
     });
   });
 
+  context('#saveComment', function () {
+    it('should add the answer comment', (done) => {
+      const dbClient = {
+        run: sinon.fake.yields(null),
+      };
+      const dataStore = new DataStore(dbClient);
+
+      dataStore.saveComment({body: 'body', owner: 1, id: 1, creationTime: '2020-12-12 12:34:21'}).then(() => {
+        assert.ok(dbClient.run.calledOnce);
+        assert.ok(dbClient.run.args[0][0].match(/answer/));
+        assert.deepStrictEqual(dbClient.run.args[0][1], ['body', 1, 1, '2020-12-12 12:34:21', '2020-12-12 12:34:21']);
+        done();
+      });
+    });
+
+    it('should add the question comment', (done) => {
+      const dbClient = {
+        run: sinon.fake.yields(null),
+      };
+      const dataStore = new DataStore(dbClient);
+
+      dataStore.saveComment({body: 'body', owner: 1, id: 1, creationTime: '2020-12-12 12:34:21'}, true).then(() => {
+        assert.ok(dbClient.run.calledOnce);
+        assert.ok(dbClient.run.args[0][0].match(/question/));
+        assert.deepStrictEqual(dbClient.run.args[0][1], ['body', 1, 1, '2020-12-12 12:34:21', '2020-12-12 12:34:21']);
+        done();
+      });
+    });
+
+    it('should produce error when insertion failed', (done) => {
+      const dbClient = {
+        run: sinon.fake.yields(new Error()),
+      };
+      const dataStore = new DataStore(dbClient);
+
+      dataStore.saveComment({body: 'body', owner: 1, id: 1, creationTime: '2020-12-12 12:34:21'}).catch((err) => {
+        assert.deepStrictEqual(err.message, 'Comment Insertion Failed!');
+        assert.ok(dbClient.run.args[0][0].match(/answer/));
+        assert.ok(dbClient.run.calledOnce);
+        assert.deepStrictEqual(dbClient.run.args[0][1], ['body', 1, 1, '2020-12-12 12:34:21', '2020-12-12 12:34:21']);
+        done();
+      });
+    });
+  });
+
   context('#getTags', () => {
     it('should give all the tags used in questions', (done) => {
       const dbClient = {

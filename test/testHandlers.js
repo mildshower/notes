@@ -431,6 +431,36 @@ describe('POST', function() {
     });
   });
 
+  context('/saveComment', () => {
+    it('should save given valid comment', (done) => {
+      const sessions = new Sessions();
+      const id = sessions.addSession('1');
+      app.locals.sessions = sessions;
+      request(app)
+        .post('/saveComment')
+        .set('Cookie', `session=${id}`)
+        .send({ body: 'comment', isQuesionComment: true, id: 1})
+        .set('Content-Type', 'application/json')
+        .expect(200)
+        .expect('Content-Type', 'application/json; charset=utf-8')
+        .expect(/{"isSucceeded":true/, done);
+    });
+
+    it('should serve not acceptable if wrong details given', (done) => {
+      const sessions = new Sessions();
+      const id = sessions.addSession('1');
+      app.locals.sessions = sessions;
+      request(app)
+        .post('/saveComment')
+        .set('Cookie', `session=${id}`)
+        .send({ body: 'comment', isQuesionComment: true, id: 1000})
+        .set('Content-Type', 'application/json')
+        .expect(406)
+        .expect('Content-Type', 'application/json; charset=utf-8')
+        .expect('{"error":"Comment Insertion Failed!"}', done);
+    });
+  });
+
   context('/profile', () => {
     it('should serve user\'s profile page when user logged in', (done) => {
       const sessions = new Sessions();

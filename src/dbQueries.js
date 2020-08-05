@@ -182,7 +182,7 @@ module.exports = {
    commentDetails + ` from answer_comments comments
     where comments.answer = ? `,
   
-  popularTags :
+  popularTags:
   `select tag_name,
       count(*) as popularity
   from questions_tags qt
@@ -190,5 +190,13 @@ module.exports = {
   on tags.id = qt.tag_id
   where tag_name like $regExp
   group by tag_id
-  order by popularity desc;`
+  order by popularity desc;`,
+
+  saveQuesComment:
+    `insert into question_comments (body, owner, question, created, last_modified)
+      values (?, ?, ?, ?, ?);`,
+
+  saveAnsComment:
+    `insert into answer_comments (body, owner, answer, created, last_modified)
+      values (?, ?, ?, ?, ?);`
 };
