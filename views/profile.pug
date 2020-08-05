@@ -33,7 +33,7 @@ body
         if(tags.length > 0)
           .contents
             each tag in tags
-              a.tag(href='') #{tag}
+              a.tag(href=`/search?searchQuery=%23${tag}`) #{tag}
         else
           p.empty No Tags Yet
       p.laneTitle Questions (#{questions.length})
