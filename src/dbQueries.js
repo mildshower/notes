@@ -180,5 +180,15 @@ module.exports = {
 
   answerComments:
    commentDetails + ` from answer_comments comments
-    where comments.answer = ? `
+    where comments.answer = ? `,
+  
+  popularTags :
+  `select tag_name,
+      count(*) as popularity
+  from questions_tags qt
+  left join tags
+  on tags.id = qt.tag_id
+  where tag_name like $regExp
+  group by tag_id
+  order by popularity desc;`
 };

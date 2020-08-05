@@ -21,6 +21,10 @@ body
     #bodyField
     label(for='tagsField') Tags
     #tagInputHolder
-      #tagsHolder
+      #tagsHolder.tags
       input#tagsField(type='text' maxlength='100')
+      #suggestionBox
+        p Popular tags
+        .tags
+
   button#postButton Post Your Question

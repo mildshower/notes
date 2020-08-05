@@ -287,6 +287,12 @@ const verifyAnswerAcceptance = async function(req, res, next){
   }
 };
 
+const getTagsSuggestion = async function (req, res) {
+  const {exp} = req.query;
+  const tags = await req.app.locals.dataStore.getPopularTags(exp);
+  res.json(Array.from(tags,(tag)=>tag.tag_name).slice(0,10));
+}
+
 module.exports = {
   handleSessions,
   serveHomePage,
@@ -311,5 +317,6 @@ module.exports = {
   deleteVote,
   acceptAnswer,
   rejectAnswer,
-  verifyAnswerAcceptance
+  verifyAnswerAcceptance,
+  getTagsSuggestion
 };

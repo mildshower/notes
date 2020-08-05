@@ -31,7 +31,8 @@ const {
   deleteVote,
   acceptAnswer,
   rejectAnswer,
-  verifyAnswerAcceptance
+  verifyAnswerAcceptance,
+  getTagsSuggestion
 } = require('./handlers');
 
 const app = express();
@@ -56,6 +57,7 @@ app.get('/profile', showProfilePage);
 app.get('/question', serveQuestionPage);
 app.get('/questionDetails', serveQuestionDetails);
 app.get('/answers', serveAnswers);
+app.get('/tags', getTagsSuggestion);
 app.get('/search', serveSearchPage);
 app.get('/editProfile', authorizeUser, serveEditProfilePage);
 app.get('/signUpForm', authorizeUser, serveSignUpPage);

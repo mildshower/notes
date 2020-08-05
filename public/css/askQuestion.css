@@ -19,7 +19,7 @@ h1 {
 }
 
 #postButton {
-  margin: 0px 10vw 150px;
+  margin: 0px 0vw 150px 77.5vw;
   font-size: 20px;
   font-weight: 400;
   outline: none;
@@ -77,15 +77,36 @@ h1 {
   border: 1px solid rgb(163, 163, 163);
   outline: none;
   border-radius: 5px;
-  overflow-x: scroll;
   background: white;
+}
+
+#titleField {
+  overflow-x: scroll;
 }
 
  #tagInputHolder{
    height: 36px;
    align-items: center;
+   position: relative;
  }
 
+ #suggestionBox {
+  position: absolute;
+  top:42px;
+  left:0px;
+  width:40%;
+  background-color:white;
+  border-radius: 4px;
+  padding:0px 60px 20px 15px;
+  box-shadow: 0px 0px 3px 1px rgb(201, 201, 201);
+ }
+
+ #suggestionBox p {
+   font-size: 20px;
+   color:#10757a;
+   padding: 15px 10px 10px;
+   margin:0px 0px 5px;
+ }
 
 #titleField:focus {
   border: 1px solid black;
@@ -95,22 +116,31 @@ h1 {
   border: 1px solid black;
 }
 
+#tagInputHolder #suggestionBox,
+#tagInputHolder #suggestionBox * {
+  visibility: hidden;
+}
+
+#tagInputHolder:focus-within #suggestionBox,
+#tagInputHolder:focus-within #suggestionBox * {
+  visibility: unset;
+}
+
 #tagInputHolder input {
   font-size: 18px;
-  /* height: 25px; */
   padding: 5px 10px;
   height: 90%;
   outline: none;
   border: none;
   margin: -1px;
+  background-color: transparent;
+  flex-grow: 1;
 }
 
-#tagInputHolder::-webkit-scrollbar {
-  display: none;
-}
-
-#tagsHolder {
+.tags {
   display: flex;
+  flex-wrap: wrap;
+  overflow:scroll;
 }
 
 #tagName {
@@ -120,17 +150,6 @@ h1 {
 }
 
 .tag{
-  /* color: rgb(44, 87, 119);
-  background-color: rgb(220, 234, 243);
-  text-decoration: none;
-  cursor: pointer;
-  padding:3px 5px;
-  align-items: center;
-  margin: 0px 5px;
-  font-size: 18px;
-  border-radius: 4px;
-  border: 1px solid rgb(173, 173, 173); */
-
   color: #0a4a4d;
   background-color: #ccf0f3;
   text-decoration: none;
@@ -141,6 +160,7 @@ h1 {
   border-top-right-radius: 8px;
   border-bottom-left-radius: 8px;
   font-weight: 400;
+  height:fit-content;
 }
 
 .tag:focus,

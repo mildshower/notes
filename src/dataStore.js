@@ -267,6 +267,10 @@ class DataStore {
       [id]
     );
   }
+
+  getPopularTags(exp) {
+    return this.getRows(query.popularTags, {$regExp: `%${exp}%`});
+  }
 }
 
 module.exports = DataStore;
