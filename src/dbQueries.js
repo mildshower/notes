@@ -45,138 +45,140 @@ const commentDetails =
   (SELECT display_name from users
   where user_id = comments.owner) as ownerName`;
 
-module.exports.userUpdation =
+module.exports = {
+  userUpdation:
   `UPDATE users
     SET display_name = ?, email = ?, location = ?, bio = ?
-    WHERE user_id = ?;`;
+    WHERE user_id = ?;`,
 
-module.exports.answersByUser = answerDetails + 'where ans.owner = ?';
+  answersByUser: answerDetails + 'where ans.owner = ?',
 
-module.exports.answerByQuestion = 
-  answerDetails + 'where ans.question = ? ORDER BY isAccepted DESC';
+  answerByQuestion: 
+  answerDetails + 'where ans.question = ? ORDER BY isAccepted DESC',
 
-module.exports.lastQuestions =
-  questionDetails + 'order by ques.created DESC;';
+  lastQuestions:
+  questionDetails + 'order by ques.created DESC;',
 
-module.exports.questionDetails =
-  questionDetails + 'where ques.id = ?;';
+  questionDetails:
+  questionDetails + 'where ques.id = ?;',
 
-module.exports.userQuestions = questionDetails + 'where ques.owner = ?;';
+  userQuestions: questionDetails + 'where ques.owner = ?;',
 
-module.exports.searchQuestionsByText =
+  searchQuestionsByText:
   questionDetails +
-  'where ques.title like $regExp or ques.body_text like $regExp;';
+  'where ques.title like $regExp or ques.body_text like $regExp;',
 
-module.exports.searchQuestionsByUserName =
+  searchQuestionsByUserName:
   questionDetails +
-  'where ownerName like $regExp;';
+  'where ownerName like $regExp;',
 
-module.exports.searchQuestionsByTagName =
+  searchQuestionsByTagName:
   questionDetails +
   'where ques.id in (select question_id from questions_tags ' +
-  'where tag_id = (select id from tags where tag_name like $regExp));';
+  'where tag_id = (select id from tags where tag_name like $regExp));',
 
-module.exports.questionInsertion =
+  questionInsertion:
   `insert into questions (title, body, body_text, owner)
-    values (?, ?, ?, ?);`;
+    values (?, ?, ?, ?);`,
 
-module.exports.userInsertion =
+  userInsertion:
   `insert into users (github_username, avatar) 
-    values (?, ?);`;
+    values (?, ?);`,
 
-module.exports.tagsInsertion =
+  tagsInsertion:
   `insert into tags (tag_name)
-    values (?);`;
+    values (?);`,
 
-module.exports.tagIdByTagName =
+  tagIdByTagName:
   `select id from tags
-    where tag_name = ?;`;
+    where tag_name = ?;`,
 
-module.exports.insertQuesTags =
+  insertQuesTags:
   `insert into questions_tags (tag_id, question_id)
-    values(?, ?)`;
+    values(?, ?)`,
 
-module.exports.initial = `
+  initial: `
     ${Object.values(tablesSchema).join('\n')}
     PRAGMA foreign_keys=ON;
-  `;
+  `,
 
-module.exports.questionVoteByUser =
+  questionVoteByUser:
   `select vote_type as voteType
     from question_votes
-    where question_id = ? AND user = ?`;
+    where question_id = ? AND user = ?`,
 
-module.exports.answerVoteByUser =
+  answerVoteByUser:
   `select vote_type as voteType
     from answer_votes
-    where answer_id = ? AND user = ?`;
+    where answer_id = ? AND user = ?`,
 
-module.exports.voteQueries = {
-  ques: {
-    addition: `insert into question_votes (vote_type, question_id, user)
+  voteQueries: {
+    ques: {
+      addition: `insert into question_votes (vote_type, question_id, user)
       values (?, ?, ?)`,
-    toggle: `update question_votes
+      toggle: `update question_votes
       set vote_type = ?
       where question_id = ? AND user = ?`
-  },
-  ans: {
-    addition: `insert into answer_votes (vote_type, answer_id, user)
+    },
+    ans: {
+      addition: `insert into answer_votes (vote_type, answer_id, user)
       values (?, ?, ?)`,
-    toggle: `update answer_votes
+      toggle: `update answer_votes
       set vote_type = ?
       where answer_id = ? AND user = ?`
-  }
-};
+    }
+  },
 
-module.exports.ansVoteDeletion =
+  ansVoteDeletion:
   `delete from answer_votes
-    where answer_id = ? and user = ?`;
+    where answer_id = ? and user = ?`,
 
-module.exports.quesVoteDeletion =
+  quesVoteDeletion:
   `delete from question_votes
-    where question_id = ? and user = ?`;
+    where question_id = ? and user = ?`,
 
-module.exports.answerInsertion =
+  answerInsertion:
   `insert into answers (body, body_text, question, owner)
-    values (?, ?, ?, ?)`;
+    values (?, ?, ?, ?)`,
 
-module.exports.questionTags =
+  questionTags:
   `select tags.tag_name FROM tags
    left join questions_tags as ques_tags
    on ques_tags.tag_id = tags.id
-   where ques_tags.question_id = ?;`;
+   where ques_tags.question_id = ?;`,
 
-module.exports.questionVoteCount =
+  questionVoteCount:
   `select COALESCE(sum(REPLACE(vote_type,0,-1)),0) as voteCount
     from question_votes
-    where question_id = ?`;
+    where question_id = ?`,
 
-module.exports.answerVoteCount =
+  answerVoteCount:
   `select COALESCE(sum(REPLACE(vote_type,0,-1)),0) as voteCount
     from answer_votes
-    where answer_id = ?`;
+    where answer_id = ?`,
 
-module.exports.rejectAnswer =
+  rejectAnswer:
   `update answers
     set is_accepted = 0
-    where id = ?`;
+    where id = ?`,
 
-module.exports.acceptAnswer =
+  acceptAnswer:
   `UPDATE answers
   set is_accepted = 
     case id
       when $ansId then 1
       else 0
     END
-  where question = (select question from answers where id = $ansId );`;
+  where question = (select question from answers where id = $ansId );`,
 
-module.exports.answerById =
-  answerDetails + 'where ans.id = ?';
+  answerById:
+  answerDetails + 'where ans.id = ?',
 
-module.exports.questionComments =
+  questionComments:
   commentDetails + ` from question_comments comments
-   where comments.question = ? `;
+   where comments.question = ? `,
 
-module.exports.answerComments =
+  answerComments:
    commentDetails + ` from answer_comments comments
-    where comments.answer = ? `;
+    where comments.answer = ? `
+};

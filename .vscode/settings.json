@@ -2,5 +2,8 @@
   "editor.defaultFormatter": "dbaeumer.vscode-eslint",
   "editor.formatOnSave": true,
   "eslint.format.enable": true,
-  "editor.wordWrap": "on"
+  "editor.wordWrap": "on",
+  "cSpell.words": [
+    "Updation"
+  ]
 }
