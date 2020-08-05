@@ -64,27 +64,15 @@ module.exports = {
 
   userQuestions: questionDetails + 'where ques.owner = ?;',
 
-  searchQuestionsByText:
+  searchQuestions:
   questionDetails +
-  'where ques.title like $regExp or ques.body_text like $regExp;',
-
-  searchQuestionsByUserName:
-  questionDetails +
-  'where ownerName like $regExp;',
-
-  searchQuestionsByTagName:
-  questionDetails +
-  'where ques.id in (select question_id from questions_tags ' +
-  'where tag_id = (select id from tags where tag_name like $regExp));',
-
-  searchQuestionsByCorrectAns:
-  questionDetails +
-  'where hasCorrectAnswer like $regExp;',
-
-  searchQuestionsByAnsCount:
-  questionDetails +
-  'where answerCount like $regExp;',
-
+  ` where ques.title like $text or ques.body_text like $text
+    or ownerName like $user
+    or ques.id in (select question_id from questions_tags
+      where tag_id = (select id from tags where tag_name like $tag))
+    or hasCorrectAnswer = $acceptance
+    or answerCount = $ansCount;`,
+    
   questionInsertion:
   `insert into questions (title, body, body_text, owner)
     values (?, ?, ?, ?);`,

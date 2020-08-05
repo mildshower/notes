@@ -1,30 +1,4 @@
-/* eslint-disable max-statements */
-/* eslint-disable complexity */
 const query = require('./dbQueries');
-
-const getSearchQuery = function(searchKeyword){
-  const [, userName, tagName, acceptance, ansCount, text] = 
-      searchKeyword.match(/(^@.*)?(^#.*)?(^:.*)?(^>.*)?(.*)?/);
-  let chosenQuery = query.searchQuestionsByText;
-  let exp = text;
-  if (userName) {
-    chosenQuery = query.searchQuestionsByUserName;
-    exp = userName.slice(1);
-  }
-  if (tagName) {
-    chosenQuery = query.searchQuestionsByTagName;
-    exp = tagName.slice(1);
-  }
-  if(acceptance){
-    chosenQuery = query.searchQuestionsByCorrectAns;
-    exp = +/^accepted$/i.test(acceptance.slice(1));
-  }
-  if(ansCount){
-    chosenQuery = query.searchQuestionsByAnsCount;
-    exp = +ansCount.slice(1);
-  }
-  return {query: chosenQuery, exp};
-};
 
 class DataStore {
   constructor(dbClient) {
@@ -197,8 +171,16 @@ class DataStore {
   }
 
   getMatchedQuestions(searchKeyword) {
-    const {query, exp} = getSearchQuery(searchKeyword);
-    return this.getRows(query, { $regExp: `%${exp}%` });
+    const [, userName, tagName, acceptance, ansCount, text] = 
+      searchKeyword.match(/^@(.*)|^#(.*)|^:(.*)|^>(.*)|(.*)|/);
+    const expressions = {
+      $text: `%${text}%`,
+      $user: `%${userName}%`,
+      $tag: `%${tagName}%`,
+      $acceptance: acceptance && +/^accepted$/i.test(acceptance),
+      $ansCount: +ansCount
+    };
+    return this.getRows(query.searchQuestions, expressions);
   }
 
   getUserAnswers(id) {

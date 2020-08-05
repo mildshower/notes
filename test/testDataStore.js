@@ -445,7 +445,7 @@ context('dataStore', () => {
       dataStore.getMatchedQuestions('arrow').then((actual) => {
         assert.deepStrictEqual(actual, questions);
         assert.ok(dbClient.all.calledOnce);
-        assert.deepStrictEqual(dbClient.all.args[0][1], { $regExp: '%arrow%' });
+        assert.include(dbClient.all.args[0][1], { $text: '%arrow%' });
         done();
       });
     });
@@ -467,7 +467,7 @@ context('dataStore', () => {
       dataStore.getMatchedQuestions('@john').then((actual) => {
         assert.deepStrictEqual(actual, questions);
         assert.ok(dbClient.all.calledOnce);
-        assert.deepStrictEqual(dbClient.all.args[0][1], { $regExp: '%john%' });
+        assert.include(dbClient.all.args[0][1], { $user: '%john%' });
         done();
       });
     });
@@ -489,8 +489,32 @@ context('dataStore', () => {
       dataStore.getMatchedQuestions('#javascript').then((actual) => {
         assert.deepStrictEqual(actual, questions);
         assert.ok(dbClient.all.calledOnce);
-        assert.deepStrictEqual(dbClient.all.args[0][1], {
-          $regExp: '%javascript%',
+        assert.include(dbClient.all.args[0][1], {
+          $tag: '%javascript%',
+        });
+        done();
+      });
+    });
+
+    it('should give all the questions which has correct answer', (done) => {
+      const questions = [
+        {
+          id: 1,
+          title: 'How to write arrow functions',
+          body_text: 'here is a sample function',
+          ownerName: 'john',
+        },
+      ];
+      const dbClient = {
+        all: sinon.fake.yields(null, questions),
+      };
+      const dataStore = new DataStore(dbClient);
+
+      dataStore.getMatchedQuestions(':accepted').then((actual) => {
+        assert.deepStrictEqual(actual, questions);
+        assert.ok(dbClient.all.calledOnce);
+        assert.include(dbClient.all.args[0][1], {
+          $acceptance: 1,
         });
         done();
       });
