@@ -126,40 +126,30 @@ const addVoteListener = function(ancestorQuery, id, isQuestionVote){
   downVote.onclick = handleVote.bind(downVote, id, voteBox, isQuestionVote);
 };
 
-const attachVoteListeners = function(){
-  addVoteListener('.questionBox', getQuestionBox().id, true);
-  getAnswers().forEach(({id}) => {
-    addVoteListener(`.answerBox[id="${id}"]`, id, false);
-  });
-};
-
-const addAcceptanceListeners = function(){
-  const clickableTicks = getAnswers();
-  clickableTicks.forEach(answer => {
-    const tick = getClickableTick(`.answerBox[id='${answer.id}']`);
-    if(!tick){
-      return;
-    }
-    const isRejection = tick.className.includes('accepted');
-    const path = isRejection ? '/rejectAnswer' : '/acceptAnswer';
-    tick.onclick = () => {
-      postData(path, {answerId: answer.id})
-        .then(({isSucceeded}) => {
-          if(isSucceeded){
-            removeAllTickHighlights();
-            !isRejection && tick.classList.add('accepted');
-          }
-        });
-    };
-  });
+const addAcceptanceListener = function(ancestor, id){
+  const tick = getClickableTick(ancestor);
+  if(!tick){
+    return;
+  }
+  const isRejection = tick.className.includes('accepted');
+  const path = isRejection ? '/rejectAnswer' : '/acceptAnswer';
+  tick.onclick = () => {
+    postData(path, {answerId: id})
+      .then(({isSucceeded}) => {
+        if(isSucceeded){
+          removeAllTickHighlights();
+          !isRejection && tick.classList.add('accepted');
+        }
+      });
+  };
 };
 
 const showComment = function(commentBox, {body, created, ownerName, owner}){
   const commentElement = document.createElement('p');
   commentElement.innerHTML = 
-    `${body}&nbsp;&nbsp;-&nbsp;` +
-    `<a class="strong" href="/profile?userId=${owner}">${ownerName}</a>` +
-    `<span class="commentTime">&nbsp;&nbsp;${created}</span>`;
+  `${body}&nbsp;&nbsp;-&nbsp;` +
+  `<a class="strong" href="/profile?userId=${owner}">${ownerName}</a>` +
+  `<span class="commentTime">&nbsp;&nbsp;${created}</span>`;
   commentElement.classList.add('comment');
   commentBox.appendChild(commentElement);
 };
@@ -185,10 +175,14 @@ const addCommentListener = function(ancestor, id, isQuestionComment){
   };
 };
 
-const addCommentListeners = function(){
+const attachContentListeners = function(){
+  addVoteListener('.questionBox', getQuestionBox().id, true);
   addCommentListener('.questionBox', getQuestionBox().id, true);
-  getAnswers().forEach(ans => {
-    addCommentListener(`.answerBox[id='${ans.id}']`, ans.id, false);
+  getAnswers().forEach(({id}) => {
+    const answerBoxQuery = `.answerBox[id="${id}"]`;
+    addVoteListener(answerBoxQuery, id, false);
+    addCommentListener(answerBoxQuery, id, false);
+    addAcceptanceListener(answerBoxQuery, id);
   });
 };
 
@@ -198,10 +192,8 @@ const main = function () {
   if(getAnswerBody()){
     const newAnswer = new Quill('#answerBody > #editor', getEditorConfig());
     getAnswerButton().onclick = saveAnswer.bind(null, newAnswer);
-    attachVoteListeners();
-    addCommentListeners();
+    attachContentListeners();
   }
-  addAcceptanceListeners();
 };
 
 window.onload = main;
