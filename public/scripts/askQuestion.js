@@ -5,11 +5,26 @@ const getTagInput = () => document.querySelector('#tagsField');
 const getAllTags = () => document.querySelectorAll('#tagsHolder.tags .tag');
 const getSuggestionBox = () => document.querySelector('#suggestionBox');
 
+const createCrossButton = function() {
+  const button = document.createElement('a');
+  const cross = document.createElement('img');
+  cross.src = '/images/crossButton.svg';
+  button.append(cross);
+  button.onclick = (event) => {
+    event.target.parentNode.parentNode.remove();
+    getTagInput().focus();
+  };
+  return button;
+};
+
 const addTag = function(tagInput) {
   const tag = document.createElement('div');
   tag.className = 'tag';
   tag.innerText = tagInput.value.replace(' ', '');
-  tag.innerText && getTagHolder().prepend(tag);
+  if (tag.innerText) {
+    tag.appendChild(createCrossButton());
+    getTagHolder().prepend(tag);
+  }
   tagInput.value = '';
 };
 
@@ -29,6 +44,7 @@ const selectSuggestion = function(event) {
   const tag = document.createElement('div');
   tag.className = 'tag';
   tag.innerText = event.target.innerText;
+  tag.appendChild(createCrossButton());
   getTagHolder().prepend(tag);
   const tagInput = getTagInput();
   tagInput.value = '';
