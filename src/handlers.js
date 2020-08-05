@@ -304,6 +304,11 @@ const saveComment = function(req, res){
     .catch(err => res.status(406).json({error: err.message}));
 };
 
+const logout = function(req, res){
+  req.app.locals.sessions.clearSession(req.cookies.session);
+  res.clearCookie('session').redirect('/home');
+};
+
 module.exports = {
   handleSessions,
   serveHomePage,
@@ -330,5 +335,6 @@ module.exports = {
   rejectAnswer,
   verifyAnswerAcceptance,
   getTagsSuggestion,
-  saveComment
+  saveComment,
+  logout
 };

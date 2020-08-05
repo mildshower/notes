@@ -33,7 +33,8 @@ const {
   rejectAnswer,
   verifyAnswerAcceptance,
   getTagsSuggestion,
-  saveComment
+  saveComment,
+  logout
 } = require('./handlers');
 
 const app = express();
@@ -71,6 +72,7 @@ app.post('/deleteVote', authorizeUser, deleteVote);
 app.post('/acceptAnswer', authorizeUser, verifyAnswerAcceptance, acceptAnswer);
 app.post('/rejectAnswer', authorizeUser, verifyAnswerAcceptance, rejectAnswer);
 app.post('/saveComment', authorizeUser, saveComment);
+app.get('/logout', logout);
 app.use(serveNotFound);
 
 module.exports = { app };

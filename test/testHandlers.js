@@ -64,7 +64,7 @@ describe('GET', () => {
         .expect('Content-Type', 'application/json; charset=utf-8')
         .expect('["javascript","node.js"]', done);
     });
-  })
+  });
 
   context('/question', () => {
     it('should serve question page for valid question id', (done) => {
@@ -562,6 +562,20 @@ describe('POST', function() {
         .expect(200)
         .expect('Content-Type', /json/)
         .expect('{"isSucceeded":true}', done);
+    });
+  });
+
+  context('/logout', () => {
+    it('should clear session and redirect to home page', (done) => {
+      const sessions = new Sessions();
+      const id = sessions.addSession('1');
+      app.locals.sessions = sessions;
+      request(app)
+        .get('/logout')
+        .set('Cookie', `session=${id}`)
+        .expect(302)
+        .expect('Set-Cookie', /session=;/)
+        .expect('Location', '/home', done);
     });
   });
 });
