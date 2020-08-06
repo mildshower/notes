@@ -73,40 +73,6 @@ context('dataStore', () => {
     });
   });
 
-  context('#getTagId', () => {
-    it('it should give tag id when tag name is valid', (done) => {
-      const dbClient = {
-        get: sinon.fake.yields(null, { id: 1 }),
-        run: sinon.fake.yields(null),
-        serialize: (cb) => cb(),
-      };
-      const dataStore = new DataStore(dbClient);
-      dataStore.getTagId('js').then((details) => {
-        assert.deepStrictEqual(details, { id: 1 });
-        assert.ok(dbClient.get.calledOnce);
-        assert.ok(dbClient.run.calledOnce);
-        assert.deepStrictEqual(dbClient.run.args[0][1], 'js');
-        done();
-      });
-    });
-
-    it('it should give error when tag name is not valid', (done) => {
-      const dbClient = {
-        get: sinon.fake.yields(new Error('sqlite error')),
-        run: sinon.fake.yields(null),
-        serialize: (cb) => cb(),
-      };
-      const dataStore = new DataStore(dbClient);
-      dataStore.getTagId('badTag').catch((err) => {
-        assert.deepStrictEqual(err.message, 'sqlite error');
-        assert.ok(dbClient.get.calledOnce);
-        assert.ok(dbClient.run.calledOnce);
-        assert.deepStrictEqual(dbClient.get.args[0][1], 'badTag');
-        done();
-      });
-    });
-  });
-
   context('#addQuestionTags', () => {
     it('it should add tags', (done) => {
       const dbClient = {

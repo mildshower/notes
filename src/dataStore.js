@@ -127,7 +127,7 @@ class DataStore {
     });
   }
 
-  getTagId(tagName) {
+  addTag(tagName) {
     return new Promise((resolve, reject) => {
       this.dbClient.serialize(() => {
         this.dbClient.run(query.tagsInsertion, tagName, () => { });
@@ -141,7 +141,7 @@ class DataStore {
 
   async addQuestionTags(questionId, tags) {
     for (let index = 0; index < tags.length; index++) {
-      const { id: tagId } = await this.getTagId(tags[index]);
+      const { id: tagId } = await this.addTag(tags[index]);
       this.dbClient.run(query.insertQuesTags, [tagId, questionId], () => { });
     }
   }

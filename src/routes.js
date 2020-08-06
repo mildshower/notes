@@ -8,7 +8,7 @@ const Sessions = require('./sessions');
 const dbPath = process.env.HO_DB_PATH || 'data/ho_production.db';
 const dbClient = new sqlite3.Database(dbPath);
 const {
-  handleSessions,
+  attachUser,
   serveHomePage,
   authenticateWithGithub,
   serveSignUpPage,
@@ -49,7 +49,7 @@ app.use(morgan('dev'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json({ limit: '100kb' }));
 app.use(cookieParser());
-app.use(handleSessions);
+app.use(attachUser);
 app.get('/', (req, res) => res.redirect('/home'));
 app.use(express.static('public'));
 app.get('/home', serveHomePage);

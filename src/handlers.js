@@ -6,7 +6,7 @@ const getRelativeTime = function(time) {
   return new Moment(time).fromNow();
 };
 
-const handleSessions = async (req, res, next) => {
+const attachUser = async (req, res, next) => {
   const sessionId = req.cookies.session;
   const userId = req.app.locals.sessions.getUserId(sessionId);
   const { user } = await req.app.locals.dataStore.getUser('id', userId);
@@ -318,7 +318,7 @@ const logout = function(req, res) {
 };
 
 module.exports = {
-  handleSessions,
+  attachUser,
   serveHomePage,
   authenticateWithGithub,
   serveSignUpPage,
