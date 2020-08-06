@@ -172,7 +172,7 @@ class DataStore {
 
   getMatchedQuestions(searchKeyword) {
     const [, userName, tagName, acceptance, ansCount, text] =
-      searchKeyword.match(/^@(.*)|^#(.*)|^:(.*)|^>(.*)|(.*)|/);
+      searchKeyword.match(/^@(.*)|^#(.*)|^:(.*)|^>(.*)|(.*)/);
     const expressions = {
       $text: `%${text}%`,
       $user: `%${userName}%`,
