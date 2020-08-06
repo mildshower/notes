@@ -55,7 +55,7 @@ class DataStore {
           }
         );
         this.dbClient.get(
-          'select last_insert_rowid() as id;',
+          query.lastRowId,
           (err, details) => {
             if (err) {
               reject(err);
@@ -115,7 +115,7 @@ class DataStore {
           }
         );
         this.dbClient.get(
-          'select last_insert_rowid() as id;',
+          query.lastRowId,
           (err, details) => {
             if (err) {
               reject(err);

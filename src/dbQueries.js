@@ -198,5 +198,7 @@ module.exports = {
 
   deleteAnswer:
     `delete from answers
-     where id = ?;`
+     where id = ?;`,
+  
+  lastRowId: 'select last_insert_rowid() as id;'
 };
