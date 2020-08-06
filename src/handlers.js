@@ -6,12 +6,14 @@ const getRelativeTime = function(time) {
   return new Moment(time).fromNow();
 };
 
-const attachUser = async (req, res, next) => {
+const attachUser = (req, res, next) => {
   const sessionId = req.cookies.session;
   const userId = req.app.locals.sessions.getUserId(sessionId);
-  const { user } = await req.app.locals.dataStore.getUser('id', userId);
-  req.user = user;
-  next();
+  req.app.locals.dataStore.getUser('id', userId)
+    .then(({user}) => {
+      req.user = user;
+      next();
+    });
 };
 
 const serveHomePage = async function(req, res) {
@@ -123,7 +125,6 @@ const prepareQuestion = async function(question, user, dataStore) {
   const answers = await dataStore.getAnswersByQuestion(question.id);
   question.answers = await prepareAnswers(answers, user, dataStore);
   question.tags = await dataStore.getTags([question]);
-  question.lastModified = getRelativeTime(question.lastModified);
   question.created = getRelativeTime(question.created);
   question.comments = await dataStore.getComments(question.id, true);
   question.comments.forEach(comment => {
@@ -168,19 +169,18 @@ const serveAskQuestion = function(req, res) {
   res.render('askQuestion', { user: req.user });
 };
 
-const saveDetails = async (req, res) => {
-  await req.app.locals.dataStore.updateUserDetails(req.user.id, req.body);
-  res.redirect(req.query.targetPath);
+const saveDetails = (req, res) => {
+  req.app.locals.dataStore.updateUserDetails(req.user.id, req.body)
+    .then(() => res.redirect(req.query.targetPath));
 };
 
-const saveQuestion = async (req, res) => {
+const saveQuestion = (req, res) => {
   const { dataStore } = req.app.locals;
   const question = req.body;
-  const insertionDetails = await dataStore.addQuestion(
+  dataStore.addQuestion(
     question,
     req.user.id
-  );
-  res.json(insertionDetails);
+  ).then(insertionDetails => res.json(insertionDetails));
 };
 
 const authorizeUser = function(req, res, next) {
@@ -287,10 +287,10 @@ const verifyAnswerAcceptance = async function(req, res, next) {
   }
 };
 
-const getTagsSuggestion = async function(req, res) {
+const getTagsSuggestion = function(req, res) {
   const { exp } = req.query;
-  const tags = await req.app.locals.dataStore.getPopularTags(exp);
-  res.json(Array.from(tags, (tag) => tag.tag_name).slice(0, 10));
+  req.app.locals.dataStore.getPopularTags(exp)
+    .then(tags => res.json(Array.from(tags, (tag) => tag.tag_name).slice(0, 10)));
 };
 
 const saveComment = function(req, res) {
