@@ -108,21 +108,19 @@ module.exports = {
     from answer_votes
     where answer_id = ? AND user = ?`,
 
-  voteQueries: {
-    ques: {
-      addition: `insert into question_votes (vote_type, question_id, user)
+  quesVote: {
+    addition: `insert into question_votes (vote_type, question_id, user)
       values (?, ?, ?)`,
-      toggle: `update question_votes
+    toggle: `update question_votes
       set vote_type = ?
       where question_id = ? AND user = ?`
-    },
-    ans: {
-      addition: `insert into answer_votes (vote_type, answer_id, user)
+  },
+  ansVote: {
+    addition: `insert into answer_votes (vote_type, answer_id, user)
       values (?, ?, ?)`,
-      toggle: `update answer_votes
+    toggle: `update answer_votes
       set vote_type = ?
       where answer_id = ? AND user = ?`
-    }
   },
 
   ansVoteDeletion:

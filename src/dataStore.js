@@ -218,7 +218,7 @@ class DataStore {
   async addVote(id, userId, voteType, isQuesVote) {
     const { isVoted } = await this.getVote(id, userId, isQuesVote);
     const voteQueries = isQuesVote ?
-      query.voteQueries.ques : query.voteQueries.ans;
+      query.quesVote : query.ansVote;
     const chosenQuery = isVoted ? voteQueries.toggle : voteQueries.addition;
     await this.runQuery(
       chosenQuery,
