@@ -180,7 +180,10 @@ const addCommentListener = function(ancestor, id, isQuestionComment) {
     commentBar.classList.remove('closed');
     body.focus();
   };
-  cancel.onclick = () => commentBar.classList.add('closed');
+  cancel.onclick = () => {
+    commentBar.classList.add('closed');
+    body.value = '';
+  };
   poster.onclick = () => {
     postData('/saveComment', { body: body.value, id, isQuestionComment })
       .then(({ isSucceeded, comment }) => {

@@ -21,6 +21,12 @@ link(href="https://fonts.googleapis.com/css2?family=Mulish:wght@200;300;400;500;
       p 
         span.option phrase
         span.description search by phrase
+      p
+        span.option :accepted
+        span.description search by accept answer status
+      p
+        span.option >answer_count
+        span.description search by answer count
   if (user)
     button#profileButton
       img(src=user.avatar alt='avatar')
