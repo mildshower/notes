@@ -27,15 +27,14 @@ const addTag = function(tagInput) {
 };
 
 const removeTag = function() {
-  const currentTag = getTagInput().value;
-  const tags = getAllTags();
-  const lastTag = Array.from(tags).pop();
-  let currentTagValue = currentTag;
-  if (lastTag && !currentTag) {
-    currentTagValue = lastTag.innerText;
-    lastTag.remove();
+  const tagInput = getTagInput();
+  const currentTag = tagInput.value;
+  const lastTag = getAllTags()[0];
+  if(!lastTag || currentTag){
+    return;
   }
-  getTagInput().value = currentTagValue;
+  tagInput.value = lastTag.innerText;
+  lastTag.remove();
 };
 
 const selectSuggestion = function(event) {
@@ -49,7 +48,7 @@ const selectSuggestion = function(event) {
   tagInput.focus();
 };
 
-const showTagsSuggestion = function(tags) {
+const displayMatchedTags = function(tags) {
   const suggestionsBox = getSuggestionBox();
   if (!tags.length) {
     suggestionsBox.style.display = 'none';
@@ -70,7 +69,7 @@ const showTagsSuggestion = function(tags) {
 const showSuggestion = function(tag) {
   fetch(`/tags?exp=${tag.value}`)
     .then((res) => res.json())
-    .then(showTagsSuggestion);
+    .then(displayMatchedTags);
 };
 
 const manageTags = function(event) {
@@ -83,30 +82,6 @@ const manageTags = function(event) {
     removeTag();
   }
 };
-
-const getEditorConfig = () => ({
-  theme: 'snow',
-  formats: [
-    'bold',
-    'italic',
-    'color',
-    'code',
-    'link',
-    'script',
-    'underline',
-    'blockquote',
-    'header',
-    'code-block',
-  ],
-  modules: {
-    toolbar: [
-      ['bold', 'underline'],
-      ['blockquote', 'code-block'],
-      ['link', { header: [false, 1, 2, 3, 4, 5, 6] }],
-    ],
-    syntax: true,
-  },
-});
 
 const getQuestionTags = function() {
   const tags = Array.from(getAllTags(), (tag) => tag.innerText);
@@ -127,10 +102,11 @@ const saveQuestion = function(editor) {
 const main = function() {
   const editor = new Quill('#bodyField', getEditorConfig());
   getPostButton().onclick = saveQuestion.bind(null, editor);
-  getTagInput().addEventListener('keyup', manageTags);
-  getTagInput().addEventListener(
+  const tagInput = getTagInput();
+  tagInput.addEventListener('keyup', manageTags);
+  tagInput.addEventListener(
     'focus',
-    showSuggestion.bind(null, getTagInput())
+    showSuggestion.bind(null, tagInput)
   );
 };
 

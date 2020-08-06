@@ -1,19 +1,17 @@
 const getQuestionBox = () => document.querySelector('.questionBox');
-
 const getAnswerButton = () => document.querySelector('#answerButton');
-
 const getAnswerBody = () => document.querySelector('#answerBody');
-
 const getAnswers = () => document.querySelectorAll('.answerBox');
-
 const getAnswer = (id) => document.querySelector(`.answerBox[id="${id}"]`);
-
 const getAnswerCount = () => document.querySelector('#answersHead .count');
-
 const getClickableTicks = () => document.querySelectorAll('.clickable');
-
 const getClickableTick = ancestor =>
   document.querySelector(ancestor + ' .clickable');
+const getCommentBar = ancestor =>
+  document.querySelector(`${ancestor} .commentBar`);
+  
+const getCommentBox = ancestor =>
+  document.querySelector(`${ancestor} .commentsBox`);
 
 const deleteAnswer = function(answerId) {
   const msg = 'Are you sure to delete?';
@@ -35,12 +33,6 @@ const getVoteElements = boxQuery => {
   return { upVote, downVote, count };
 };
 
-const getCommentBar = ancestor =>
-  document.querySelector(`${ancestor} .commentBar`);
-
-const getCommentBox = ancestor =>
-  document.querySelector(`${ancestor} .commentsBox`);
-
 const removeAllTickHighlights = function() {
   getClickableTicks().forEach(tick => {
     tick.classList.remove('accepted');
@@ -51,30 +43,6 @@ const disableToolbar = ancestor => {
   const toolbar = document.querySelector(`${ancestor} .ql-toolbar`);
   toolbar.classList.add('hidden');
 };
-
-const getEditorConfig = () => ({
-  theme: 'snow',
-  formats: [
-    'bold',
-    'italic',
-    'color',
-    'code',
-    'link',
-    'script',
-    'underline',
-    'blockquote',
-    'header',
-    'code-block',
-  ],
-  modules: {
-    toolbar: [
-      ['bold', 'underline'],
-      ['blockquote', 'code-block'],
-      ['link', { header: [false, 1, 2, 3, 4, 5, 6] }],
-    ],
-    syntax: true,
-  },
-});
 
 const loadQuestion = function() {
   const questionBox = getQuestionBox();
@@ -94,7 +62,10 @@ const loadAnswers = function() {
     .then(response => response.json())
     .then(answers => {
       answers.forEach(({ id, body }) => {
-        const ans = new Quill(`.answerBox[id="${id}"] .editor`, getEditorConfig());
+        const ans = new Quill(
+          `.answerBox[id="${id}"] .editor`,
+          getEditorConfig()
+        );
         ans.setContents(JSON.parse(body));
         ans.disable();
         disableToolbar(`.answerBox[id="${id}"]`);
@@ -197,8 +168,9 @@ const addCommentListener = function(ancestor, id, isQuestionComment) {
 };
 
 const attachContentListeners = function() {
-  addVoteListener('.questionBox', getQuestionBox().id, true);
-  addCommentListener('.questionBox', getQuestionBox().id, true);
+  const questionId = getQuestionBox().id;
+  addVoteListener('.questionBox', questionId, true);
+  addCommentListener('.questionBox', questionId, true);
   getAnswers().forEach(({ id }) => {
     const answerBoxQuery = `.answerBox[id="${id}"]`;
     addVoteListener(answerBoxQuery, id, false);
