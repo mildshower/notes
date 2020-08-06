@@ -6,43 +6,6 @@ const getRelativeTime = function(time) {
   return new Moment(time).fromNow();
 };
 
-const attachUser = (req, res, next) => {
-  const sessionId = req.cookies.session;
-  const userId = req.app.locals.sessions.getUserId(sessionId);
-  req.app.locals.dataStore.getUser('id', userId)
-    .then(({user}) => {
-      req.user = user;
-      next();
-    });
-};
-
-const serveHomePage = async function(req, res) {
-  const { dataStore } = req.app.locals;
-  const questions = await dataStore.getLastQuestions(10);
-  for (const question of questions) {
-    question.created = getRelativeTime(question.created);
-    question.tags = await dataStore.getTags([question]);
-  }
-  res.render('home', {
-    user: req.user,
-    title: 'Latest Questions',
-    questions,
-    currPath: '/home',
-  });
-};
-
-const authenticateWithGithub = (req, res, next) => {
-  if (!['login', 'signUp'].includes(req.query.type)) {
-    return next();
-  }
-  const redirectStatusCode = 302;
-  const redirectUri = `http://localhost:8000/${req.query.type}?targetPath=${req.query.targetPath}`;
-  res.redirect(
-    redirectStatusCode,
-    `https://github.com/login/oauth/authorize?client_id=${process.env.HO_CLIENT_ID}&redirect_uri=${redirectUri}`
-  );
-};
-
 const getOauthOptions = (code) => {
   return {
     method: 'POST',
@@ -64,6 +27,81 @@ const getGithubDetails = async (code) => {
     headers: { Authorization: `token ${accessToken}` },
   });
   return await details.json();
+};
+
+
+const prepareAnswers = async function(answers, user, dataStore) {
+  for (const answer of answers) {
+    answer.created = getRelativeTime(answer.created);
+    answer.userVote =
+      user && await dataStore.getVote(answer.id, user.id);
+    answer.comments = await dataStore.getComments(answer.id);
+    answer.comments.forEach(comment => {
+      comment.created = getRelativeTime(comment.created);
+    });
+  }
+  return answers;
+};
+
+const prepareQuestion = async function(question, user, dataStore) {
+  question.userVote =
+    user && await dataStore.getVote(question.id, user.id, true);
+  const answers = await dataStore.getAnswersByQuestion(question.id);
+  question.answers = await prepareAnswers(answers, user, dataStore);
+  question.tags = await dataStore.getQuestionTags(question.id);
+  question.lastModified = getRelativeTime(question.lastModified);
+  question.created = getRelativeTime(question.created);
+  question.comments = await dataStore.getComments(question.id, true);
+  question.comments.forEach(comment => {
+    comment.created = getRelativeTime(comment.created);
+  });
+  return question;
+};
+
+const getAllUniqueTags = async function(dataStore, questions) {
+  const tags = [];
+  for (const question of questions) {
+    const questionTags = await dataStore.getQuestionTags(question.id);
+    tags.push(...questionTags);
+  }
+  return [...new Set(tags)];
+};
+
+const attachUser = async (req, res, next) => {
+  const sessionId = req.cookies.session;
+  const userId = req.app.locals.sessions.getUserId(sessionId);
+  req.app.locals.dataStore.getUser('id', userId)
+    .then(({ user }) => {
+      req.user = user;
+      next();
+    });
+};
+
+const serveHomePage = async function(req, res) {
+  const { dataStore } = req.app.locals;
+  const questions = await dataStore.getLastQuestions(10);
+  for (const question of questions) {
+    question.created = getRelativeTime(question.created);
+    question.tags = await dataStore.getQuestionTags(question.id);
+  }
+  res.render('home', {
+    user: req.user,
+    title: 'Latest Questions',
+    questions,
+    currPath: '/home',
+  });
+};
+
+const authenticateWithGithub = (req, res, next) => {
+  if (!['login', 'signUp'].includes(req.query.type)) {
+    return next();
+  }
+  const redirectStatusCode = 302;
+  const redirectUri = `http://localhost:8000/${req.query.type}?targetPath=${req.query.targetPath}`;
+  res.redirect(
+    redirectStatusCode,
+    `https://github.com/login/oauth/authorize?client_id=${process.env.HO_CLIENT_ID}&redirect_uri=${redirectUri}`
+  );
 };
 
 const isValidVerificationReq = async function(req, res, next) {
@@ -104,33 +142,6 @@ const handleLogin = function(req, res, next) {
 
 const serveSignUpPage = (req, res) => {
   res.render('signUp', { targetPath: req.query.targetPath });
-};
-
-const prepareAnswers = async function(answers, user, dataStore) {
-  for (const answer of answers) {
-    answer.created = getRelativeTime(answer.created);
-    answer.userVote =
-      user && await dataStore.getVote(answer.id, user.id);
-    answer.comments = await dataStore.getComments(answer.id);
-    answer.comments.forEach(comment => {
-      comment.created = getRelativeTime(comment.created);
-    });
-  }
-  return answers;
-};
-
-const prepareQuestion = async function(question, user, dataStore) {
-  question.userVote =
-    user && await dataStore.getVote(question.id, user.id, true);
-  const answers = await dataStore.getAnswersByQuestion(question.id);
-  question.answers = await prepareAnswers(answers, user, dataStore);
-  question.tags = await dataStore.getTags([question]);
-  question.created = getRelativeTime(question.created);
-  question.comments = await dataStore.getComments(question.id, true);
-  question.comments.forEach(comment => {
-    comment.created = getRelativeTime(comment.created);
-  });
-  return question;
 };
 
 const serveQuestionPage = async function(req, res, next) {
@@ -200,7 +211,7 @@ const serveSearchPage = async function(req, res) {
   for (const question of questions) {
     question.created = getRelativeTime(question.created);
     question.bodyText = question.bodyText.split('\n');
-    question.tags = await dataStore.getTags([question]);
+    question.tags = await dataStore.getQuestionTags(question.id);
   }
   res.render('search', {
     questions,
@@ -230,7 +241,7 @@ const showProfilePage = async (req, res, next) => {
   }
   const questions = await dataStore.getUserQuestions(userId);
   const answers = await dataStore.getUserAnswers(userId);
-  const tags = await dataStore.getTags(questions);
+  const tags = await getAllUniqueTags(dataStore, questions);
   res.render('profile', { requestedUser, user: req.user, questions, tags, answers, currPath: `/profile?userId=${userId}` });
 };
 
@@ -317,6 +328,7 @@ const logout = function(req, res) {
   res.clearCookie('session').redirect('/home');
 };
 
+
 module.exports = {
   attachUser,
   serveHomePage,
@@ -325,16 +337,16 @@ module.exports = {
   serveAskQuestion,
   serveQuestionPage,
   serveQuestionDetails,
-  serveAnswers,
   saveDetails,
   authorizeUser,
   saveQuestion,
   isValidVerificationReq,
-  handleLogin,
   handleSignUp,
+  handleLogin,
   serveSearchPage,
   serveNotFound,
   showProfilePage,
+  serveAnswers,
   saveAnswer,
   serveEditProfilePage,
   addVote,

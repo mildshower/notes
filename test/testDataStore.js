@@ -203,7 +203,7 @@ context('dataStore', () => {
     });
   });
 
-  context('#addNewUser', function () {
+  context('#addNewUser', function() {
     const name = 'testUser';
     const avatarUrl = 'avatarUrl.com/u/58025792?v=4';
 
@@ -258,7 +258,7 @@ context('dataStore', () => {
     });
   });
 
-  describe('#getUser', function () {
+  describe('#getUser', function() {
     it('should get user details when the user is in present', (done) => {
       const details = {
         user: {
@@ -323,7 +323,7 @@ context('dataStore', () => {
     });
   });
 
-  context('#updateUserDetails', function () {
+  context('#updateUserDetails', function() {
     const name = 'testUser';
     const email = 'testUser.com';
     const location = 'Bangalore';
@@ -371,7 +371,7 @@ context('dataStore', () => {
     });
   });
 
-  context('#getUserQuestions', function () {
+  context('#getUserQuestions', function() {
     it('should give all the questions of a particular', (done) => {
       const questions = [
         {
@@ -394,7 +394,7 @@ context('dataStore', () => {
     });
   });
 
-  context('#getMatchedQuestions', function () {
+  context('#getMatchedQuestions', function() {
     it('should give all the questions of a particular query', (done) => {
       const questions = [
         {
@@ -487,7 +487,7 @@ context('dataStore', () => {
     });
   });
 
-  context('#getAnswersByQuestion', function () {
+  context('#getAnswersByQuestion', function() {
     it('should give all the answers of a particular question', (done) => {
       const answers = [{ id: 1 }];
       const dbClient = {
@@ -504,7 +504,7 @@ context('dataStore', () => {
     });
   });
 
-  context('#getVote', function () {
+  context('#getVote', function() {
     it('should give voteType when valid user and question id given', (done) => {
       const dbClient = {
         get: sinon.fake.yields(null, { voteType: 0 }),
@@ -564,7 +564,7 @@ context('dataStore', () => {
     });
   });
 
-  context('#getUserAnswers', function () {
+  context('#getUserAnswers', function() {
     it('should give all the answers of a particular user', (done) => {
       const answers = [{ id: 1 }];
       const dbClient = {
@@ -595,7 +595,7 @@ context('dataStore', () => {
     });
   });
 
-  context('#addAnswer', function () {
+  context('#addAnswer', function() {
     it('should add the answer without throwing error', (done) => {
       const dbClient = {
         run: sinon.fake.yields(null),
@@ -634,14 +634,14 @@ context('dataStore', () => {
     });
   });
 
-  context('#saveComment', function () {
+  context('#saveComment', function() {
     it('should add the answer comment', (done) => {
       const dbClient = {
         run: sinon.fake.yields(null),
       };
       const dataStore = new DataStore(dbClient);
 
-      dataStore.saveComment({body: 'body', owner: 1, id: 1, creationTime: '2020-12-12 12:34:21'}).then(() => {
+      dataStore.saveComment({ body: 'body', owner: 1, id: 1, creationTime: '2020-12-12 12:34:21' }).then(() => {
         assert.ok(dbClient.run.calledOnce);
         assert.ok(dbClient.run.args[0][0].match(/answer/));
         assert.deepStrictEqual(dbClient.run.args[0][1], ['body', 1, 1, '2020-12-12 12:34:21', '2020-12-12 12:34:21']);
@@ -655,7 +655,7 @@ context('dataStore', () => {
       };
       const dataStore = new DataStore(dbClient);
 
-      dataStore.saveComment({body: 'body', owner: 1, id: 1, creationTime: '2020-12-12 12:34:21'}, true).then(() => {
+      dataStore.saveComment({ body: 'body', owner: 1, id: 1, creationTime: '2020-12-12 12:34:21' }, true).then(() => {
         assert.ok(dbClient.run.calledOnce);
         assert.ok(dbClient.run.args[0][0].match(/question/));
         assert.deepStrictEqual(dbClient.run.args[0][1], ['body', 1, 1, '2020-12-12 12:34:21', '2020-12-12 12:34:21']);
@@ -669,7 +669,7 @@ context('dataStore', () => {
       };
       const dataStore = new DataStore(dbClient);
 
-      dataStore.saveComment({body: 'body', owner: 1, id: 1, creationTime: '2020-12-12 12:34:21'}).catch((err) => {
+      dataStore.saveComment({ body: 'body', owner: 1, id: 1, creationTime: '2020-12-12 12:34:21' }).catch((err) => {
         assert.deepStrictEqual(err.message, 'Comment Insertion Failed!');
         assert.ok(dbClient.run.args[0][0].match(/answer/));
         assert.ok(dbClient.run.calledOnce);
@@ -679,7 +679,7 @@ context('dataStore', () => {
     });
   });
 
-  context('#getTags', () => {
+  context('#getQuestionTags', () => {
     it('should give all the tags used in questions', (done) => {
       const dbClient = {
         all: sinon.fake.yields(null, [
@@ -688,7 +688,7 @@ context('dataStore', () => {
         ]),
       };
       const dataStore = new DataStore(dbClient);
-      dataStore.getTags([{ id: 1 }]).then((tags) => {
+      dataStore.getQuestionTags(1).then((tags) => {
         assert.ok(dbClient.all.calledOnce);
         assert.deepStrictEqual(dbClient.all.args[0][1], 1);
         assert.deepStrictEqual(tags, ['sqlite3', 'javascript']);
@@ -697,7 +697,7 @@ context('dataStore', () => {
     });
   });
 
-  context('#addVote', function () {
+  context('#addVote', function() {
     this.afterEach(() => sinon.restore());
     it('should add a question vote when valid credentials given', (done) => {
       const dbClient = {
@@ -804,7 +804,7 @@ context('dataStore', () => {
     });
   });
 
-  context('#deleteVote', function () {
+  context('#deleteVote', function() {
     it('should delete a question vote when valid credentials given', (done) => {
       const dbClient = {
         run: sinon.fake.yields(null),
@@ -850,7 +850,7 @@ context('dataStore', () => {
     });
   });
 
-  context('#getVoteCount', function () {
+  context('#getVoteCount', function() {
     it('should give question vote count for a question', (done) => {
       const dbClient = {
         get: sinon.fake.yields(null, { voteCount: 10 }),
@@ -896,7 +896,7 @@ context('dataStore', () => {
     });
   });
 
-  context('#rejectAnswer', function () {
+  context('#rejectAnswer', function() {
     it('should reject an answer', (done) => {
       const dbClient = {
         run: sinon.fake.yields(null),
@@ -911,7 +911,7 @@ context('dataStore', () => {
     });
   });
 
-  context('#acceptAnswer', function () {
+  context('#acceptAnswer', function() {
     it('should accept an answer', (done) => {
       const dbClient = {
         run: sinon.fake.yields(null),
@@ -926,7 +926,7 @@ context('dataStore', () => {
     });
   });
 
-  context('#getAnswerById', function () {
+  context('#getAnswerById', function() {
     it('should serve answer Details', (done) => {
       const dbClient = {
         get: sinon.fake.yields(null, { id: 1 }),
@@ -956,7 +956,7 @@ context('dataStore', () => {
     });
   });
 
-  context('#getComments', function () {
+  context('#getComments', function() {
     it('should serve question comments when isQuestion is true', (done) => {
       const dbClient = {
         all: sinon.fake.yields(null, [{ id: 1 }]),
@@ -988,7 +988,7 @@ context('dataStore', () => {
     });
   });
 
-  context('#getPopularTags', function () {
+  context('#getPopularTags', function() {
     it('should get all matched popular tags', (done) => {
       const dbClient = {
         all: sinon.fake.yields(null, [{ tag_name: 'javascript' }]),

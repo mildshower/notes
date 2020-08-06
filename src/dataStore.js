@@ -206,13 +206,9 @@ class DataStore {
     }));
   }
 
-  async getTags(questions) {
-    const tags = [];
-    for (const question of questions) {
-      const newTags = await this.getRows(query.questionTags, question.id);
-      tags.push(...newTags.map((tag) => tag.tag_name));
-    }
-    return [...new Set(tags)];
+  async getQuestionTags(questionId) {
+    const tags = await this.getRows(query.questionTags, questionId);
+    return tags.map((tag) => tag.tag_name);
   }
 
   async addVote(id, userId, voteType, isQuesVote) {
