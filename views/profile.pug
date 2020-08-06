@@ -25,7 +25,7 @@ body
           p#bio #{requestedUser.bio}
         else
           p#bio.default (About me for this profile is currently blank.)
-        if(user && user.user_id == requestedUser.user_id)
+        if(user && user.id == requestedUser.id)
           a#editProfileButton(href=`/editProfile`) Click here to edit
     .stats
       p.laneTitle Tags (#{tags.length})

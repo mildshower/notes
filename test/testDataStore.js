@@ -304,7 +304,7 @@ context('dataStore', () => {
           email: null,
           location: null,
           role: 'user',
-          user_id: 4,
+          id: 4,
         },
         isFound: true,
       };

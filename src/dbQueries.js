@@ -9,9 +9,9 @@ const questionDetails = `select
   ques.created, 
   ques.last_modified as lastModified, 
   (select display_name from users 
-    where users.user_id = ques.owner) as ownerName, 
+    where users.id = ques.owner) as ownerName, 
   (select avatar from users 
-    where users.user_id = ques.owner) as ownerAvatar,
+    where users.id = ques.owner) as ownerAvatar,
   (select count(*) from answers 
     where answers.question = ques.id) as answerCount, 
   (select count(*) from answers ans
@@ -30,9 +30,9 @@ const answerDetails = `select
   ans.created,
   ans.last_modified as lastModified, 
   (select display_name from users 
-    where users.user_id = ans.owner) as ownerName,
+    where users.id = ans.owner) as ownerName,
   (select avatar from users 
-    where users.user_id = ans.owner) as ownerAvatar,
+    where users.id = ans.owner) as ownerAvatar,
   (select title from questions 
     where questions.id = ans.question) as questionTitle,  
   (select COALESCE(sum(REPLACE(vote_type,0,-1)),0) from answer_votes 
@@ -43,13 +43,13 @@ const commentDetails =
   `SELECT
   comments.*,
   (SELECT display_name from users
-  where user_id = comments.owner) as ownerName`;
+  where id = comments.owner) as ownerName`;
 
 module.exports = {
   userUpdation:
     `UPDATE users
     SET display_name = ?, email = ?, location = ?, bio = ?
-    WHERE user_id = ?;`,
+    WHERE id = ?;`,
 
   answersByUser: answerDetails + 'where ans.owner = ?',
 

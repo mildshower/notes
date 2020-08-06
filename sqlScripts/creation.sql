@@ -1,7 +1,7 @@
 
 drop table if EXISTS users;
 create table users (
-  user_id integer primary key AUTOINCREMENT,
+  id integer primary key AUTOINCREMENT,
   github_username varchar(40) not null UNIQUE,
   display_name varchar(50) DEFAULT 'USER',
   location varchar(40),
@@ -22,7 +22,7 @@ create table questions (
   created timestamp not null DEFAULT (datetime('now','localtime')),
   last_modified timestamp not null DEFAULT (datetime('now','localtime')),
     FOREIGN KEY (owner)
-    REFERENCES users (user_id)
+    REFERENCES users (id)
 );
 
 drop table if EXISTS answers;
@@ -36,7 +36,7 @@ create table answers (
   last_modified timestamp not null DEFAULT (datetime('now','localtime')),
   is_accepted integer not null DEFAULT 0,
   FOREIGN KEY (owner)
-    REFERENCES users (user_id),
+    REFERENCES users (id),
   FOREIGN KEY (question)
     REFERENCES questions (id),
     CHECK(is_accepted=0 OR is_accepted = 1)
@@ -51,7 +51,7 @@ create table question_comments (
   created timestamp not null DEFAULT (datetime('now','localtime')),
   last_modified timestamp not null DEFAULT (datetime('now','localtime')),
   FOREIGN KEY (owner)
-    REFERENCES users (user_id),
+    REFERENCES users (id),
   FOREIGN KEY (question)
     REFERENCES questions (id)
 );
@@ -65,7 +65,7 @@ create table answer_comments (
   created timestamp not null DEFAULT (datetime('now','localtime')),
   last_modified timestamp not null DEFAULT (datetime('now','localtime')),
   FOREIGN KEY (owner)
-    REFERENCES users (user_id),
+    REFERENCES users (id),
   FOREIGN KEY (answer)
     REFERENCES answers (id)
 );
@@ -93,7 +93,7 @@ create table question_votes (
   user integer not null,
   vote_type integer not null,
   FOREIGN KEY (user)
-    REFERENCES users (user_id),
+    REFERENCES users (id),
   FOREIGN KEY (question_id)
     REFERENCES questions (id),
   CHECK(vote_type=0 OR vote_type = 1),
@@ -106,7 +106,7 @@ create table answer_votes (
   user integer not null,
   vote_type integer not null,
   FOREIGN KEY (user)
-    REFERENCES users (user_id),
+    REFERENCES users (id),
   FOREIGN KEY (answer_id)
     REFERENCES answers (id),
   CHECK(vote_type=0 OR vote_type = 1),

@@ -1,5 +1,5 @@
 PRAGMA foreign_keys = ON;
-INSERT INTO users (user_id, github_username, display_name, location, email, bio, role, avatar)
+INSERT INTO users (id, github_username, display_name, location, email, bio, role, avatar)
   VALUES 
    (1,"mildshower", "Sid", "India", "sudipta.kundu@thoughtworks","I Love Coding..","user","https://avatars1.githubusercontent.com/u/58025792?v=4"),
    (2,"user2", "dev", "UK", "dev099@yahoo.co.in","developing altime","moderator","https://nurserylive.com/images/stories/virtuemart/product/nurserylive-tulip-seadov-red-bulbs.jpg"),
@@ -15,7 +15,7 @@ INSERT INTO users (user_id, github_username, display_name, location, email, bio,
 
 INSERT INTO questions (id,title, body, body_text, owner, created, last_modified)
   VALUES 
-   (1,'How to use foreign key in sqlite3 ? I am putting foreign constrain but it is not stopping from inserting values that goes against foreign key constrain.','{"ops":[{"insert":"I made schema like:\ncreate table if not exists questions ("},{"attributes":{"code-block":true},"insert":"\n"},{"insert":"  id integer primary key AUTOINCREMENT,"},{"attributes":{"code-block":true},"insert":"\n"},{"insert":"  title varchar(200) not null,"},{"attributes":{"code-block":true},"insert":"\n"},{"insert":"  body varchar(1000) not null,"},{"attributes":{"code-block":true},"insert":"\n"},{"insert":"  body_text varchar(1000) not null,"},{"attributes":{"code-block":true},"insert":"\n"},{"insert":"  owner integer not null,"},{"attributes":{"code-block":true},"insert":"\n"},{"insert":"  created timestamp not null DEFAULT (datetime(\"now\",\"localtime\")),"},{"attributes":{"code-block":true},"insert":"\n"},{"insert":"  last_modified timestamp not null DEFAULT (datetime(\"now\",\"localtime\")),"},{"attributes":{"code-block":true},"insert":"\n"},{"insert":"    FOREIGN KEY (owner)"},{"attributes":{"code-block":true},"insert":"\n"},{"insert":"    REFERENCES users (user_id)"},{"attributes":{"code-block":true},"insert":"\n"},{"insert":");"},{"attributes":{"code-block":true},"insert":"\n"},{"insert":"But when trying to insert some data in the table,\nIt is not stopping me from doing that while user table does not have id 1.\n\n"}]}', 'I made schema like:
+   (1,'How to use foreign key in sqlite3 ? I am putting foreign constrain but it is not stopping from inserting values that goes against foreign key constrain.','{"ops":[{"insert":"I made schema like:\ncreate table if not exists questions ("},{"attributes":{"code-block":true},"insert":"\n"},{"insert":"  id integer primary key AUTOINCREMENT,"},{"attributes":{"code-block":true},"insert":"\n"},{"insert":"  title varchar(200) not null,"},{"attributes":{"code-block":true},"insert":"\n"},{"insert":"  body varchar(1000) not null,"},{"attributes":{"code-block":true},"insert":"\n"},{"insert":"  body_text varchar(1000) not null,"},{"attributes":{"code-block":true},"insert":"\n"},{"insert":"  owner integer not null,"},{"attributes":{"code-block":true},"insert":"\n"},{"insert":"  created timestamp not null DEFAULT (datetime(\"now\",\"localtime\")),"},{"attributes":{"code-block":true},"insert":"\n"},{"insert":"  last_modified timestamp not null DEFAULT (datetime(\"now\",\"localtime\")),"},{"attributes":{"code-block":true},"insert":"\n"},{"insert":"    FOREIGN KEY (owner)"},{"attributes":{"code-block":true},"insert":"\n"},{"insert":"    REFERENCES users (id)"},{"attributes":{"code-block":true},"insert":"\n"},{"insert":");"},{"attributes":{"code-block":true},"insert":"\n"},{"insert":"But when trying to insert some data in the table,\nIt is not stopping me from doing that while user table does not have id 1.\n\n"}]}', 'I made schema like:
 create table if not exists questions (
   id integer primary key AUTOINCREMENT,
   title varchar(200) not null,
@@ -25,7 +25,7 @@ create table if not exists questions (
   created timestamp not null DEFAULT (datetime("now","localtime")),
   last_modified timestamp not null DEFAULT (datetime("now","localtime")),
     FOREIGN KEY (owner)
-    REFERENCES users (user_id)
+    REFERENCES users (id)
 );
 But when trying to insert some data in the table,
 It is not stopping me from doing that while user table does not have id 1.', 1, '2020-07-24 19:06:49','2020-07-28 12:01:10'),

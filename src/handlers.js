@@ -9,7 +9,7 @@ const getRelativeTime = function(time) {
 const handleSessions = async (req, res, next) => {
   const sessionId = req.cookies.session;
   const userId = req.app.locals.sessions.getUserId(sessionId);
-  const { user } = await req.app.locals.dataStore.getUser('user_id', userId);
+  const { user } = await req.app.locals.dataStore.getUser('id', userId);
   req.user = user;
   next();
 };
@@ -96,7 +96,7 @@ const handleLogin = function(req, res, next) {
     return next();
   }
   const { sessions } = req.app.locals;
-  res.cookie('session', sessions.addSession(req.enteringUser.user_id));
+  res.cookie('session', sessions.addSession(req.enteringUser.id));
   res.redirect(req.query.targetPath);
 };
 
@@ -108,7 +108,7 @@ const prepareAnswers = async function(answers, user, dataStore) {
   for (const answer of answers) {
     answer.created = getRelativeTime(answer.created);
     answer.userVote =
-      user && await dataStore.getVote(answer.id, user.user_id);
+      user && await dataStore.getVote(answer.id, user.id);
     answer.comments = await dataStore.getComments(answer.id);
     answer.comments.forEach(comment => {
       comment.created = getRelativeTime(comment.created);
@@ -119,7 +119,7 @@ const prepareAnswers = async function(answers, user, dataStore) {
 
 const prepareQuestion = async function(question, user, dataStore) {
   question.userVote =
-    user && await dataStore.getVote(question.id, user.user_id, true);
+    user && await dataStore.getVote(question.id, user.id, true);
   const answers = await dataStore.getAnswersByQuestion(question.id);
   question.answers = await prepareAnswers(answers, user, dataStore);
   question.tags = await dataStore.getTags([question]);
@@ -169,7 +169,7 @@ const serveAskQuestion = function(req, res) {
 };
 
 const saveDetails = async (req, res) => {
-  await req.app.locals.dataStore.updateUserDetails(req.user.user_id, req.body);
+  await req.app.locals.dataStore.updateUserDetails(req.user.id, req.body);
   res.redirect(req.query.targetPath);
 };
 
@@ -178,7 +178,7 @@ const saveQuestion = async (req, res) => {
   const question = req.body;
   const insertionDetails = await dataStore.addQuestion(
     question,
-    req.user.user_id
+    req.user.id
   );
   res.json(insertionDetails);
 };
@@ -223,7 +223,7 @@ const serveNotFound = function(req, res) {
 const showProfilePage = async (req, res, next) => {
   const { userId } = req.query;
   const { dataStore } = req.app.locals;
-  const { user: requestedUser } = await dataStore.getUser('user_id', userId);
+  const { user: requestedUser } = await dataStore.getUser('id', userId);
   if (!requestedUser) {
     req.errorMessage = 'We\'re sorry, we couldn\'t find the user you requested.';
     return next();
@@ -237,7 +237,7 @@ const showProfilePage = async (req, res, next) => {
 const saveAnswer = function(req, res) {
   const { body, bodyText, quesId } = req.body;
   req.app.locals.dataStore
-    .addAnswer(body, bodyText, quesId, req.user.user_id)
+    .addAnswer(body, bodyText, quesId, req.user.id)
     .then(() => res.json({ isSaved: true }))
     .catch(() => res.status(400).json({ isSaved: false }));
 };
@@ -249,7 +249,7 @@ const serveEditProfilePage = (req, res) => {
 const addVote = (req, res) => {
   const { voteType, id, isQuestionVote } = req.body;
   const { dataStore } = req.app.locals;
-  dataStore.addVote(id, req.user.user_id, voteType, isQuestionVote)
+  dataStore.addVote(id, req.user.id, voteType, isQuestionVote)
     .then(() => dataStore.getVoteCount(id, isQuestionVote))
     .then(({ voteCount }) => res.json({ isSucceeded: true, voteCount }))
     .catch(err => res.status(400).json({ error: err.message }));
@@ -258,7 +258,7 @@ const addVote = (req, res) => {
 const deleteVote = (req, res) => {
   const { id, isQuestionVote } = req.body;
   const { dataStore } = req.app.locals;
-  dataStore.deleteVote(id, req.user.user_id, isQuestionVote)
+  dataStore.deleteVote(id, req.user.id, isQuestionVote)
     .then(() => dataStore.getVoteCount(id, isQuestionVote))
     .then(({ voteCount }) => res.json({ isSucceeded: true, voteCount }));
 };
@@ -278,7 +278,7 @@ const verifyAnswerAcceptance = async function(req, res, next) {
     const { dataStore } = req.app.locals;
     const { quesId } = await dataStore.getAnswerById(req.body.answerId);
     const { owner } = await dataStore.getQuestionDetails(quesId);
-    if (owner !== req.user.user_id) {
+    if (owner !== req.user.id) {
       throw new Error('Not applicable for answer acceptance');
     }
     next();
@@ -295,7 +295,7 @@ const getTagsSuggestion = async function(req, res) {
 
 const saveComment = function(req, res) {
   const { id, body, isQuestionComment } = req.body;
-  const { user_id: owner, display_name: ownerName } = req.user;
+  const { id: owner, display_name: ownerName } = req.user;
   const creationTime = Moment().format('YYYY-MM-DD HH:mm:ss');
   const created = getRelativeTime(creationTime);
   const comment = { id, body, owner, ownerName, creationTime, created };

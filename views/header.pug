@@ -32,7 +32,7 @@ link(href="https://fonts.googleapis.com/css2?family=Mulish:wght@200;300;400;500;
       img(src=user.avatar alt='avatar')
       .profileDropDown
         .dropDownArrow
-        a(href=`/profile?userId=${user.user_id}`) Profile
+        a(href=`/profile?userId=${user.id}`) Profile
         a(href='/logout') Logout
   else
     a.headerButton#login(href=`/entry?type=login&targetPath=${currPath}`)
