@@ -29,7 +29,6 @@ const getGithubDetails = async (code) => {
   return await details.json();
 };
 
-
 const prepareAnswers = async function(answers, user, dataStore) {
   for (const answer of answers) {
     answer.created = getRelativeTime(answer.created);
@@ -49,7 +48,6 @@ const prepareQuestion = async function(question, user, dataStore) {
   const answers = await dataStore.getAnswersByQuestion(question.id);
   question.answers = await prepareAnswers(answers, user, dataStore);
   question.tags = await dataStore.getQuestionTags(question.id);
-  question.lastModified = getRelativeTime(question.lastModified);
   question.created = getRelativeTime(question.created);
   question.comments = await dataStore.getComments(question.id, true);
   question.comments.forEach(comment => {
@@ -67,7 +65,7 @@ const getAllUniqueTags = async function(dataStore, questions) {
   return [...new Set(tags)];
 };
 
-const attachUser = async (req, res, next) => {
+const attachUser = (req, res, next) => {
   const sessionId = req.cookies.session;
   const userId = req.app.locals.sessions.getUserId(sessionId);
   req.app.locals.dataStore.getUser('id', userId)
@@ -327,7 +325,6 @@ const logout = function(req, res) {
   req.app.locals.sessions.clearSession(req.cookies.session);
   res.clearCookie('session').redirect('/home');
 };
-
 
 module.exports = {
   attachUser,
