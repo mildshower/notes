@@ -130,7 +130,7 @@ class DataStore {
   getTagId(tagName) {
     return new Promise((resolve, reject) => {
       this.dbClient.serialize(() => {
-        this.dbClient.run(query.tagsInsertion, tagName, () => {});
+        this.dbClient.run(query.tagsInsertion, tagName, () => { });
         this.dbClient.get(query.tagIdByTagName, tagName, (err, tag) => {
           err && reject(err);
           resolve(tag);
@@ -160,7 +160,7 @@ class DataStore {
     return this.getRows(query.answerByQuestion, [id]);
   }
 
-  getAnswerById(id){
+  getAnswerById(id) {
     return this.getRow(query.answerById, [id])
       .then(details => {
         if (!details) {
@@ -171,7 +171,7 @@ class DataStore {
   }
 
   getMatchedQuestions(searchKeyword) {
-    const [, userName, tagName, acceptance, ansCount, text] = 
+    const [, userName, tagName, acceptance, ansCount, text] =
       searchKeyword.match(/^@(.*)|^#(.*)|^:(.*)|^>(.*)|(.*)|/);
     const expressions = {
       $text: `%${text}%`,
@@ -214,20 +214,20 @@ class DataStore {
     }
     return [...new Set(tags)];
   }
-  
-  async addVote(id, userId, voteType, isQuesVote){
-    const {isVoted} = await this.getVote(id, userId, isQuesVote);
+
+  async addVote(id, userId, voteType, isQuesVote) {
+    const { isVoted } = await this.getVote(id, userId, isQuesVote);
     const voteQueries = isQuesVote ?
       query.voteQueries.ques : query.voteQueries.ans;
     const chosenQuery = isVoted ? voteQueries.toggle : voteQueries.addition;
     await this.runQuery(
-      chosenQuery, 
+      chosenQuery,
       [voteType, id, userId],
       new Error('Vote Addition Failed')
     );
   }
 
-  deleteVote(id, userId, isQuesVote){
+  deleteVote(id, userId, isQuesVote) {
     return this.runQuery(
       isQuesVote ? query.quesVoteDeletion : query.ansVoteDeletion,
       [id, userId],
@@ -235,7 +235,7 @@ class DataStore {
     );
   }
 
-  getVoteCount(id, isQuesVote){
+  getVoteCount(id, isQuesVote) {
     return this.getRow(
       isQuesVote ? query.questionVoteCount : query.answerVoteCount,
       [id],
@@ -243,7 +243,7 @@ class DataStore {
     );
   }
 
-  rejectAnswer(id){
+  rejectAnswer(id) {
     return this.runQuery(
       query.rejectAnswer,
       [id],
@@ -251,15 +251,15 @@ class DataStore {
     );
   }
 
-  acceptAnswer(id){
+  acceptAnswer(id) {
     return this.runQuery(
       query.acceptAnswer,
-      {$ansId: id},
+      { $ansId: id },
       new Error('Could not accept the answer')
     );
   }
 
-  getComments(id, isQuestion){
+  getComments(id, isQuestion) {
     return this.getRows(
       isQuestion ? query.questionComments : query.answerComments,
       [id]
@@ -267,14 +267,20 @@ class DataStore {
   }
 
   getPopularTags(exp) {
-    return this.getRows(query.popularTags, {$regExp: `%${exp}%`});
+    return this.getRows(query.popularTags, { $regExp: `%${exp}%` });
   }
-  
-  saveComment({body, owner, creationTime, id}, isQuestionComment){
+
+  saveComment({ body, owner, creationTime, id }, isQuestionComment) {
     return this.runQuery(
       isQuestionComment ? query.saveQuesComment : query.saveAnsComment,
       [body, owner, id, creationTime, creationTime],
       new Error('Comment Insertion Failed!')
+    );
+  }
+
+  deleteAnswer(id) {
+    return this.runQuery(
+      query.deleteAnswer, id, new Error('Answer deletion failed!')
     );
   }
 }

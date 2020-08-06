@@ -34,6 +34,7 @@ const {
   verifyAnswerAcceptance,
   getTagsSuggestion,
   saveComment,
+  deleteAnswer,
   logout
 } = require('./handlers');
 
@@ -67,6 +68,7 @@ app.get('/askQuestion', authorizeUser, serveAskQuestion);
 app.post('/saveDetails', authorizeUser, saveDetails);
 app.post('/saveQuestion', authorizeUser, saveQuestion);
 app.post('/saveAnswer', authorizeUser, saveAnswer);
+app.post('/deleteAnswer', authorizeUser, deleteAnswer);
 app.post('/addVote', authorizeUser, addVote);
 app.post('/deleteVote', authorizeUser, deleteVote);
 app.post('/acceptAnswer', authorizeUser, verifyAnswerAcceptance, acceptAnswer);

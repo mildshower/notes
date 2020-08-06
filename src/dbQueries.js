@@ -39,58 +39,58 @@ const answerDetails = `select
     where answer_votes.answer_id = ans.id) as voteCount 
   from answers ans `;
 
-const commentDetails = 
-`SELECT
+const commentDetails =
+  `SELECT
   comments.*,
   (SELECT display_name from users
   where user_id = comments.owner) as ownerName`;
 
 module.exports = {
   userUpdation:
-  `UPDATE users
+    `UPDATE users
     SET display_name = ?, email = ?, location = ?, bio = ?
     WHERE user_id = ?;`,
 
   answersByUser: answerDetails + 'where ans.owner = ?',
 
-  answerByQuestion: 
-  answerDetails + 'where ans.question = ? ORDER BY isAccepted DESC',
+  answerByQuestion:
+    answerDetails + 'where ans.question = ? ORDER BY isAccepted DESC',
 
   lastQuestions:
-  questionDetails + 'order by ques.created DESC;',
+    questionDetails + 'order by ques.created DESC;',
 
   questionDetails:
-  questionDetails + 'where ques.id = ?;',
+    questionDetails + 'where ques.id = ?;',
 
   userQuestions: questionDetails + 'where ques.owner = ?;',
 
   searchQuestions:
-  questionDetails +
-  ` where ques.title like $text or ques.body_text like $text
+    questionDetails +
+    ` where ques.title like $text or ques.body_text like $text
     or ownerName like $user
     or ques.id in (select question_id from questions_tags
       where tag_id = (select id from tags where tag_name like $tag))
     or hasCorrectAnswer = $acceptance
     or answerCount = $ansCount;`,
-    
+
   questionInsertion:
-  `insert into questions (title, body, body_text, owner)
+    `insert into questions (title, body, body_text, owner)
     values (?, ?, ?, ?);`,
 
   userInsertion:
-  `insert into users (github_username, avatar) 
+    `insert into users (github_username, avatar) 
     values (?, ?);`,
 
   tagsInsertion:
-  `insert into tags (tag_name)
+    `insert into tags (tag_name)
     values (?);`,
 
   tagIdByTagName:
-  `select id from tags
+    `select id from tags
     where tag_name = ?;`,
 
   insertQuesTags:
-  `insert into questions_tags (tag_id, question_id)
+    `insert into questions_tags (tag_id, question_id)
     values(?, ?)`,
 
   initial: `
@@ -99,12 +99,12 @@ module.exports = {
   `,
 
   questionVoteByUser:
-  `select vote_type as voteType
+    `select vote_type as voteType
     from question_votes
     where question_id = ? AND user = ?`,
 
   answerVoteByUser:
-  `select vote_type as voteType
+    `select vote_type as voteType
     from answer_votes
     where answer_id = ? AND user = ?`,
 
@@ -126,40 +126,40 @@ module.exports = {
   },
 
   ansVoteDeletion:
-  `delete from answer_votes
+    `delete from answer_votes
     where answer_id = ? and user = ?`,
 
   quesVoteDeletion:
-  `delete from question_votes
+    `delete from question_votes
     where question_id = ? and user = ?`,
 
   answerInsertion:
-  `insert into answers (body, body_text, question, owner)
+    `insert into answers (body, body_text, question, owner)
     values (?, ?, ?, ?)`,
 
   questionTags:
-  `select tags.tag_name FROM tags
+    `select tags.tag_name FROM tags
    left join questions_tags as ques_tags
    on ques_tags.tag_id = tags.id
    where ques_tags.question_id = ?;`,
 
   questionVoteCount:
-  `select COALESCE(sum(REPLACE(vote_type,0,-1)),0) as voteCount
+    `select COALESCE(sum(REPLACE(vote_type,0,-1)),0) as voteCount
     from question_votes
     where question_id = ?`,
 
   answerVoteCount:
-  `select COALESCE(sum(REPLACE(vote_type,0,-1)),0) as voteCount
+    `select COALESCE(sum(REPLACE(vote_type,0,-1)),0) as voteCount
     from answer_votes
     where answer_id = ?`,
 
   rejectAnswer:
-  `update answers
+    `update answers
     set is_accepted = 0
     where id = ?`,
 
   acceptAnswer:
-  `UPDATE answers
+    `UPDATE answers
   set is_accepted = 
     case id
       when $ansId then 1
@@ -168,18 +168,18 @@ module.exports = {
   where question = (select question from answers where id = $ansId );`,
 
   answerById:
-  answerDetails + 'where ans.id = ?',
+    answerDetails + 'where ans.id = ?',
 
   questionComments:
-  commentDetails + ` from question_comments comments
+    commentDetails + ` from question_comments comments
    where comments.question = ? `,
 
   answerComments:
-   commentDetails + ` from answer_comments comments
+    commentDetails + ` from answer_comments comments
     where comments.answer = ? `,
-  
+
   popularTags:
-  `select tag_name,
+    `select tag_name,
       count(*) as popularity
   from questions_tags qt
   left join tags
@@ -194,5 +194,9 @@ module.exports = {
 
   saveAnsComment:
     `insert into answer_comments (body, owner, answer, created, last_modified)
-      values (?, ?, ?, ?, ?);`
+      values (?, ?, ?, ?, ?);`,
+
+  deleteAnswer:
+    `delete from answers
+     where id = ?;`
 };

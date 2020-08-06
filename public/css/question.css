@@ -131,11 +131,11 @@ body{
   background-color: #bbe4e7;
 }
 
-.questionBox > .body > .editButton,
-.answerBox > .body > .editButton {
+/* .questionBox > .body > .options,
+.answerBox > .body > .options {
   background-color: skyblue;
   height: 30px;
-}
+} */
 
 .questionBox > .body > .commentBar,
 .answerBox > .body > .commentBar {
@@ -143,7 +143,8 @@ body{
   padding: 5px 15px;
 }
 
-.commentBar > .commentBarOpener{
+.commentBar > .commentBarOpener,
+ .options > .deleteButton {
   margin: 0 0 22px 0;
   font-weight: 600;
   font-size: 14px;
@@ -152,7 +153,8 @@ body{
   color: #2a9da3;
 }
 
-.commentBar > .commentBarOpener:hover{
+.commentBar > .commentBarOpener:hover,
+.options > .deleteButton{
   color: #0a4a4d;
 }
 
@@ -203,7 +205,8 @@ body{
   display: none;
 }
 
-.closed > .commentBarOpener{
+.closed > .commentBarOpener, 
+.options > .deleteButton {
   display: block;
 }
 

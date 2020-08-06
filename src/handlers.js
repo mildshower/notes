@@ -76,7 +76,7 @@ const isValidVerificationReq = async function(req, res, next) {
   next();
 };
 
-const handleSignUp = async function (req, res, next) {
+const handleSignUp = async function(req, res, next) {
   if (req.enteringUser) {
     req.responseStatus = 409;
     req.errorMessage = `It seems Github username ${req.userDetails.login} already has an account.`;
@@ -89,7 +89,7 @@ const handleSignUp = async function (req, res, next) {
   res.redirect(`/signUpForm?targetPath=${req.query.targetPath}`);
 };
 
-const handleLogin = function (req, res, next) {
+const handleLogin = function(req, res, next) {
   if (!req.enteringUser) {
     req.responseStatus = 400;
     req.errorMessage = `It seems there is no account for Github username ${req.userDetails.login}.`;
@@ -247,64 +247,72 @@ const serveEditProfilePage = (req, res) => {
 };
 
 const addVote = (req, res) => {
-  const {voteType, id, isQuestionVote} = req.body;
-  const {dataStore} = req.app.locals;
+  const { voteType, id, isQuestionVote } = req.body;
+  const { dataStore } = req.app.locals;
   dataStore.addVote(id, req.user.user_id, voteType, isQuestionVote)
     .then(() => dataStore.getVoteCount(id, isQuestionVote))
-    .then(({voteCount}) => res.json({isSucceeded: true, voteCount}))
-    .catch(err => res.status(400).json({error: err.message}));
+    .then(({ voteCount }) => res.json({ isSucceeded: true, voteCount }))
+    .catch(err => res.status(400).json({ error: err.message }));
 };
 
 const deleteVote = (req, res) => {
-  const {id, isQuestionVote} = req.body;
-  const {dataStore} = req.app.locals;
+  const { id, isQuestionVote } = req.body;
+  const { dataStore } = req.app.locals;
   dataStore.deleteVote(id, req.user.user_id, isQuestionVote)
     .then(() => dataStore.getVoteCount(id, isQuestionVote))
-    .then(({voteCount}) => res.json({isSucceeded: true, voteCount}));
+    .then(({ voteCount }) => res.json({ isSucceeded: true, voteCount }));
 };
 
 const acceptAnswer = (req, res) => {
   req.app.locals.dataStore.acceptAnswer(req.body.answerId)
-    .then(() => res.json({isSucceeded: true}));
+    .then(() => res.json({ isSucceeded: true }));
 };
 
 const rejectAnswer = (req, res) => {
   req.app.locals.dataStore.rejectAnswer(req.body.answerId)
-    .then(() => res.json({isSucceeded: true}));
+    .then(() => res.json({ isSucceeded: true }));
 };
 
-const verifyAnswerAcceptance = async function(req, res, next){
-  try{
-    const {dataStore} = req.app.locals;
-    const {quesId} = await dataStore.getAnswerById(req.body.answerId);
-    const {owner} = await dataStore.getQuestionDetails(quesId);
-    if(owner !== req.user.user_id){
+const verifyAnswerAcceptance = async function(req, res, next) {
+  try {
+    const { dataStore } = req.app.locals;
+    const { quesId } = await dataStore.getAnswerById(req.body.answerId);
+    const { owner } = await dataStore.getQuestionDetails(quesId);
+    if (owner !== req.user.user_id) {
       throw new Error('Not applicable for answer acceptance');
     }
     next();
-  }catch(err){
-    res.status(406).json({error: err.message});
+  } catch (err) {
+    res.status(406).json({ error: err.message });
   }
 };
 
-const getTagsSuggestion = async function (req, res) {
-  const {exp} = req.query;
+const getTagsSuggestion = async function(req, res) {
+  const { exp } = req.query;
   const tags = await req.app.locals.dataStore.getPopularTags(exp);
   res.json(Array.from(tags, (tag) => tag.tag_name).slice(0, 10));
 };
 
-const saveComment = function(req, res){
-  const {id, body, isQuestionComment} = req.body;
-  const {user_id: owner, display_name: ownerName} = req.user;
+const saveComment = function(req, res) {
+  const { id, body, isQuestionComment } = req.body;
+  const { user_id: owner, display_name: ownerName } = req.user;
   const creationTime = Moment().format('YYYY-MM-DD HH:mm:ss');
   const created = getRelativeTime(creationTime);
-  const comment = {id, body, owner, ownerName, creationTime, created};
+  const comment = { id, body, owner, ownerName, creationTime, created };
   req.app.locals.dataStore.saveComment(comment, isQuestionComment)
-    .then(() => res.json({isSucceeded: true, comment}))
-    .catch(err => res.status(406).json({error: err.message}));
+    .then(() => res.json({ isSucceeded: true, comment }))
+    .catch(err => res.status(406).json({ error: err.message }));
 };
 
-const logout = function(req, res){
+const deleteAnswer = function(req, res) {
+  const { id } = req.body;
+  const { dataStore } = req.app.locals;
+  dataStore.deleteAnswer(id)
+    .then(() => res.json({ isSucceeded: true }))
+    .catch(err => res.status(406).json({ error: err.message }));
+};
+
+const logout = function(req, res) {
   req.app.locals.sessions.clearSession(req.cookies.session);
   res.clearCookie('session').redirect('/home');
 };
@@ -336,5 +344,6 @@ module.exports = {
   verifyAnswerAcceptance,
   getTagsSuggestion,
   saveComment,
+  deleteAnswer,
   logout
 };

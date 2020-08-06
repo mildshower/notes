@@ -40,7 +40,10 @@ body
         input.newComment(type='text' placeholder='Your comment here..')
         button.newCommentButton Post Comment
         button.cancelButton Cancel
-  p#answersHead Answers (#{answers.length})
+  p#answersHead 
+    | Answers (
+    span.count #{answers.length}
+    |)
   each answer in answers
     .answerBox(id=answer.id)
       .stats
@@ -57,7 +60,9 @@ body
           | &nbsp;&nbsp;#{answer.created}
           a.strong(href=`/profile?userId=${answer.owner}`) #{answer.ownerName}
           img.smallAvatar(src=answer.ownerAvatar)
-        //- .editButton
+        .options
+          if(user && user.user_id === answer.owner)
+            p.deleteButton(onclick= `deleteAnswer(${answer.id})`) Delete
         p.commentHead Comments
         .commentsBox
           each comment in answer.comments
