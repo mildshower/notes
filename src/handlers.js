@@ -95,7 +95,7 @@ const authenticateWithGithub = (req, res, next) => {
     return next();
   }
   const redirectStatusCode = 302;
-  const redirectUri = `http://localhost:8000/${req.query.type}?targetPath=${req.query.targetPath}`;
+  const redirectUri = `${process.env.HO_BASE_URL}/${req.query.type}?targetPath=${req.query.targetPath}`;
   res.redirect(
     redirectStatusCode,
     `https://github.com/login/oauth/authorize?client_id=${process.env.HO_CLIENT_ID}&redirect_uri=${redirectUri}`
