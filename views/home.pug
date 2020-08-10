@@ -23,7 +23,7 @@ body
               a.tag(href=`/search?searchQuery=%23${tag}`) #{tag}
           p.status
             img.smallAvatar(src=question.ownerAvatar)
-            a.strong(href=`/profile?userId=${question.owner}`) #{question.ownerName}
+            a.strong(href=`/profile/${question.owner}`) #{question.ownerName}
             | &nbsp;&nbsp;#{question.created} 
         .answerCount
           p.count(class= question.hasCorrectAnswer?'hasCorrect':'') #{question.answerCount}

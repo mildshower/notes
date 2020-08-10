@@ -477,7 +477,7 @@ describe('POST', function() {
       const id = sessions.addSession('1');
       app.locals.sessions = sessions;
       request(app)
-        .get('/profile?userId=1')
+        .get('/profile/1')
         .set('Cookie', `session=${id}`)
         .expect(200)
         .expect('Content-Type', /text\/html/)
@@ -487,7 +487,7 @@ describe('POST', function() {
 
     it('should serve profile page when asked with valid id', (done) => {
       request(app)
-        .get('/profile?userId=1')
+        .get('/profile/1')
         .expect(200)
         .expect('Content-Type', /text\/html/)
         .expect(/heapOverflow \| Profile/, done);
@@ -495,7 +495,7 @@ describe('POST', function() {
 
     it('should serve error page when asked with invalid id', (done) => {
       request(app)
-        .get('/profile?userId=34732')
+        .get('/profile/34732')
         .expect(404)
         .expect('Content-Type', /text\/html/)
         .expect(/heapOverflow \| Oops/, done);

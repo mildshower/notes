@@ -230,7 +230,7 @@ const serveNotFound = function(req, res) {
 };
 
 const showProfilePage = async (req, res, next) => {
-  const { userId } = req.query;
+  const { userId } = req.params;
   const { dataStore } = req.app.locals;
   const { user: requestedUser } = await dataStore.getUser('id', userId);
   if (!requestedUser) {
@@ -240,7 +240,7 @@ const showProfilePage = async (req, res, next) => {
   const questions = await dataStore.getUserQuestions(userId);
   const answers = await dataStore.getUserAnswers(userId);
   const tags = await getAllUniqueTags(dataStore, questions);
-  res.render('profile', { requestedUser, user: req.user, questions, tags, answers, currPath: `/profile?userId=${userId}` });
+  res.render('profile', { requestedUser, user: req.user, questions, tags, answers, currPath: `/profile/${userId}` });
 };
 
 const saveAnswer = function(req, res) {

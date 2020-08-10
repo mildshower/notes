@@ -137,7 +137,7 @@ const showComment = function(commentBox, { body, created, ownerName, owner }) {
   const commentElement = document.createElement('p');
   commentElement.innerHTML =
     `${body}&nbsp;&nbsp;-&nbsp;` +
-    `<a class="strong" href="/profile?userId=${owner}">${ownerName}</a>` +
+    `<a class="strong" href="/profile/${owner}">${ownerName}</a>` +
     `<span class="commentTime">&nbsp;&nbsp;${created}</span>`;
   commentElement.classList.add('comment');
   commentBox.appendChild(commentElement);

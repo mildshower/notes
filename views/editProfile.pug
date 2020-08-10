@@ -8,7 +8,7 @@ head
 body
   include header.pug
   div
-    form(action=`/user/saveDetails?targetPath=/profile?userId=${user.id}` method='post')
+    form(action=`/user/saveDetails?targetPath=/profile/${user.id}` method='post')
       h1.title Edit your profile
       .container
         .top-lane
@@ -36,5 +36,5 @@ body
             input#bio(type='bio' name='bio' placeholder='ex. I am a developer.')
         .bottom-lane
           button#submit(type='submit') Save
-          a#cancel(href=`/profile?userId=${user.id}`) Cancel
+          a#cancel(href=`/profile/${user.id}`) Cancel
 

@@ -9,6 +9,6 @@ include popUp.pug
 if created
   p#questionStatus
     img.smallAvatar(src=ownerAvatar)
-    a.strong(href=`/profile?userId=${owner}`) #{ownerName}
+    a.strong(href=`/profile/${owner}`) #{ownerName}
     | &nbsp;&nbsp;#{created}
 hr.separator
