@@ -1,8 +1,19 @@
 const request = require('supertest');
 const sinon = require('sinon');
 const fetch = require('node-fetch');
-const { app } = require('../src/routes');
 const Sessions = require('../src/sessions');
+const sqlite3 = require('sqlite3').verbose();
+const DataStore = require('../src/dataStore');
+const dbClient = new sqlite3.Database('data/ho_test.db');
+const knex = require('../src/knexConnection')('data/ho_test.db');
+const { app } = require('../src/routes');
+
+before(() => {
+  app.locals.dataStore = new DataStore(dbClient, knex);
+  app.locals.dataStore.init();
+  app.locals.sessions = new Sessions();
+});
+after(() => knex.destroy());
 
 describe('GET', () => {
   context('/', () => {
@@ -322,7 +333,7 @@ describe('POST', function() {
         .post('/user/addVote')
         .set('Cookie', `session=${id}`)
         .set('Content-Type', 'application/json')
-        .send({id: 1, voteType: 1, isQuestionVote: true})
+        .send({ id: 1, voteType: 1, isQuestionVote: true })
         .expect(200)
         .expect('Content-Type', 'application/json; charset=utf-8')
         .expect(/{"isSucceeded":true/, done);
@@ -336,7 +347,7 @@ describe('POST', function() {
         .post('/user/addVote')
         .set('Cookie', `session=${id}`)
         .set('Content-Type', 'application/json')
-        .send({id: 1, voteType: 1})
+        .send({ id: 1, voteType: 1 })
         .expect(200)
         .expect('Content-Type', 'application/json; charset=utf-8')
         .expect(/{"isSucceeded":true/, done);
@@ -350,7 +361,7 @@ describe('POST', function() {
         .post('/user/addVote')
         .set('Cookie', `session=${id}`)
         .set('Content-Type', 'application/json')
-        .send({id: 100, voteType: 100, isQuestionVote: true})
+        .send({ id: 100, voteType: 100, isQuestionVote: true })
         .expect(400)
         .expect('Content-Type', 'application/json; charset=utf-8')
         .expect('{"error":"Vote Addition Failed"}', done);
@@ -359,7 +370,7 @@ describe('POST', function() {
     it('should serve unauthorized if not logged in', (done) => {
       request(app)
         .post('/user/addVote')
-        .send({id: 1, voteType: 1, isQuestionVote: true})
+        .send({ id: 1, voteType: 1, isQuestionVote: true })
         .set('Content-Type', 'application/json')
         .expect(401, done);
     });
@@ -374,7 +385,7 @@ describe('POST', function() {
         .post('/user/deleteVote')
         .set('Cookie', `session=${id}`)
         .set('Content-Type', 'application/json')
-        .send({id: 1, isQuestionVote: true})
+        .send({ id: 1, isQuestionVote: true })
         .expect(200)
         .expect('Content-Type', 'application/json; charset=utf-8')
         .expect(/{"isSucceeded":true/, done);
@@ -397,7 +408,7 @@ describe('POST', function() {
     it('should serve unauthorized if not logged in', (done) => {
       request(app)
         .post('/user/deleteVote')
-        .send({id: 1})
+        .send({ id: 1 })
         .set('Content-Type', 'application/json')
         .expect(401, done);
     });
@@ -449,7 +460,7 @@ describe('POST', function() {
       request(app)
         .post('/user/saveComment')
         .set('Cookie', `session=${id}`)
-        .send({ body: 'comment', isQuesionComment: true, id: 1})
+        .send({ body: 'comment', isQuesionComment: true, id: 1 })
         .set('Content-Type', 'application/json')
         .expect(200)
         .expect('Content-Type', 'application/json; charset=utf-8')
@@ -463,7 +474,7 @@ describe('POST', function() {
       request(app)
         .post('/user/saveComment')
         .set('Cookie', `session=${id}`)
-        .send({ body: 'comment', isQuesionComment: true, id: 1000})
+        .send({ body: 'comment', isQuesionComment: true, id: 1000 })
         .set('Content-Type', 'application/json')
         .expect(406)
         .expect('Content-Type', 'application/json; charset=utf-8')
@@ -530,7 +541,7 @@ describe('POST', function() {
       request(app)
         .post('/user/acceptAnswer')
         .set('Cookie', `session=${id}`)
-        .send({answerId: 1})
+        .send({ answerId: 1 })
         .expect(200)
         .expect('Content-Type', /json/)
         .expect('{"isSucceeded":true}', done);
@@ -543,7 +554,7 @@ describe('POST', function() {
       request(app)
         .post('/user/acceptAnswer')
         .set('Cookie', `session=${id}`)
-        .send({answerId: 1})
+        .send({ answerId: 1 })
         .expect(406)
         .expect('Content-Type', /json/)
         .expect(/error/, done);
@@ -558,7 +569,7 @@ describe('POST', function() {
       request(app)
         .post('/user/rejectAnswer')
         .set('Cookie', `session=${id}`)
-        .send({answerId: 1})
+        .send({ answerId: 1 })
         .expect(200)
         .expect('Content-Type', /json/)
         .expect('{"isSucceeded":true}', done);

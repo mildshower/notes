@@ -313,14 +313,6 @@ const saveComment = function(req, res) {
     .catch(err => res.status(406).json({ error: err.message }));
 };
 
-const deleteAnswer = function(req, res) {
-  const { id } = req.body;
-  const { dataStore } = req.app.locals;
-  dataStore.deleteAnswer(id)
-    .then(() => res.json({ isSucceeded: true }))
-    .catch(err => res.status(406).json({ error: err.message }));
-};
-
 const logout = function(req, res) {
   req.app.locals.sessions.clearSession(req.cookies.session);
   res.clearCookie('session').redirect('/home');
@@ -353,6 +345,5 @@ module.exports = {
   verifyAnswerAcceptance,
   getTagsSuggestion,
   saveComment,
-  deleteAnswer,
   logout
 };

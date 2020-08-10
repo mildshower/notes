@@ -1,8 +1,9 @@
 const query = require('./dbQueries');
 
 class DataStore {
-  constructor(dbClient) {
+  constructor(dbClient, knex) {
     this.dbClient = dbClient;
+    this.knex = knex;
   }
 
   getRows(query, params) {
@@ -68,11 +69,11 @@ class DataStore {
   }
 
   getUser(key, value) {
-    const query = `select * from users where ${key} = ?`;
-    return this.getRow(
-      query,
-      [value]
-    )
+    return this.knex
+      .table('users')
+      .select()
+      .where(key, '=', value || '')
+      .first()
       .then(user => ({ user, isFound: Boolean(user) }));
   }
 
@@ -271,12 +272,6 @@ class DataStore {
       isQuestionComment ? query.saveQuesComment : query.saveAnsComment,
       [body, owner, id, creationTime, creationTime],
       new Error('Comment Insertion Failed!')
-    );
-  }
-
-  deleteAnswer(id) {
-    return this.runQuery(
-      query.deleteAnswer, id, new Error('Answer deletion failed!')
     );
   }
 }

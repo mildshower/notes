@@ -193,10 +193,6 @@ module.exports = {
   saveAnsComment:
     `insert into answer_comments (body, owner, answer, created, last_modified)
       values (?, ?, ?, ?, ?);`,
-
-  deleteAnswer:
-    `delete from answers
-     where id = ?;`,
   
   lastRowId: 'select last_insert_rowid() as id;'
 };

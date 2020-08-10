@@ -91,6 +91,24 @@ context('dataStore', () => {
         done();
       });
     });
+
+    it('it should give error when addition of tags doesn\'t happen', (done) => {
+      const dbClient = {
+        get: sinon.fake.yieldsAsync(new Error('error')),
+        run: sinon.fake.yieldsAsync(null),
+        serialize: (cb) => cb.apply({ dbClient }),
+      };
+
+      const dataStore = new DataStore(dbClient);
+      dataStore.addQuestionTags(1, ['tag']).catch((err) => {
+        assert.ok(dbClient.get.calledOnce);
+        assert.ok(dbClient.run.calledOnce
+        );
+        assert.ok(err.message, 'error');
+        assert.deepStrictEqual(dbClient.run.args[0][1], 'tag');
+        done();
+      });
+    });
   });
 
   context('#addQuestionContent', () => {
@@ -259,6 +277,16 @@ context('dataStore', () => {
   });
 
   describe('#getUser', function() {
+
+    const dbClient = () => { };
+    const knex = {};
+    knex.table = sinon.fake.returns(knex);
+    knex.select = sinon.fake.returns(knex);
+    knex.where = sinon.fake.returns(knex);
+    knex.first = sinon.fake.returns(knex);
+
+    const dataStore = new DataStore(dbClient, knex);
+
     it('should get user details when the user is in present', (done) => {
       const details = {
         user: {
@@ -275,51 +303,44 @@ context('dataStore', () => {
         isFound: true,
       };
 
-      const dbClient = {
-        get: sinon.fake.yields(null, details.user),
-      };
-      const dataStore = new DataStore(dbClient);
+      knex.then = () => Promise.resolve(details);
 
-      dataStore.getUser('github_username', 'testUser').then((actual) => {
-        assert.deepStrictEqual(actual, details);
-        assert.ok(dbClient.get.calledOnce);
-        assert.deepStrictEqual(dbClient.get.args[0][1], ['testUser']);
-        done();
-      });
+      dataStore.getUser('github_username', 'testUser')
+        .then(actual => {
+          assert.deepStrictEqual(actual, details);
+          assert.ok(knex.table.calledWith('users'));
+          assert.ok(knex.select.calledWith());
+          assert.ok(knex.where.calledWith('github_username', '=', 'testUser'));
+          done();
+        });
     });
 
     it('should get user details undefined when the user is in not present', (done) => {
-      const dbClient = {
-        get: sinon.fake.yields(null, undefined),
-      };
-      const dataStore = new DataStore(dbClient);
 
-      dataStore.getUser('github_username', 'noUser').then((actual) => {
-        assert.deepStrictEqual(actual, { user: undefined, isFound: false });
-        assert.ok(dbClient.get.calledOnce);
-        assert.deepStrictEqual(dbClient.get.args[0][1], ['noUser']);
-        done();
-      });
+      knex.then = () => Promise.resolve({ user: undefined, isFound: false });
+
+      dataStore.getUser('github_username', 'noUser')
+        .then(actual => {
+          assert.deepStrictEqual(actual, { user: undefined, isFound: false });
+          assert.ok(knex.table.calledWith('users'));
+          assert.ok(knex.select.calledWith());
+          assert.ok(knex.where.calledWith('github_username', '=', 'noUser'));
+          done();
+        });
     });
 
     it('Should give error if we given key is not present', (done) => {
-      const dbClient = {
-        get: sinon.fake.yields(
-          {
-            message: 'no such column: github_user',
-          },
-          null
-        ),
-      };
-      const dataStore = new DataStore(dbClient);
-
       const message = 'no such column: github_user';
-      dataStore.getUser('github_user', 'noUser').catch((err) => {
-        assert.ok(dbClient.get.calledOnce);
-        assert.deepStrictEqual(dbClient.get.args[0][1], ['noUser']);
-        assert.equal(err.message, message);
-        done();
-      });
+      knex.then = () => Promise.reject(new Error(message));
+
+      dataStore.getUser('github_user', 'noUser')
+        .catch(err => {
+          assert.deepStrictEqual(err.message, message);
+          assert.ok(knex.table.calledWith('users'));
+          assert.ok(knex.select.calledWith());
+          assert.ok(knex.where.calledWith('github_user', '=', 'noUser'));
+          done();
+        });
     });
   });
 
