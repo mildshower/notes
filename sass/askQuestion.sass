@@ -1,0 +1,119 @@
+@use "_basicConfig" as *
+
+.ql-editor 
+  min-height: 200px
+  max-height: 350px
+  overflow-y: scroll
+
+.ql-toolbar
+  background: white !important
+
+.title
+  @include heading
+
+#postButton 
+  @include button
+  margin: 0px $sideSpace 150px
+  float: right
+
+#bodyField 
+  border: 1px solid rgb(202, 202, 202)
+    top: none
+    bottom:
+      left-radius: 5px
+      right-radius: 5px
+  background: white
+
+.newQuestionBox 
+  flex-direction: column
+  margin: 20px $sideSpace
+  display: flex
+  border-radius: 2px
+
+  > input, > label
+    margin: 5px 0
+  
+  > label
+    font-size: 25px
+    color: rgb(61, 61, 61)
+
+#titleField, #tagInputHolder 
+  font-size: 18px
+  padding: 0 10px
+  display: flex
+  border: 1px solid rgb(163, 163, 163)
+  outline: none
+  border-radius: 5px
+  background: white
+
+#titleField 
+  overflow-x: scroll
+
+  &:focus
+    border: 1px solid black
+
+#tagInputHolder
+  margin: 5px 0
+  height: 36px
+  align-items: center
+  position: relative
+
+  &:focus
+    border: 1px solid black
+  
+  #suggestionBox:hover, &:focus-within #suggestionBox
+    visibility: inherit
+
+  input
+    font-size: 18px
+    padding: 5px 10px
+    height: 90%
+    outline: none
+    border: none
+    margin: -1px
+    background-color: transparent
+    flex-grow: 1
+ 
+#suggestionBox 
+  @include dropDown
+  top:42px
+  left:0px
+  width:40%
+  padding:0px 0px 20px 15px
+ 
+  p 
+    font-size: 20px
+    color: $fontColor
+    padding: 15px 10px 10px
+    margin:0px 0px 5px
+
+.tags 
+  display: flex
+  flex-wrap: wrap
+  overflow: scroll
+
+.tag
+  @include tag
+  display: flex
+  align-items: center
+
+#tagsHolder 
+  overflow-x: scroll
+  flex-wrap: nowrap
+  flex-direction: row-reverse
+
+  &::-webkit-scrollbar
+    display: none
+
+  &.tags 
+    .tag
+      cursor: default
+
+      &:hover
+        color: #0a4a4d
+        background-color: #ccf0f3
+  
+    img
+      transform: scale(1.3)
+      margin-left: 3px
+      cursor: pointer
