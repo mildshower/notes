@@ -1,0 +1,72 @@
+@use "_basicConfig" as *
+
+.highlight 
+  color: red
+
+.title 
+  font-weight: 300
+  margin: 30px $sideSpace
+  font-size: 30px
+
+.container
+  margin: 30px $sideSpace 70px
+
+  > .top-lane, > .middle-lane 
+    display: flex
+
+  input 
+    font-size: 18px
+    padding: 8px
+    margin: 8px 0 20px
+    border: 1px solid rgb(185, 185, 185)
+    border-radius: 3px
+    outline: none 
+
+  > .top-lane
+    > .profileImg 
+      border-radius: 5px
+      flex-shrink: 0
+      width: 250px
+      height: 250px
+      border: 1px solid rgb(194, 194, 194)
+      margin: 13px 0px 0px 20px
+
+    > .personalInfo 
+      width: 450px
+      display: flex
+      flex-direction: column
+      margin: 0px 80px
+
+  label 
+    font-size: 25px
+    color: rgb(61, 61, 61)
+
+  > .middle-lane 
+    display: flex
+    flex-direction: column
+    width: calc(272px + 450px + 80px)
+
+  .bottom-lane 
+    display: flex
+    flex-direction: row-reverse
+    width: calc(272px + 450px + 80px)
+
+    * 
+      margin: 0 0.5vw
+      border: none
+        radius: 3px
+      font:
+        size: 20px
+        weight: 400
+      outline: none
+      text-align: center
+      flex-shrink: 0
+      cursor: pointer
+      padding: 8px 10px
+      color: $fontColor
+      background: $dark
+      height: fit-content
+
+      &:hover, &:focus
+        background-color: #82d5dd
+        color: black

@@ -1,20 +1,21 @@
 * {
-  font-family: 'Mulish', sans-serif;
+  font-family: "Mulish", sans-serif;
 }
 
-body{
+body {
+  margin: 0 2px;
   background-color: #f1fcfc;
 }
 
-.red {
-  color:red;
+a {
+  text-decoration: none;
+}
+
+.highlight {
+  color: red;
 }
 
 .title {
-  font-weight: 400;
-  font-size: 35px;
-  margin: 50px 10vw 10px;
-
   font-weight: 300;
   margin: 30px 10vw;
   font-size: 30px;
@@ -23,72 +24,61 @@ body{
 .container {
   margin: 30px 10vw 70px;
 }
-
-.container > .top-lane,
-.container > .middle-lane {
+.container > .top-lane, .container > .middle-lane {
   display: flex;
 }
-
 .container input {
   font-size: 18px;
   padding: 8px;
   margin: 8px 0 20px;
-  border: 1px solid rgb(185, 185, 185);
+  border: 1px solid #b9b9b9;
   border-radius: 3px;
-  outline: none ;
+  outline: none;
 }
-
 .container > .top-lane > .profileImg {
   border-radius: 5px;
   flex-shrink: 0;
   width: 250px;
   height: 250px;
-  border: 1px solid rgb(194, 194, 194);
+  border: 1px solid #c2c2c2;
   margin: 13px 0px 0px 20px;
 }
-
 .container > .top-lane > .personalInfo {
   width: 450px;
   display: flex;
   flex-direction: column;
   margin: 0px 80px;
 }
-
 .container label {
   font-size: 25px;
-  color: rgb(61, 61, 61);
+  color: #3d3d3d;
 }
-
 .container > .middle-lane {
   display: flex;
   flex-direction: column;
-  width: calc(272px + 450px + 80px); /* depend on form size */
+  width: calc(272px + 450px + 80px);
 }
-
-.container > .bottom-lane {
+.container .bottom-lane {
   display: flex;
   flex-direction: row-reverse;
-  width: calc(272px + 450px + 80px); /* depend on form size */
+  width: calc(272px + 450px + 80px);
 }
-
-.container > .bottom-lane * {
+.container .bottom-lane * {
   margin: 0 0.5vw;
   border: none;
+  border-radius: 3px;
   font-size: 20px;
   font-weight: 400;
   outline: none;
   text-align: center;
   flex-shrink: 0;
   cursor: pointer;
-  border-radius: 3px;
   padding: 8px 10px;
   color: #0a4a4d;
   background: #a6e3e9;
   height: fit-content;
 }
-
-.container > .bottom-lane *:hover,
-.container > .bottom-lane *:focus {
+.container .bottom-lane *:hover, .container .bottom-lane *:focus {
   background-color: #82d5dd;
   color: black;
 }
