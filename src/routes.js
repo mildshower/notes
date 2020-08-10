@@ -45,7 +45,7 @@ app.get('/entry', authenticateWithGithub);
 app.get('/login', isValidVerificationReq, handleLogin);
 app.get('/signUp', isValidVerificationReq, handleSignUp);
 app.get('/profile/:userId', showProfilePage);
-app.get('/question', serveQuestionPage);
+app.get('/question/:quesId', serveQuestionPage);
 app.get('/questionDetails', serveQuestionDetails);
 app.get('/answers', serveAnswers);
 app.get('/tags', getTagsSuggestion);

@@ -69,7 +69,7 @@ describe('GET', () => {
   context('/question', () => {
     it('should serve question page for valid question id', (done) => {
       request(app)
-        .get('/question?id=1')
+        .get('/question/1')
         .set('accept', '*/*')
         .expect(200)
         .expect('Content-Type', /text\/html/)
@@ -81,7 +81,7 @@ describe('GET', () => {
       const id = sessions.addSession('2');
       app.locals.sessions = sessions;
       request(app)
-        .get('/question?id=1')
+        .get('/question/1')
         .set('Cookie', `session=${id}`)
         .set('accept', '*/*')
         .expect(200)
@@ -92,7 +92,7 @@ describe('GET', () => {
 
     it('should serve "wrong Id" when invalid id is given', (done) => {
       request(app)
-        .get('/question?id=100')
+        .get('/question/100')
         .set('accept', '*/*')
         .expect(404)
         .expect('Content-Type', /text\/html/)

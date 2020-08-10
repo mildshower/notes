@@ -17,7 +17,7 @@ body
       .topQuestionsBox(id=question.id)
         .questionDetails
           .questionTitle
-            a(href='/question?id='+question.id) #{question.title}
+            a(href='/question/'+question.id) #{question.title}
           .tags
             each tag in question.tags
               a.tag(href=`/search?searchQuery=%23${tag}`) #{tag}

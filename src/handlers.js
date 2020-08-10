@@ -145,7 +145,7 @@ const serveSignUpPage = (req, res) => {
 const serveQuestionPage = async function(req, res, next) {
   const dataStore = req.app.locals.dataStore;
   try {
-    let question = await dataStore.getQuestionDetails(req.query.id);
+    let question = await dataStore.getQuestionDetails(req.params.quesId);
     question = await prepareQuestion(question, req.user, dataStore);
     res.render(
       'question',

@@ -14,7 +14,7 @@ else
   each question in questions
     .questionBox
       .details
-        a.title(href=`/question?id=${question.id}`) #{question.title}
+        a.title(href=`/question/${question.id}`) #{question.title}
         p.bodyText
           each line in question.bodyText.slice(0,2)
             | #{line}

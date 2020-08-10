@@ -41,7 +41,7 @@ body
         if(questions.length > 0)
           .contents
             each question in questions
-              a(href=`/question?id=${question.id}`) #{question.title}
+              a(href=`/question/${question.id}`) #{question.title}
         else
           p.empty No Questions Yet
       p.laneTitle Answers (#{answers.length})
@@ -49,6 +49,6 @@ body
         if(answers.length > 0)
           .contents
             each answer in answers
-              a(href=`/question?id=${answer.quesId}`) #{answer.questionTitle}
+              a(href=`/question/${answer.quesId}`) #{answer.questionTitle}
         else
           p.empty No Answers Yet

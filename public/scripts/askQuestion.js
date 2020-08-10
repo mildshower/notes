@@ -95,7 +95,7 @@ const saveQuestion = function(editor) {
   question.bodyText = editor.getText();
   question.tags = getQuestionTags();
   postData('/user/saveQuestion', question).then(({ id }) => {
-    location.assign(`/question?id=${id}`);
+    location.assign(`/question/${id}`);
   });
 };
 
