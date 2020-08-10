@@ -77,7 +77,7 @@ const saveAnswer = function(answer) {
   const body = JSON.stringify(answer.getContents());
   const bodyText = answer.getText();
   const quesId = getQuestionBox().id;
-  postData('/saveAnswer', { body, bodyText, quesId })
+  postData('/user/saveAnswer', { body, bodyText, quesId })
     .then(({ isSaved }) => {
       if (isSaved) {
         location.reload();
@@ -92,10 +92,10 @@ const removeVoteHighlights = function(upVote, downVote) {
 
 const handleVote = function(id, voteBox, isQuestionVote) {
   const { count, upVote, downVote } = voteBox;
-  let endPoint = '/addVote';
+  let endPoint = '/user/addVote';
   const isDeletion = this.className.includes('chosen');
   if (isDeletion) {
-    endPoint = '/deleteVote';
+    endPoint = '/user/deleteVote';
   }
   const voteType = this.className.includes('upVote') ? 1 : 0;
   postData(endPoint, { id, voteType, isQuestionVote })
@@ -121,7 +121,7 @@ const addAcceptanceListener = function(ancestor, id) {
     return;
   }
   const isRejection = tick.className.includes('accepted');
-  const path = isRejection ? '/rejectAnswer' : '/acceptAnswer';
+  const path = isRejection ? '/user/rejectAnswer' : '/user/acceptAnswer';
   tick.onclick = () => {
     postData(path, { answerId: id })
       .then(({ isSucceeded }) => {
@@ -156,7 +156,7 @@ const addCommentListener = function(ancestor, id, isQuestionComment) {
     body.value = '';
   };
   poster.onclick = () => {
-    postData('/saveComment', { body: body.value, id, isQuestionComment })
+    postData('/user/saveComment', { body: body.value, id, isQuestionComment })
       .then(({ isSucceeded, comment }) => {
         if (isSucceeded) {
           showComment(commentBox, comment);

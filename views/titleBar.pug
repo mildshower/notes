@@ -1,11 +1,11 @@
-link(rel='stylesheet' href='css/titleBar.css')
+link(rel='stylesheet' href='/css/titleBar.css')
 include popUp.pug
 #titleBar
   h1 #{title}
   if(user)
-    a#askQuestionBtn(href= '/askQuestion') Ask Question
+    a#askQuestionBtn(href= '/user/askQuestion') Ask Question
   else
-    a#askQuestionBtn(onclick= 'showPopUp(\'/askQuestion\')') Ask Question
+    a#askQuestionBtn(onclick= 'showPopUp(\'/user/askQuestion\')') Ask Question
 if created
   p#questionStatus
     img.smallAvatar(src=ownerAvatar)

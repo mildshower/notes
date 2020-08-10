@@ -124,7 +124,7 @@ const handleSignUp = async function(req, res, next) {
   const { login, avatar_url: avatarUrl } = req.userDetails;
   const { id: userId } = await dataStore.addNewUser(login, avatarUrl);
   res.cookie('session', sessions.addSession(userId));
-  res.redirect(`/signUpForm?targetPath=${req.query.targetPath}`);
+  res.redirect(`/user/signUpForm?targetPath=${req.query.targetPath}`);
 };
 
 const handleLogin = function(req, res, next) {

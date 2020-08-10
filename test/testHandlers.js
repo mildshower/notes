@@ -40,7 +40,7 @@ describe('GET', () => {
       const id = sessions.addSession('1');
       app.locals.sessions = sessions;
       request(app)
-        .get('/askQuestion')
+        .get('/user/askQuestion')
         .set('accept', '*/*')
         .set('Cookie', `session=${id}`)
         .expect(200)
@@ -50,7 +50,7 @@ describe('GET', () => {
 
     it('should serve unauthorized if not logged in', (done) => {
       request(app)
-        .get('/askQuestion')
+        .get('/user/askQuestion')
         .set('accept', '*/*')
         .expect(401, done);
     });
@@ -206,7 +206,7 @@ describe('GET', () => {
         .get('/signUp?code=1&targetPath=/home')
         .set('accept', '*/*')
         .expect(302)
-        .expect('Location', '/signUpForm?targetPath=/home', done);
+        .expect('Location', '/user/signUpForm?targetPath=/home', done);
     });
 
     it('should redirect to error page if user exists', (done) => {
@@ -237,7 +237,7 @@ describe('GET', () => {
       const id = sessions.addSession('2');
       app.locals.sessions = sessions;
       request(app)
-        .get('/signUpForm')
+        .get('/user/signUpForm')
         .set('accept', '*/*')
         .set('Cookie', `session=${id}`)
         .expect(200)
@@ -247,7 +247,7 @@ describe('GET', () => {
 
     it('should give unauthorized when the user is not authorized', (done) => {
       request(app)
-        .get('/signUpForm')
+        .get('/user/signUpForm')
         .set('accept', '*/*')
         .expect(401, done);
     });
@@ -272,7 +272,7 @@ describe('POST', function() {
       const id = sessions.addSession('3');
       app.locals.sessions = sessions;
       request(app)
-        .post('/saveDetails?targetPath=/home')
+        .post('/user/saveDetails?targetPath=/home')
         .set('Cookie', `session=${id}`)
         .send('name=Narut&email=john%40email.com&location=Bangalore')
         .set('Content-Type', 'application/x-www-form-urlencoded')
@@ -282,7 +282,7 @@ describe('POST', function() {
 
     it('should not save user details when he is not authorized', (done) => {
       request(app)
-        .post('/saveDetails?targetPath=/home')
+        .post('/user/saveDetails?targetPath=/home')
         .send('name=Narut&email=john%40email.com&location=Bangalore')
         .set('Content-Type', 'application/x-www-form-urlencoded')
         .expect(401, done);
@@ -295,7 +295,7 @@ describe('POST', function() {
       const id = sessions.addSession('1');
       app.locals.sessions = sessions;
       request(app)
-        .post('/saveQuestion')
+        .post('/user/saveQuestion')
         .set('Cookie', `session=${id}`)
         .send({ title: 'How to configure vim?', body: '{"ops":[{"insert":"don\'t know about .vimrc"}]}', bodyText: 'bodyText', tags: [] })
         .set('Content-Type', 'application/json')
@@ -306,7 +306,7 @@ describe('POST', function() {
 
     it('should serve unauthorized if not logged in', (done) => {
       request(app)
-        .post('/saveQuestion')
+        .post('/user/saveQuestion')
         .send({ title: 'title', body: 'body', bodyText: 'bodyText' })
         .set('Content-Type', 'application/json')
         .expect(401, done);
@@ -319,7 +319,7 @@ describe('POST', function() {
       const id = sessions.addSession('1');
       app.locals.sessions = sessions;
       request(app)
-        .post('/addVote')
+        .post('/user/addVote')
         .set('Cookie', `session=${id}`)
         .set('Content-Type', 'application/json')
         .send({id: 1, voteType: 1, isQuestionVote: true})
@@ -333,7 +333,7 @@ describe('POST', function() {
       const id = sessions.addSession('1');
       app.locals.sessions = sessions;
       request(app)
-        .post('/addVote')
+        .post('/user/addVote')
         .set('Cookie', `session=${id}`)
         .set('Content-Type', 'application/json')
         .send({id: 1, voteType: 1})
@@ -347,7 +347,7 @@ describe('POST', function() {
       const id = sessions.addSession('1');
       app.locals.sessions = sessions;
       request(app)
-        .post('/addVote')
+        .post('/user/addVote')
         .set('Cookie', `session=${id}`)
         .set('Content-Type', 'application/json')
         .send({id: 100, voteType: 100, isQuestionVote: true})
@@ -358,7 +358,7 @@ describe('POST', function() {
 
     it('should serve unauthorized if not logged in', (done) => {
       request(app)
-        .post('/addVote')
+        .post('/user/addVote')
         .send({id: 1, voteType: 1, isQuestionVote: true})
         .set('Content-Type', 'application/json')
         .expect(401, done);
@@ -371,7 +371,7 @@ describe('POST', function() {
       const id = sessions.addSession('2');
       app.locals.sessions = sessions;
       request(app)
-        .post('/deleteVote')
+        .post('/user/deleteVote')
         .set('Cookie', `session=${id}`)
         .set('Content-Type', 'application/json')
         .send({id: 1, isQuestionVote: true})
@@ -385,7 +385,7 @@ describe('POST', function() {
       const id = sessions.addSession('2');
       app.locals.sessions = sessions;
       request(app)
-        .post('/deleteVote')
+        .post('/user/deleteVote')
         .set('Cookie', `session=${id}`)
         .set('Content-Type', 'application/json')
         .send({ id: 1 })
@@ -396,7 +396,7 @@ describe('POST', function() {
 
     it('should serve unauthorized if not logged in', (done) => {
       request(app)
-        .post('/deleteVote')
+        .post('/user/deleteVote')
         .send({id: 1})
         .set('Content-Type', 'application/json')
         .expect(401, done);
@@ -409,7 +409,7 @@ describe('POST', function() {
       const id = sessions.addSession('1');
       app.locals.sessions = sessions;
       request(app)
-        .post('/saveAnswer')
+        .post('/user/saveAnswer')
         .set('Cookie', `session=${id}`)
         .send({ body: '{"ops":[{"insert":"User require"}]}', bodyText: 'use require', quesId: 4 })
         .set('Content-Type', 'application/json')
@@ -423,7 +423,7 @@ describe('POST', function() {
       const id = sessions.addSession('1');
       app.locals.sessions = sessions;
       request(app)
-        .post('/saveAnswer')
+        .post('/user/saveAnswer')
         .set('Cookie', `session=${id}`)
         .send({ body: '{"ops":[{"insert":"User require"}]}', bodyText: 'use require', quesId: 400 })
         .set('Content-Type', 'application/json')
@@ -434,7 +434,7 @@ describe('POST', function() {
 
     it('should serve unauthorized if not logged in', (done) => {
       request(app)
-        .post('/saveAnswer')
+        .post('/user/saveAnswer')
         .send({ body: 'body', bodyText: 'bodyText', quesId: 1 })
         .set('Content-Type', 'application/json')
         .expect(401, done);
@@ -447,7 +447,7 @@ describe('POST', function() {
       const id = sessions.addSession('1');
       app.locals.sessions = sessions;
       request(app)
-        .post('/saveComment')
+        .post('/user/saveComment')
         .set('Cookie', `session=${id}`)
         .send({ body: 'comment', isQuesionComment: true, id: 1})
         .set('Content-Type', 'application/json')
@@ -461,7 +461,7 @@ describe('POST', function() {
       const id = sessions.addSession('1');
       app.locals.sessions = sessions;
       request(app)
-        .post('/saveComment')
+        .post('/user/saveComment')
         .set('Cookie', `session=${id}`)
         .send({ body: 'comment', isQuesionComment: true, id: 1000})
         .set('Content-Type', 'application/json')
@@ -508,7 +508,7 @@ describe('POST', function() {
       const id = sessions.addSession('1');
       app.locals.sessions = sessions;
       request(app)
-        .get('/editProfile')
+        .get('/user/editProfile')
         .set('Cookie', `session=${id}`)
         .expect(200)
         .expect('Content-Type', /text\/html/)
@@ -517,7 +517,7 @@ describe('POST', function() {
 
     it('should serve unauthorized if user asked to edit others profile', (done) => {
       request(app)
-        .get('/editProfile')
+        .get('/user/editProfile')
         .expect(401, done);
     });
   });
@@ -528,7 +528,7 @@ describe('POST', function() {
       const id = sessions.addSession('1');
       app.locals.sessions = sessions;
       request(app)
-        .post('/acceptAnswer')
+        .post('/user/acceptAnswer')
         .set('Cookie', `session=${id}`)
         .send({answerId: 1})
         .expect(200)
@@ -541,7 +541,7 @@ describe('POST', function() {
       const id = sessions.addSession('2');
       app.locals.sessions = sessions;
       request(app)
-        .post('/acceptAnswer')
+        .post('/user/acceptAnswer')
         .set('Cookie', `session=${id}`)
         .send({answerId: 1})
         .expect(406)
@@ -556,7 +556,7 @@ describe('POST', function() {
       const id = sessions.addSession('1');
       app.locals.sessions = sessions;
       request(app)
-        .post('/rejectAnswer')
+        .post('/user/rejectAnswer')
         .set('Cookie', `session=${id}`)
         .send({answerId: 1})
         .expect(200)

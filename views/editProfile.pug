@@ -3,12 +3,12 @@ head
   meta(charset='UTF-8')
   meta(name='viewport' content='width=device-width, initial-scale=1.0')
   title heapOverflow | Edit profile
-  link(rel='icon' href='images/favicon.svg')
-  link(rel='stylesheet' href='css/editProfile.css')
+  link(rel='icon' href='/images/favicon.svg')
+  link(rel='stylesheet' href='/css/editProfile.css')
 body
   include header.pug
   div
-    form(action=`/saveDetails?targetPath=/profile?userId=${user.id}` method='post')
+    form(action=`/user/saveDetails?targetPath=/profile?userId=${user.id}` method='post')
       h1.title Edit your profile
       .container
         .top-lane

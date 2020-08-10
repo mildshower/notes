@@ -7,17 +7,13 @@ const DataStore = require('./dataStore');
 const Sessions = require('./sessions');
 const dbPath = process.env.HO_DB_PATH || 'data/ho_production.db';
 const dbClient = new sqlite3.Database(dbPath);
+const userRoute = require('./userRoutes');
 const {
   attachUser,
   serveHomePage,
   authenticateWithGithub,
-  serveSignUpPage,
-  serveAskQuestion,
   serveQuestionPage,
   serveQuestionDetails,
-  saveDetails,
-  authorizeUser,
-  saveQuestion,
   isValidVerificationReq,
   handleSignUp,
   handleLogin,
@@ -25,16 +21,7 @@ const {
   serveNotFound,
   showProfilePage,
   serveAnswers,
-  saveAnswer,
-  serveEditProfilePage,
-  addVote,
-  deleteVote,
-  acceptAnswer,
-  rejectAnswer,
-  verifyAnswerAcceptance,
   getTagsSuggestion,
-  saveComment,
-  deleteAnswer,
   logout
 } = require('./handlers');
 
@@ -52,6 +39,7 @@ app.use(cookieParser());
 app.use(attachUser);
 app.get('/', (req, res) => res.redirect('/home'));
 app.use(express.static('public'));
+app.use('/user', userRoute);
 app.get('/home', serveHomePage);
 app.get('/entry', authenticateWithGithub);
 app.get('/login', isValidVerificationReq, handleLogin);
@@ -62,18 +50,6 @@ app.get('/questionDetails', serveQuestionDetails);
 app.get('/answers', serveAnswers);
 app.get('/tags', getTagsSuggestion);
 app.get('/search', serveSearchPage);
-app.get('/editProfile', authorizeUser, serveEditProfilePage);
-app.get('/signUpForm', authorizeUser, serveSignUpPage);
-app.get('/askQuestion', authorizeUser, serveAskQuestion);
-app.post('/saveDetails', authorizeUser, saveDetails);
-app.post('/saveQuestion', authorizeUser, saveQuestion);
-app.post('/saveAnswer', authorizeUser, saveAnswer);
-app.post('/deleteAnswer', authorizeUser, deleteAnswer);
-app.post('/addVote', authorizeUser, addVote);
-app.post('/deleteVote', authorizeUser, deleteVote);
-app.post('/acceptAnswer', authorizeUser, verifyAnswerAcceptance, acceptAnswer);
-app.post('/rejectAnswer', authorizeUser, verifyAnswerAcceptance, rejectAnswer);
-app.post('/saveComment', authorizeUser, saveComment);
 app.get('/logout', logout);
 app.use(serveNotFound);
 

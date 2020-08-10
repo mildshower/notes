@@ -5,9 +5,9 @@ head
   link(href='https://cdn.quilljs.com/1.3.6/quill.snow.css' rel='stylesheet')
   script(src='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/highlight.min.js')
   script(src='https://cdn.quilljs.com/1.3.6/quill.js')
-  link(rel='icon' href='images/favicon.svg')
-  link(rel='stylesheet' href='css/editorStyles.css')
-  link(rel='stylesheet' href='css/question.css')
+  link(rel='icon' href='/images/favicon.svg')
+  link(rel='stylesheet' href='/css/editorStyles.css')
+  link(rel='stylesheet' href='/css/question.css')
   script(src="/scripts/editor.js")
   script(src='/scripts/question.js')
   script(src='/scripts/request.js')
@@ -19,10 +19,10 @@ body
     .stats
       .votes
         button.upVote(class=userVote && userVote.voteType==1 && 'chosen')
-          img(src=`images/arrow.svg` alt="voteUp" onclick= user?'':`showPopUp('${currPath}')`)
+          img(src=`/images/arrow.svg` alt="voteUp" onclick= user?'':`showPopUp('${currPath}')`)
         p.voteCount #{voteCount}
         button.downVote(class=userVote && userVote.voteType==0 && 'chosen')
-          img(src=`images/arrow.svg` alt="voteUp" onclick= user?'':`showPopUp('${currPath}')`)
+          img(src=`/images/arrow.svg` alt="voteUp" onclick= user?'':`showPopUp('${currPath}')`)
     .body
       .editor
       .tagStrip
@@ -50,10 +50,10 @@ body
       .stats
         .votes
           button.upVote(class=answer.userVote && answer.userVote.voteType==1 && 'chosen')
-            img(src=`images/arrow.svg` alt="voteUp" onclick= user?'':`showPopUp('${currPath}')`)
+            img(src=`/images/arrow.svg` alt="voteUp" onclick= user?'':`showPopUp('${currPath}')`)
           p.voteCount #{answer.voteCount}
           button.downVote(class=answer.userVote && answer.userVote.voteType==0 && 'chosen')
-            img(src=`images/arrow.svg` alt="voteUp" onclick= user?'':`showPopUp('${currPath}')`)
+            img(src=`/images/arrow.svg` alt="voteUp" onclick= user?'':`showPopUp('${currPath}')`)
         img.acceptance(class=`${answer.isAccepted?'accepted':''} ${user&&user.id===owner?'clickable':''}`)
       .body
         .editor

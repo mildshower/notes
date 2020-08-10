@@ -2,8 +2,8 @@ doctype html
 head
   meta(charset='UTF-8')
   meta(name='viewport' content='width=device-width, initial-scale=1.0')
-  link(rel='icon' href='images/favicon.svg')
-  link(rel='stylesheet' href='css/profile.css')
+  link(rel='icon' href='/images/favicon.svg')
+  link(rel='stylesheet' href='/css/profile.css')
   title heapOverflow | Profile
 body
   include header.pug
@@ -15,18 +15,18 @@ body
         p#displayName #{requestedUser.display_name}
         if(requestedUser.email)
           p#email
-            img(src='images/mail.png' alt='mailIcon')
+            img(src='/images/mail.png' alt='mailIcon')
             | &nbsp;#{requestedUser.email}
         if(requestedUser.location)
           p#location
-            img(src='images/location.png' alt='')
+            img(src='/images/location.png' alt='')
             | &nbsp;#{requestedUser.location}
         if(requestedUser.bio)
           p#bio #{requestedUser.bio}
         else
           p#bio.default (About me for this profile is currently blank.)
         if(user && user.id == requestedUser.id)
-          a#editProfileButton(href=`/editProfile`) Click here to edit
+          a#editProfileButton(href=`/user/editProfile`) Click here to edit
     .stats
       p.laneTitle Tags (#{tags.length})
       .tags
@@ -49,6 +49,6 @@ body
         if(answers.length > 0)
           .contents
             each answer in answers
-              a(href=`question?id=${answer.quesId}`) #{answer.questionTitle}
+              a(href=`/question?id=${answer.quesId}`) #{answer.questionTitle}
         else
           p.empty No Answers Yet
