@@ -1,0 +1,31 @@
+@use "_basicConfig" as *
+
+.topQuestionsBox
+  @include questionRow
+
+  > .voteCount, > .answerCount
+    @include countContainer
+    margin:  15px 20px
+
+  > .questionDetails
+    @include questionDetails
+    padding: 10px 20px
+
+    > .questionTitle
+      @include questionRowTitle
+      flex-grow: 1
+
+    > .tags
+      flex-grow: 1
+      display: flex
+
+    > .status
+      @include questionStatus
+
+.tag 
+  @include tag
+
+
+
+
+

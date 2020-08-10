@@ -1,0 +1,40 @@
+@use "_basicConfig" as *
+
+.questionBox 
+  @include questionRow
+
+  > .counts 
+    flex-shrink: 0
+    display: flex
+    flex-direction: column
+    align-items: center
+    padding: 10px 15px
+
+    > .answersCount, .voteCount
+      @include countContainer
+      margin: 8px 20px
+
+  > .details 
+    @include questionDetails
+    padding: 10px 15px
+
+    > .title 
+      @include questionRowTitle
+      flex-shrink: 0
+
+    > .bodyText 
+      color: rgb(165, 165, 165)
+      margin: 5px 15px
+      font-size: 17px
+      flex-grow: 1
+      line-height: 22px
+
+    > .tags 
+      flex-grow: 1
+      display: flex
+
+      > .tag 
+        @include tag
+
+    > .status 
+      @include questionStatus  

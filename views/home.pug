@@ -16,14 +16,13 @@ body
     each question in questions
       .topQuestionsBox(id=question.id)
         .questionDetails
-          .questionTitle
-            a(href='/question/'+question.id) #{question.title}
+          a.questionTitle(href='/question/'+question.id) #{question.title}
           .tags
             each tag in question.tags
               a.tag(href=`/search?searchQuery=%23${tag}`) #{tag}
           p.status
             img.smallAvatar(src=question.ownerAvatar)
-            a.strong(href=`/profile/${question.owner}`) #{question.ownerName}
+            a.userName(href=`/profile/${question.owner}`) #{question.ownerName}
             | &nbsp;&nbsp;#{question.created} 
         .answerCount
           p.count(class= question.hasCorrectAnswer?'hasCorrect':'') #{question.answerCount}

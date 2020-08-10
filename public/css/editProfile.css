@@ -11,6 +11,25 @@ a {
   text-decoration: none;
 }
 
+.userName {
+  font-weight: 500;
+  color: #03292b;
+  font-size: 17px;
+  border-bottom: 1px solid transparent;
+}
+.userName:hover {
+  border-bottom: 1px solid #03292b;
+}
+
+.noQuestion {
+  margin: 20px 10vw;
+  text-align: center;
+  font-size: 20px;
+  padding: 20px;
+  background-color: #d2eaff;
+  border-radius: 5px;
+}
+
 .highlight {
   color: red;
 }

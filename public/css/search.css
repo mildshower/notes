@@ -1,20 +1,33 @@
 * {
-  font-family: 'Mulish', sans-serif;
+  font-family: "Mulish", sans-serif;
 }
 
 body {
+  margin: 0 2px;
   background-color: #f1fcfc;
 }
 
-.strong {
+a {
+  text-decoration: none;
+}
+
+.userName {
   font-weight: 500;
   color: #03292b;
   font-size: 17px;
   border-bottom: 1px solid transparent;
 }
-
-.strong:hover {
+.userName:hover {
   border-bottom: 1px solid #03292b;
+}
+
+.noQuestion {
+  margin: 20px 10vw;
+  text-align: center;
+  font-size: 20px;
+  padding: 20px;
+  background-color: #d2eaff;
+  border-radius: 5px;
 }
 
 .questionBox {
@@ -24,7 +37,6 @@ body {
   border-radius: 2px;
   box-shadow: 1px 1px 8px rgba(1, 1, 1, 0.1);
 }
-
 .questionBox > .counts {
   flex-shrink: 0;
   display: flex;
@@ -32,59 +44,69 @@ body {
   align-items: center;
   padding: 10px 15px;
 }
-
-.questionBox > .counts > .answersCount,
-.questionBox > .counts > .voteCount {
-  width: fit-content;
-  border-radius: 15px;
-  margin: 8px 20px;
+.questionBox > .counts > .answersCount, .questionBox > .counts .voteCount {
   flex-shrink: 0;
-  text-align: center;
   justify-content: center;
   align-items: center;
   display: flex;
   flex-direction: column;
   font-weight: 500;
+  margin: 8px 20px;
 }
-
+.questionBox > .counts > .answersCount .count, .questionBox > .counts .voteCount .count {
+  margin: 0;
+  height: 45px;
+  width: 45px;
+  border-radius: 50%;
+  border: 1px solid #b8b8b8;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 500;
+}
+.questionBox > .counts > .answersCount .count.hasCorrect, .questionBox > .counts .voteCount .count.hasCorrect {
+  background-color: #1ebe9e;
+  color: white;
+  border: 1px solid #1ebe9e;
+}
+.questionBox > .counts > .answersCount .countType, .questionBox > .counts .voteCount .countType {
+  font-size: 15px;
+  margin: 5px 0;
+  color: #5f5f5f;
+}
 .questionBox > .details {
+  flex-grow: 1;
   display: flex;
   flex-direction: column;
-  flex-grow: 1;
-  padding: 10px 15px;
   height: fit-content;
+  padding: 10px 15px;
 }
-
 .questionBox > .details > .title {
-  flex-shrink: 0;
   color: #10757a;
   font-size: 22px;
   line-height: 35px;
   font-weight: 500;
+  flex-shrink: 0;
 }
-
 .questionBox > .details > .title:visited {
   color: #10757a;
 }
-
-.questionBox > .details > .title:hover,
-.questionBox > .details > .title:focus {
+.questionBox > .details > .title:hover, .questionBox > .details > .title:focus {
   color: #0a4a4d;
 }
-
 .questionBox > .details > .bodyText {
-  color: rgb(165, 165, 165);
+  color: #a5a5a5;
   margin: 5px 15px;
   font-size: 17px;
   flex-grow: 1;
   line-height: 22px;
 }
-
 .questionBox > .details > .tags {
   flex-grow: 1;
   display: flex;
 }
-
 .questionBox > .details > .tags > .tag {
   color: #0a4a4d;
   background-color: #ccf0f3;
@@ -96,66 +118,24 @@ body {
   border-top-right-radius: 8px;
   border-bottom-left-radius: 8px;
   font-weight: 400;
+  height: fit-content;
 }
-
-.questionBox > .details > .tags > .tag:hover,
-.questionBox > .details > .tags > .tag:focus {
-  background-color: #bbe4e7;
+.questionBox > .details > .tags > .tag:focus, .questionBox > .details > .tags > .tag:hover {
+  background-color: #badbee;
 }
-
 .questionBox > .details > .status {
   width: fit-content;
   margin: 10px 0px 5px 5px;
   font-size: 14px;
-  color: rgb(167, 167, 167);
+  color: #a7a7a7;
   display: flex;
   align-items: center;
 }
-
-.separator {
-  margin: 20px 10vw;
-}
-
-.noQuestion {
-  margin: 20px 10vw;
-  text-align: center;
-  font-size: 20px;
-  padding: 20px;
-  background-color: rgb(210, 234, 255);
-  border-radius: 5px;
-}
-
-.count {
-  margin: 0;
-  height: 45px;
-  width: 45px;
+.questionBox > .details > .status > .smallAvatar {
+  border: 1px solid #26868b;
+  overflow: hidden;
   border-radius: 50%;
-  border: 1px solid rgb(184, 184, 184);
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 18px;
-  font-weight: 500;
-}
-
-.countType {
-  font-size: 15px;
-  margin: 5px 0;
-  color: rgb(95, 95, 95);
-}
-
-.count.hasCorrect {
-  background-color: rgba(30, 190, 158, 1);
-  color: white;
-  border: 1px solid rgba(30, 190, 158, 1);
-}
-
-.status > .smallAvatar {
   width: 28px;
-  border-radius: 50%;
-  border: 1px solid #0a4a4d;
   height: 28px;
   margin: 0 8px 0 0;
 }
-
