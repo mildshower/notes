@@ -4,10 +4,11 @@
   "description": "Knowledge sharing web app for developers",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
+    "start": "sass --no-source-map ./sass:./public/css/ && node server.js",
     "test": "./scripts/seedTestData.sh data/ho_test.db && export HO_DB_PATH=data/ho_test.db && nyc mocha",
     "lint": "eslint *.js src/*.js",
-    "seedData": "./scripts/seedTestData.sh data/ho_test.db"
+    "seedData": "./scripts/seedTestData.sh data/ho_test.db",
+    "compile-sass": "sass --no-source-map --watch ./sass:./public/css/"
   },
   "repository": {
     "type": "git",
@@ -36,6 +37,7 @@
     "morgan": "^1.10.0",
     "node-fetch": "^2.6.0",
     "pug": "^3.0.0",
+    "sass": "^1.26.10",
     "sqlite3": "^5.0.0"
   }
 }

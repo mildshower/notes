@@ -1,5 +1,19 @@
+#profileButton > img {
+  border: 1px solid #26868b;
+  overflow: hidden;
+  border-radius: 50%;
+}
+
+#searchBar .dropDown, .profileDropDown {
+  visibility: hidden;
+  background: white;
+  position: absolute;
+  box-shadow: 0px 0px 3px 1px #dadada;
+  border-radius: 4px;
+}
+
 * {
-  font-family: 'Mulish', sans-serif;
+  font-family: "Mulish", sans-serif;
 }
 
 body {
@@ -7,22 +21,20 @@ body {
 }
 
 a {
-  text-decoration:  none;
+  text-decoration: none;
 }
 
-/* Style for header */
 .header {
   height: 80px;
   display: flex;
   align-items: center;
   position: sticky;
   top: 0px;
-  z-index: 100;
-  padding: 0 2vw 0 0;
+  z-index: 10;
+  padding-right: 2vw;
   background: #a6e3e9;
 }
 
-/* Style for Icon */
 #icon {
   height: 70%;
   margin: 0 25px;
@@ -30,19 +42,13 @@ a {
   transition: filter 0.13s ease-in-out;
   outline: none;
 }
-
 #icon > img {
   height: 100%;
 }
-
-#icon:hover,
-#icon:focus {
+#icon:hover, #icon:focus {
   filter: drop-shadow(4px 4px 2px rgba(66, 66, 66, 0.3));
 }
-/* style for icon ends */
 
-
-/* Style for searchBar */
 #searchBar {
   height: 42%;
   display: flex;
@@ -54,15 +60,15 @@ a {
   align-items: center;
   position: relative;
 }
-
 #searchBar:focus-within {
   border: 1px solid #71c9ce;
 }
-
-#searchBar form{
+#searchBar:focus-within .dropDown {
+  visibility: unset;
+}
+#searchBar form {
   flex-grow: 1;
 }
-
 #searchBar input {
   height: 90%;
   width: 100%;
@@ -74,41 +80,20 @@ a {
   color: #0a4a4d;
   font-size: 19px;
 }
-
 #searchBar input::placeholder {
   font-weight: 400;
   color: #71c9ce;
   font-size: 18px;
 }
-
 #searchBar img {
   height: 100%;
   padding-top: 10px;
   padding-left: 5px;
 }
-
-
-#searchBar .dropDown,
-#searchBar .dropDown * {
-  visibility: hidden;
-}
-
-#searchBar:focus-within .dropDown,
-#searchBar:focus-within .dropDown * {
-  visibility: unset;
-}
-
 #searchBar .dropDown {
-  position: absolute;
   display: block;
   top: 130%;
-}
-
-#searchBar:focus-within .dropDown {
-  background-color:white;
-  border-radius: 4px;
-  padding:0px 60px 0px 15px;
-  box-shadow: 0px 0px 3px 1px rgb(218, 218, 218);
+  padding: 0px 60px 0px 15px;
 }
 
 .dropDownArrow {
@@ -122,16 +107,13 @@ a {
 
 #searchMenu .option {
   font-size: 18px;
-  color:#10757a;
-  margin:0px 10px 0px 2px;
+  color: #10757a;
+  margin: 0px 10px 0px 2px;
 }
-
 #searchMenu .description {
   font-size: 16px;
-  color: rgb(192, 190, 190);
+  color: #c0bebe;
 }
-/* Style for searchBar ends */
-
 
 .headerButton {
   font-weight: 400;
@@ -146,8 +128,12 @@ a {
   color: #0a4a4d;
   flex-shrink: 0;
 }
+.headerButton:hover, .headerButton:focus {
+  background-color: #8fdbdf;
+  color: black;
+}
 
-#profileButton{
+#profileButton {
   position: relative;
   padding: 0;
   background: none;
@@ -157,60 +143,35 @@ a {
   height: fit-content;
   width: fit-content;
 }
-
 #profileButton > img {
   width: 35px;
   height: 35px;
-  border: 1px solid #26868b;
-  overflow: hidden;
-  border-radius: 50%;
-  /* height: 100%; */
-  /* width: 100%; */
+}
+#profileButton .profileDropDown:hover, #profileButton:focus .profileDropDown {
+  visibility: inherit;
 }
 
-.headerButton:hover,
-.headerButton:focus {
-  background-color: #8fdbdf;
-  color: black;
-}
-
-.profileDropDown{
-  background: white;
-  position: absolute;
+.profileDropDown {
   top: 120%;
   right: 0%;
   display: flex;
-  visibility: hidden;
   flex-direction: column;
-  box-shadow: 0px 0px 3px 1px rgb(218, 218, 218);
   padding: 8px;
-  border-radius: 3px;
 }
-
-.profileDropDown > a{
+.profileDropDown > a {
   padding: 5px 10px;
   color: #0a4a4d;
   font-size: 16px;
   font-weight: 300;
   border-radius: 3px;
 }
-
-.profileDropDown > a:active,
-.profileDropDown > a:visited{
+.profileDropDown > a:active, .profileDropDown > a:visited {
   color: #0a4a4d;
 }
-
-.profileDropDown > a:hover{
+.profileDropDown > a:hover, .profileDropDown > a:focus {
   background: #a6e3e9;
-  color: #01181a;
+  color: black;
 }
-
-.profileDropDown .dropDownArrow{
+.profileDropDown .dropDownArrow {
   left: 57px;
 }
-
-#profileButton:focus .profileDropDown,
-.profileDropDown:hover{
-  visibility: inherit;
-}
-/* styles for headerActions ends */
