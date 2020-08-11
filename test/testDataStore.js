@@ -925,15 +925,33 @@ context('dataStore', () => {
   });
 
   context('#rejectAnswer', function() {
+
+    const dbClient = () => { };
+    const knex = {};
+
+    knex.table = sinon.fake.returns(knex);
+    knex.update = sinon.fake.returns(knex);
+
+    const dataStore = new DataStore(dbClient, knex);
+
     it('should reject an answer', (done) => {
-      const dbClient = {
-        run: sinon.fake.yields(null),
-      };
-      const dataStore = new DataStore(dbClient);
+      knex.where = sinon.fake.returns(Promise.resolve());
 
       dataStore.rejectAnswer(1).then(() => {
-        assert.ok(dbClient.run.calledOnce);
-        assert.deepStrictEqual(dbClient.run.args[0][1], [1]);
+        assert.ok(knex.table.calledWith('answers'));
+        assert.ok(knex.update.calledWith('is_accepted', 0));
+        assert.ok(knex.where.calledWith('id', '=', 1));
+        done();
+      });
+    });
+
+    it('should not reject an answer when invalid answer id given', (done) => {
+      knex.where = sinon.fake.returns(Promise.reject());
+
+      dataStore.rejectAnswer(2454).catch(() => {
+        assert.ok(knex.table.calledWith('answers'));
+        assert.ok(knex.update.calledWith('is_accepted', 0));
+        assert.ok(knex.where.calledWith('id', '=', 2454));
         done();
       });
     });
@@ -945,7 +963,7 @@ context('dataStore', () => {
 
     const where = sinon.stub();
     where.withArgs('id', '=', 1).returns(knex);
-    where.withArgs('question', '=', 1).returns(Promise.resolve(1));
+    where.withArgs('question', '=', 1).returns(Promise.resolve());
     where.withArgs('question', '=', 2454).returns(Promise.reject());
 
     knex.table = sinon.fake.returns(knex);
@@ -959,8 +977,7 @@ context('dataStore', () => {
 
     it('should accept an answer', (done) => {
 
-      dataStore.acceptAnswer(1).then((id) => {
-        assert.equal(id, 1);
+      dataStore.acceptAnswer(1).then(() => {
         assert.equal(knex.table.args[0], 'answers');
         assert.equal(knex.table.args[1], 'answers');
         done();

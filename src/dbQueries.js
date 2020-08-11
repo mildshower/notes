@@ -151,11 +151,6 @@ module.exports = {
     from answer_votes
     where answer_id = ?`,
 
-  rejectAnswer:
-    `update answers
-    set is_accepted = 0
-    where id = ?`,
-
   answerById:
     answerDetails + 'where ans.id = ?',
 

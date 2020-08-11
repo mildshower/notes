@@ -241,11 +241,13 @@ class DataStore {
   }
 
   rejectAnswer(id) {
-    return this.runQuery(
-      query.rejectAnswer,
-      [id],
-      new Error('Answer rejection failed')
-    );
+    return this.knex
+      .table('answers')
+      .update('is_accepted', 0)
+      .where('id', '=', id)
+      .catch(() => {
+        throw new Error('Answer rejection failed');
+      });
   }
 
   acceptAnswer(id) {
