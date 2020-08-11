@@ -708,18 +708,22 @@ context('dataStore', () => {
   });
 
   context('#getQuestionTags', () => {
+    const dbClient = () => { };
+    const knex = {};
+    knex.select = sinon.fake.returns(knex);
+    knex.from = sinon.fake.returns(knex);
+    knex.leftJoin = sinon.fake.returns(knex);
+    knex.where = sinon.fake.returns(knex);
+
+    const dataStore = new DataStore(dbClient, knex);
+
     it('should give all the tags used in questions', (done) => {
-      const dbClient = {
-        all: sinon.fake.yields(null, [
-          { tag_name: 'sqlite3' },
-          { tag_name: 'javascript' },
-        ]),
-      };
-      const dataStore = new DataStore(dbClient);
+      knex.pluck = sinon.fake.resolves(['sqlite3', 'javascript']);
+
       dataStore.getQuestionTags(1).then((tags) => {
-        assert.ok(dbClient.all.calledOnce);
-        assert.deepStrictEqual(dbClient.all.args[0][1], 1);
         assert.deepStrictEqual(tags, ['sqlite3', 'javascript']);
+        assert.ok(knex.select.calledWith('tags.tag_name'));
+        assert.ok(knex.from.calledWith('tags'));
         done();
       });
     });

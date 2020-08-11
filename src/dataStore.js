@@ -207,9 +207,13 @@ class DataStore {
     }));
   }
 
-  async getQuestionTags(questionId) {
-    const tags = await this.getRows(query.questionTags, questionId);
-    return tags.map((tag) => tag.tag_name);
+  getQuestionTags(questionId) {
+    return this.knex
+      .select('tags.tag_name')
+      .from('tags')
+      .leftJoin({ quesTags: 'questions_tags' }, 'quesTags.tag_id', 'tags.id')
+      .where('quesTags.question_id', '=', questionId)
+      .pluck('tag_name');
   }
 
   async addVote(id, userId, voteType, isQuesVote) {

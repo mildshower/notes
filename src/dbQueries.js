@@ -129,12 +129,6 @@ module.exports = {
     `insert into answers (body, body_text, question, owner)
     values (?, ?, ?, ?)`,
 
-  questionTags:
-    `select tags.tag_name FROM tags
-   left join questions_tags as ques_tags
-   on ques_tags.tag_id = tags.id
-   where ques_tags.question_id = ?;`,
-
   answerById:
     answerDetails + 'where ans.id = ?',
 
