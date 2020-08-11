@@ -1,0 +1,40 @@
+@use "_basicConfig" as *
+
+#pop-up-container
+  @include fullScreen
+  background-color: rgba(100,100,100,0.6)
+  z-index: 20
+
+  > .popUp
+    margin: 30vh auto
+    width: 370px
+    border-radius: 2px
+    padding: 10px 10px 25px
+    background-color: white
+    box-shadow: 0 0 25px 5px rgb(156, 156, 156)
+
+    > p
+      font-size: 25px
+      color: $fontColor
+      text-align: center
+      margin: 20px 0
+
+    > #login, > #signUp
+      @include button
+      display: block
+      margin: 10px 20px 0
+
+#cancel
+  display: block
+  text-align: center
+  margin: 15px 0 5px
+  color: gray
+  cursor: pointer
+  font-size: 18px
+  background-color: none
+
+  &:hover, &:focus
+    color: black
+
+.hidden
+  display: none

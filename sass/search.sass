@@ -1,7 +1,7 @@
 @use "_basicConfig" as *
 
 .questionBox 
-  @include questionRow
+  @include card
 
   > .counts 
     flex-shrink: 0
@@ -37,4 +37,6 @@
         @include tag
 
     > .status 
-      @include questionStatus  
+      @include status  
+
+@include emptyQuestionBox

@@ -37,11 +37,11 @@ describe('GET', () => {
 
     it('should get public file for  the home page', done => {
       request(app)
-        .get('/css/header.css')
+        .get('/scripts/editor.js')
         .set('accept', '*/*')
         .expect(200)
-        .expect('Content-Type', /text\/css/)
-        .expect(/#icon {/, done);
+        .expect('Content-Type', 'application/javascript; charset=UTF-8')
+        .expect(/snow/, done);
     });
   });
 

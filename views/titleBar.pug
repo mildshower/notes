@@ -1,7 +1,7 @@
 link(rel='stylesheet' href='/css/titleBar.css')
 include popUp.pug
 #titleBar
-  h1 #{title}
+  h1.title #{title}
   if(user)
     a#askQuestionBtn(href= '/user/askQuestion') Ask Question
   else
@@ -9,6 +9,6 @@ include popUp.pug
 if created
   p#questionStatus
     img.smallAvatar(src=ownerAvatar)
-    a.strong(href=`/profile/${owner}`) #{ownerName}
+    a.userName(href=`/profile/${owner}`) #{ownerName}
     | &nbsp;&nbsp;#{created}
 hr.separator

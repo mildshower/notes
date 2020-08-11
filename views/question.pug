@@ -34,7 +34,7 @@ body
         each comment in comments
           p.comment
             | #{comment.body}&nbsp;&nbsp;-&nbsp
-            a.strong(href=`/profile/${comment.owner}`) #{comment.ownerName}
+            a.userName(href=`/profile/${comment.owner}`) #{comment.ownerName}
             span.commentTime &nbsp;&nbsp;#{comment.created}
       .commentBar.closed
         p.commentBarOpener(onclick= user?'':`showPopUp('${currPath}')`) add a comment
@@ -59,7 +59,7 @@ body
         .editor
         p.status
           | &nbsp;&nbsp;#{answer.created}
-          a.strong(href=`/profile/${answer.owner}`) #{answer.ownerName}
+          a.userName(href=`/profile/${answer.owner}`) #{answer.ownerName}
           img.smallAvatar(src=answer.ownerAvatar)
         //- .options
           if(user && user.id === answer.owner)
@@ -69,7 +69,7 @@ body
           each comment in answer.comments
             p.comment
               | #{comment.body}&nbsp;&nbsp;-&nbsp;
-              a.strong(href=`/profile/${comment.owner}`) #{comment.ownerName}
+              a.userName(href=`/profile/${comment.owner}`) #{comment.ownerName}
               span.commentTime &nbsp;&nbsp;#{comment.created}
         .commentBar.closed
           p.commentBarOpener(onclick= user?'':`showPopUp('${currPath}')`) add a comment

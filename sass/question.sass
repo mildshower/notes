@@ -1,0 +1,184 @@
+@use "_basicConfig" as *
+
+.ql-editor 
+  overflow-y: scroll
+  max-height: 400px
+
+.ql-disabled .ql-editor 
+  max-height: none
+
+.editor.ql-disabled 
+  border: none !important
+
+.questionBox, .answerBox 
+  @include card
+  height: fit-content
+  padding: 10px 5px 0
+
+  > .stats
+    width: 50px
+    flex-shrink: 0
+    padding: 15px 0
+    display: flex
+    flex-direction: column
+    align-items: center
+
+    > .votes
+      margin: 2px
+      display: flex
+      flex-direction: column
+      align-items: center
+  
+      > .voteCount
+        margin: 5px
+        font-size: 25px
+        color: rgb(44, 44, 44)
+
+      > button
+        background: none
+        border: none
+        height: 15px
+        width: 35px
+        padding: 0
+        margin: 5px
+        cursor: pointer
+        outline: none
+
+        > img
+          height: 100%
+          width: 100%
+
+        &:hover, &:focus
+          filter: brightness(70%)
+          
+      > .downVote
+        transform: rotate(180deg)
+
+  > .body
+    flex-grow: 1
+    margin: 5px 0 0
+    height: fit-content
+
+    > .editor
+      border: 1px solid rgb(163, 163, 163)
+      border-top: none
+      height: auto !important
+
+    > .commentBar
+      margin: 10px 30px 10px 10px
+      padding: 5px 15px
+
+.commentBarOpener
+  margin: 0 0 22px 0
+  font-weight: 600
+  font-size: 14px
+  cursor: pointer
+  display: none
+  color: #2a9da3
+
+  &:hover
+    color: $fontColor
+
+.newComment
+  margin: 5px 0
+  border: 1px solid $darker
+  outline: none
+  font-size: 16px
+  line-height: 28px
+  padding: 0 10px
+  background-color: $lighter
+  width: 500px
+  border-radius: 5px
+
+  &:focus
+    border: 1px solid #3e9094
+
+.newCommentButton, .cancelButton
+  @include button
+  padding: 6px 8px
+  font-size: 16px
+  margin: 0 0px 0 10px
+
+.closed 
+  > .newCommentButton, > .cancelButton, > .newComment
+    display: none
+
+  > .commentBarOpener
+    display: block
+
+#answersHead
+  margin: 15px 10vw
+  font-size: 25px
+  color: $fontColor
+  padding: 12px 15px
+  border-bottom: 1px solid $fontColor
+
+#answerBody
+  margin: 40px 10vw 20px
+  background-color: white
+  border-radius: 5px
+  box-shadow: 1px 1px 8px rgba(1,1,1,0.1)
+
+  > #editor 
+    padding: 5px 0
+    border-bottom-left-radius: 5px
+    border-bottom-right-radius: 5px
+    border: 1px solid rgb(202, 202, 202)
+    border-top: none
+
+    > .ql-editor
+      min-height: 300px
+
+#answerButton 
+  @include button
+  margin: 0px 10vw 250px
+
+.chosen > img
+  content: url('/images/chosenArrow.svg')
+
+.status
+  @include status
+  flex-direction: row-reverse
+  margin: 15px 25px 5px
+  width: auto
+
+.acceptance
+  width: 30px
+  margin: 30px 0
+
+  &.accepted
+    content: url('/images/chosenTick.svg')
+
+.clickable
+  cursor: pointer
+  content: url('/images/tick.svg')
+
+  &:focus, &:hover
+    filter: brightness(70%)
+
+.commentHead
+  font-weight: 600
+  margin: 15px 5px 3px
+  font-size: 18px
+  width: fit-content
+  color: $fontColor
+
+.comment
+  margin: 10px 40px 0 15px
+  font-size: 15px
+  padding: 5px 15px 0
+  border-top: 1px solid rgb(236, 236, 236)
+
+.commentTime
+  color: rgb(185, 185, 185)
+
+.tagStrip 
+  height: 40px
+  width: 100%
+  display: flex
+
+  > .tag 
+    @include tag
+
+.hidden
+  display: none

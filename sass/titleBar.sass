@@ -1,0 +1,26 @@
+@use "_basicConfig" as *
+
+#titleBar
+  display: flex
+  margin: 30px 10vw 0px
+
+  .title
+    font-weight: 400
+    font-size: 32px
+    margin: 20px 25px 20px 0
+    flex-grow: 1
+    color: #0a4a4d
+
+  #askQuestionBtn
+    @include button
+    margin: 20px 1vw 20px 5vw
+
+#questionStatus
+  @include status
+  padding: 0 5px
+  margin: 10px 10vw 5px
+
+.separator
+  margin: 10px 10vw
+  border-top: 1px solid #0a4a4d
+  border-bottom: none

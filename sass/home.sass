@@ -1,7 +1,7 @@
 @use "_basicConfig" as *
 
 .topQuestionsBox
-  @include questionRow
+  @include card
 
   > .voteCount, > .answerCount
     @include countContainer
@@ -20,12 +20,9 @@
       display: flex
 
     > .status
-      @include questionStatus
+      @include status
 
 .tag 
   @include tag
 
-
-
-
-
+@include emptyQuestionBox
