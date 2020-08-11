@@ -5,7 +5,12 @@ const getKnexOptions = (dbPath) => knex({
   connection: {
     filename: dbPath
   },
-  useNullAsDefault: true
+  useNullAsDefault: true,
+  pool: {
+    afterCreate: (conn, cb) => {
+      conn.run('PRAGMA foreign_keys = ON', cb);
+    }
+  }
 });
 
 module.exports = getKnexOptions;

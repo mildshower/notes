@@ -656,45 +656,52 @@ context('dataStore', () => {
   });
 
   context('#saveComment', function() {
-    it('should add the answer comment', (done) => {
-      const dbClient = {
-        run: sinon.fake.yields(null),
-      };
-      const dataStore = new DataStore(dbClient);
+    const dbClient = () => { };
+    const knex = {};
+    knex.table = sinon.fake.returns(knex);
+    knex.insert = sinon.fake.returns(knex);
+    knex.then = () => Promise.resolve(1);
 
-      dataStore.saveComment({ body: 'body', owner: 1, id: 1, creationTime: '2020-12-12 12:34:21' }).then(() => {
-        assert.ok(dbClient.run.calledOnce);
-        assert.ok(dbClient.run.args[0][0].match(/answer/));
-        assert.deepStrictEqual(dbClient.run.args[0][1], ['body', 1, 1, '2020-12-12 12:34:21', '2020-12-12 12:34:21']);
+    const dataStore = new DataStore(dbClient, knex);
+
+    it('should add the answer comment', (done) => {
+      dataStore.saveComment({
+        body: 'body', owner: 1, id: 1, creationTime: '2020-12-12 12:34:21'
+      }).then((id) => {
+        assert.equal(id, 1);
+        assert.ok(knex.table.calledWith('answer_comments'));
+        assert.ok(knex.insert.calledWith({
+          body: 'body', owner: 1, answer: 1, created: '2020-12-12 12:34:21',
+          'last_modified': '2020-12-12 12:34:21'
+        }));
         done();
       });
     });
 
     it('should add the question comment', (done) => {
-      const dbClient = {
-        run: sinon.fake.yields(null),
-      };
-      const dataStore = new DataStore(dbClient);
 
-      dataStore.saveComment({ body: 'body', owner: 1, id: 1, creationTime: '2020-12-12 12:34:21' }, true).then(() => {
-        assert.ok(dbClient.run.calledOnce);
-        assert.ok(dbClient.run.args[0][0].match(/question/));
-        assert.deepStrictEqual(dbClient.run.args[0][1], ['body', 1, 1, '2020-12-12 12:34:21', '2020-12-12 12:34:21']);
+      dataStore.saveComment({
+        body: 'body', owner: 1, id: 1, creationTime: '2020-12-12 12:34:21'
+      }, true).then((id) => {
+        assert.equal(id, 1);
+        assert.ok(knex.table.calledWith('question_comments'));
+        assert.ok(knex.insert.calledWith({
+          body: 'body', owner: 1, question: 1, created: '2020-12-12 12:34:21',
+          'last_modified': '2020-12-12 12:34:21'
+        }));
         done();
       });
     });
 
     it('should produce error when insertion failed', (done) => {
-      const dbClient = {
-        run: sinon.fake.yields(new Error()),
-      };
-      const dataStore = new DataStore(dbClient);
 
-      dataStore.saveComment({ body: 'body', owner: 1, id: 1, creationTime: '2020-12-12 12:34:21' }).catch((err) => {
+      knex.then = () => Promise.reject('Comment Insertion Failed!');
+
+      dataStore.saveComment({
+        body: 'body', owner: 1, id: 1, creationTime: '2020-12-12 12:34:21'
+      }).catch(err => {
         assert.deepStrictEqual(err.message, 'Comment Insertion Failed!');
-        assert.ok(dbClient.run.args[0][0].match(/answer/));
-        assert.ok(dbClient.run.calledOnce);
-        assert.deepStrictEqual(dbClient.run.args[0][1], ['body', 1, 1, '2020-12-12 12:34:21', '2020-12-12 12:34:21']);
+        assert.ok(knex.table.calledWith('answer_comments'));
         done();
       });
     });

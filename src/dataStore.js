@@ -268,11 +268,20 @@ class DataStore {
   }
 
   saveComment({ body, owner, creationTime, id }, isQuestionComment) {
-    return this.runQuery(
-      isQuestionComment ? query.saveQuesComment : query.saveAnsComment,
-      [body, owner, id, creationTime, creationTime],
-      new Error('Comment Insertion Failed!')
-    );
+    const commentOn = isQuestionComment ? 'question' : 'answer';
+    const comment = {
+      body, owner, created: creationTime,
+      'last_modified': creationTime, [commentOn]: id
+    };
+    return this.knex
+      .table(commentOn + '_comments')
+      .insert(comment)
+      .then(([id]) => {
+        return id;
+      })
+      .catch(() => {
+        throw new Error('Comment Insertion Failed!');
+      });
   }
 }
 

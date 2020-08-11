@@ -186,13 +186,5 @@ module.exports = {
   group by tag_id
   order by popularity desc;`,
 
-  saveQuesComment:
-    `insert into question_comments (body, owner, question, created, last_modified)
-      values (?, ?, ?, ?, ?);`,
-
-  saveAnsComment:
-    `insert into answer_comments (body, owner, answer, created, last_modified)
-      values (?, ?, ?, ?, ?);`,
-  
   lastRowId: 'select last_insert_rowid() as id;'
 };
