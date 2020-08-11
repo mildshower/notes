@@ -298,8 +298,7 @@ const verifyAnswerAcceptance = async function(req, res, next) {
 
 const getTagsSuggestion = function(req, res) {
   const { exp } = req.query;
-  req.app.locals.dataStore.getPopularTags(exp)
-    .then(tags => res.json(Array.from(tags, (tag) => tag.tag_name).slice(0, 10)));
+  req.app.locals.dataStore.getPopularTags(exp, 10).then(tags => res.json(tags));
 };
 
 const saveComment = function(req, res) {

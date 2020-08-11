@@ -263,8 +263,17 @@ class DataStore {
     );
   }
 
-  getPopularTags(exp) {
-    return this.getRows(query.popularTags, { $regExp: `%${exp}%` });
+  getPopularTags(exp, count) {
+    return this.knex
+      .select('tag_name')
+      .count('*', { as: 'popularity' })
+      .from('questions_tags')
+      .leftJoin('tags', 'tags.id', 'questions_tags.tag_id')
+      .where('tag_name', 'like', `%${exp}%`)
+      .groupBy('tag_id')
+      .orderBy('popularity', 'desc')
+      .pluck('tag_name')
+      .limit(count);
   }
 
   saveComment({ body, owner, creationTime, id }, isQuestionComment) {
@@ -276,9 +285,6 @@ class DataStore {
     return this.knex
       .table(commentOn + '_comments')
       .insert(comment)
-      .then(([id]) => {
-        return id;
-      })
       .catch(() => {
         throw new Error('Comment Insertion Failed!');
       });

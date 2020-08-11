@@ -176,15 +176,5 @@ module.exports = {
     commentDetails + ` from answer_comments comments
     where comments.answer = ? `,
 
-  popularTags:
-    `select tag_name,
-      count(*) as popularity
-  from questions_tags qt
-  left join tags
-  on tags.id = qt.tag_id
-  where tag_name like $regExp
-  group by tag_id
-  order by popularity desc;`,
-
   lastRowId: 'select last_insert_rowid() as id;'
 };

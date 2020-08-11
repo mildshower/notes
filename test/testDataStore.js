@@ -659,15 +659,14 @@ context('dataStore', () => {
     const dbClient = () => { };
     const knex = {};
     knex.table = sinon.fake.returns(knex);
-    knex.insert = sinon.fake.returns(knex);
-    knex.then = () => Promise.resolve(1);
+    knex.insert = sinon.fake.returns(Promise.resolve([1]));
 
     const dataStore = new DataStore(dbClient, knex);
 
     it('should add the answer comment', (done) => {
       dataStore.saveComment({
         body: 'body', owner: 1, id: 1, creationTime: '2020-12-12 12:34:21'
-      }).then((id) => {
+      }).then(([id]) => {
         assert.equal(id, 1);
         assert.ok(knex.table.calledWith('answer_comments'));
         assert.ok(knex.insert.calledWith({
@@ -682,7 +681,7 @@ context('dataStore', () => {
 
       dataStore.saveComment({
         body: 'body', owner: 1, id: 1, creationTime: '2020-12-12 12:34:21'
-      }, true).then((id) => {
+      }, true).then(([id]) => {
         assert.equal(id, 1);
         assert.ok(knex.table.calledWith('question_comments'));
         assert.ok(knex.insert.calledWith({
@@ -695,12 +694,13 @@ context('dataStore', () => {
 
     it('should produce error when insertion failed', (done) => {
 
-      knex.then = () => Promise.reject('Comment Insertion Failed!');
+      const message = 'Comment Insertion Failed!';
+      knex.insert = sinon.fake.returns(Promise.reject(message));
 
       dataStore.saveComment({
         body: 'body', owner: 1, id: 1, creationTime: '2020-12-12 12:34:21'
       }).catch(err => {
-        assert.deepStrictEqual(err.message, 'Comment Insertion Failed!');
+        assert.deepStrictEqual(err.message, message);
         assert.ok(knex.table.calledWith('answer_comments'));
         done();
       });
@@ -1017,18 +1017,31 @@ context('dataStore', () => {
   });
 
   context('#getPopularTags', function() {
-    it('should get all matched popular tags', (done) => {
-      const dbClient = {
-        all: sinon.fake.yields(null, [{ tag_name: 'javascript' }]),
-      };
-      const dataStore = new DataStore(dbClient);
+    const dbClient = () => { };
+    const knex = {};
+    knex.select = sinon.fake.returns(knex);
+    knex.count = sinon.fake.returns(knex);
+    knex.from = sinon.fake.returns(knex);
+    knex.leftJoin = sinon.fake.returns(knex);
+    knex.where = sinon.fake.returns(knex);
+    knex.groupBy = sinon.fake.returns(knex);
+    knex.orderBy = sinon.fake.returns(knex);
+    knex.pluck = sinon.fake.returns(knex);
 
-      dataStore.getPopularTags('java').then((details) => {
-        assert.deepStrictEqual(details, [{ tag_name: 'javascript' }]);
-        assert.ok(dbClient.all.calledOnce);
-        assert.deepStrictEqual(dbClient.all.args[0][1], { $regExp: '%java%' });
-        done();
-      });
+    const dataStore = new DataStore(dbClient, knex);
+
+    it('should get all matched popular tags', (done) => {
+
+      knex.limit = () => Promise.resolve(['javascript']);
+
+      dataStore.getPopularTags('java', 10)
+        .then(actual => {
+          assert.deepStrictEqual(actual, ['javascript']);
+          assert.ok(knex.select.calledWith('tag_name'));
+          assert.ok(knex.from.calledWith('questions_tags'));
+          assert.ok(knex.where.calledWith('tag_name', 'like', '%java%'));
+          done();
+        });
     });
   });
 });
