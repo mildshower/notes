@@ -189,11 +189,12 @@ class DataStore {
   }
 
   addAnswer(body, bodyText, quesId, owner) {
-    return this.runQuery(
-      query.answerInsertion,
-      [body, bodyText, quesId, owner],
-      new Error('Answer Insertion Failed!')
-    );
+    return this.knex
+      .table('answers')
+      .insert({ body, 'body_text': bodyText, question: quesId, owner })
+      .catch(() => {
+        throw new Error('Answer Insertion Failed!');
+      });
   }
 
   getVote(id, userId, isQuesVote) {

@@ -125,10 +125,6 @@ module.exports = {
     `delete from question_votes
     where question_id = ? and user = ?`,
 
-  answerInsertion:
-    `insert into answers (body, body_text, question, owner)
-    values (?, ?, ?, ?)`,
-
   answerById:
     answerDetails + 'where ans.id = ?',
 

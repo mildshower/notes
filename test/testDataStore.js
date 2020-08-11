@@ -617,39 +617,28 @@ context('dataStore', () => {
   });
 
   context('#addAnswer', function() {
-    it('should add the answer without throwing error', (done) => {
-      const dbClient = {
-        run: sinon.fake.yields(null),
-      };
-      const dataStore = new DataStore(dbClient);
+    const dbClient = () => { };
+    const knex = {};
+    knex.table = sinon.fake.returns(knex);
+    knex.insert = sinon.fake.resolves([1]);
 
-      dataStore.addAnswer('body', 'bodyText', 1, 1).then(() => {
-        assert.ok(dbClient.run.calledOnce);
-        assert.deepStrictEqual(dbClient.run.args[0][1], [
-          'body',
-          'bodyText',
-          1,
-          1,
-        ]);
+    const dataStore = new DataStore(dbClient, knex);
+
+    it('should add the answer without throwing error', (done) => {
+
+      dataStore.addAnswer('body', 'bodyText', 1, 1).then(([id]) => {
+        assert.equal(id, 1);
+        assert.ok(knex.table.calledWith('answers'));
         done();
       });
     });
 
     it('should produce error when insertion failed', (done) => {
-      const dbClient = {
-        run: sinon.fake.yields(new Error()),
-      };
-      const dataStore = new DataStore(dbClient);
+      knex.insert = sinon.fake.rejects('Answer Insertion Failed!');
 
       dataStore.addAnswer('body', 'bodyText', 100, 1).catch((err) => {
         assert.deepStrictEqual(err.message, 'Answer Insertion Failed!');
-        assert.ok(dbClient.run.calledOnce);
-        assert.deepStrictEqual(dbClient.run.args[0][1], [
-          'body',
-          'bodyText',
-          100,
-          1,
-        ]);
+        assert.ok(knex.table.calledWith('answers'));
         done();
       });
     });
@@ -659,7 +648,7 @@ context('dataStore', () => {
     const dbClient = () => { };
     const knex = {};
     knex.table = sinon.fake.returns(knex);
-    knex.insert = sinon.fake.returns(Promise.resolve([1]));
+    knex.insert = sinon.fake.resolves([1]);
 
     const dataStore = new DataStore(dbClient, knex);
 
