@@ -935,7 +935,7 @@ context('dataStore', () => {
     const dataStore = new DataStore(dbClient, knex);
 
     it('should reject an answer', (done) => {
-      knex.where = sinon.fake.returns(Promise.resolve());
+      knex.where = sinon.fake.resolves();
 
       dataStore.rejectAnswer(1).then(() => {
         assert.ok(knex.table.calledWith('answers'));
@@ -946,7 +946,7 @@ context('dataStore', () => {
     });
 
     it('should not reject an answer when invalid answer id given', (done) => {
-      knex.where = sinon.fake.returns(Promise.reject());
+      knex.where = sinon.fake.rejects();
 
       dataStore.rejectAnswer(2454).catch(() => {
         assert.ok(knex.table.calledWith('answers'));
@@ -963,13 +963,13 @@ context('dataStore', () => {
 
     const where = sinon.stub();
     where.withArgs('id', '=', 1).returns(knex);
-    where.withArgs('question', '=', 1).returns(Promise.resolve());
-    where.withArgs('question', '=', 2454).returns(Promise.reject());
+    where.withArgs('question', '=', 1).resolves();
+    where.withArgs('question', '=', 2454).rejects();
 
     knex.table = sinon.fake.returns(knex);
     knex.select = sinon.fake.returns(knex);
     knex.where = where;
-    knex.first = sinon.fake.returns(Promise.resolve({ question: 1 }));
+    knex.first = sinon.fake.resolves({ question: 1 });
     knex.update = sinon.fake.returns(knex);
     knex.raw = sinon.fake.returns(knex);
 
@@ -985,7 +985,7 @@ context('dataStore', () => {
     });
 
     it('should not accept an answer when invalid answer id given', (done) => {
-      knex.first = sinon.fake.returns(Promise.resolve({ question: 2454 }));
+      knex.first = sinon.fake.resolves({ question: 2454 });
       dataStore.acceptAnswer(1).catch(() => {
         assert.equal(knex.table.args[0], 'answers');
         assert.equal(knex.table.args[1], 'answers');
@@ -1025,32 +1025,34 @@ context('dataStore', () => {
   });
 
   context('#getComments', function() {
-    it('should serve question comments when isQuestion is true', (done) => {
-      const dbClient = {
-        all: sinon.fake.yields(null, [{ id: 1 }]),
-      };
-      const dataStore = new DataStore(dbClient);
+    const dbClient = () => { };
+    const knex = {};
+    knex.select = sinon.fake.returns(knex);
+    knex.from = sinon.fake.returns(knex);
+    knex.leftJoin = sinon.fake.returns(knex);
 
-      dataStore.getComments(1, true).then((details) => {
-        assert.deepStrictEqual(details, [{ id: 1 }]);
-        assert.ok(dbClient.all.calledOnce);
-        assert.ok(dbClient.all.args[0][0].match('question'));
-        assert.deepStrictEqual(dbClient.all.args[0][1], [1]);
+    const dataStore = new DataStore(dbClient, knex);
+
+    it('should serve question comments when isQuestion is true', (done) => {
+      const details = [{ ownerName: 'testUser' }];
+      knex.where = sinon.fake.resolves(details);
+
+      dataStore.getComments(1, true).then((actual) => {
+        assert.deepStrictEqual(actual, details);
+        assert.ok(knex.from.calledWith({ comments: 'question_comments' }));
+        assert.ok(knex.where.calledWith('comments.question', '=', 1));
         done();
       });
     });
 
     it('should serve answer comments when isQuestion is false', (done) => {
-      const dbClient = {
-        all: sinon.fake.yields(null, [{ id: 1 }]),
-      };
-      const dataStore = new DataStore(dbClient);
+      const details = [{ ownerName: 'testUser' }];
+      knex.where = sinon.fake.resolves(details);
 
-      dataStore.getComments(1, false).then((details) => {
-        assert.deepStrictEqual(details, [{ id: 1 }]);
-        assert.ok(dbClient.all.calledOnce);
-        assert.ok(dbClient.all.args[0][0].match('answer'));
-        assert.deepStrictEqual(dbClient.all.args[0][1], [1]);
+      dataStore.getComments(1, false).then((actual) => {
+        assert.deepStrictEqual(actual, details);
+        assert.ok(knex.from.calledWith({ comments: 'answer_comments' }));
+        assert.ok(knex.where.calledWith('comments.answer', '=', 1));
         done();
       });
     });

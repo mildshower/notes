@@ -9,7 +9,7 @@ const getClickableTick = ancestor =>
   document.querySelector(ancestor + ' .clickable');
 const getCommentBar = ancestor =>
   document.querySelector(`${ancestor} .commentBar`);
-  
+
 const getCommentBox = ancestor =>
   document.querySelector(`${ancestor} .commentsBox`);
 
@@ -137,7 +137,7 @@ const showComment = function(commentBox, { body, created, ownerName, owner }) {
   const commentElement = document.createElement('p');
   commentElement.innerHTML =
     `${body}&nbsp;&nbsp;-&nbsp;` +
-    `<a class="strong" href="/profile/${owner}">${ownerName}</a>` +
+    `<a class="userName" href="/profile/${owner}">${ownerName}</a>` +
     `<span class="commentTime">&nbsp;&nbsp;${created}</span>`;
   commentElement.classList.add('comment');
   commentBox.appendChild(commentElement);

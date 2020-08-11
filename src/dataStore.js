@@ -269,10 +269,12 @@ class DataStore {
   }
 
   getComments(id, isQuestion) {
-    return this.getRows(
-      isQuestion ? query.questionComments : query.answerComments,
-      [id]
-    );
+    const commentsOf = isQuestion ? 'question' : 'answer';
+    return this.knex
+      .select('comments.*', { ownerName: 'users.display_name' })
+      .from({ comments: commentsOf + '_comments' })
+      .leftJoin('users', 'users.id', 'comments.owner')
+      .where(`comments.${commentsOf}`, '=', id);
   }
 
   getPopularTags(exp, count) {

@@ -39,12 +39,6 @@ const answerDetails = `select
     where answer_votes.answer_id = ans.id) as voteCount 
   from answers ans `;
 
-const commentDetails =
-  `SELECT
-  comments.*,
-  (SELECT display_name from users
-  where id = comments.owner) as ownerName`;
-
 module.exports = {
   userUpdation:
     `UPDATE users
@@ -153,14 +147,6 @@ module.exports = {
 
   answerById:
     answerDetails + 'where ans.id = ?',
-
-  questionComments:
-    commentDetails + ` from question_comments comments
-   where comments.question = ? `,
-
-  answerComments:
-    commentDetails + ` from answer_comments comments
-    where comments.answer = ? `,
 
   lastRowId: 'select last_insert_rowid() as id;'
 };
