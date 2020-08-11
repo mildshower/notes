@@ -92,16 +92,6 @@ module.exports = {
     PRAGMA foreign_keys=ON;
   `,
 
-  questionVoteByUser:
-    `select vote_type as voteType
-    from question_votes
-    where question_id = ? AND user = ?`,
-
-  answerVoteByUser:
-    `select vote_type as voteType
-    from answer_votes
-    where answer_id = ? AND user = ?`,
-
   quesVote: {
     addition: `insert into question_votes (vote_type, question_id, user)
       values (?, ?, ?)`,

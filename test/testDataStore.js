@@ -526,60 +526,60 @@ context('dataStore', () => {
   });
 
   context('#getVote', function() {
+    const dbClient = () => { };
+    const knex = {};
+    knex.select = sinon.fake.returns(knex);
+    knex.from = sinon.fake.returns(knex);
+    knex.where = sinon.fake.returns(knex);
+    knex.andWhere = sinon.fake.returns(knex);
+    knex.first = sinon.fake.returns(knex);
+
+    const dataStore = new DataStore(dbClient, knex);
+
     it('should give voteType when valid user and question id given', (done) => {
-      const dbClient = {
-        get: sinon.fake.yields(null, { voteType: 0 }),
-      };
-      const dataStore = new DataStore(dbClient);
+      knex.then = sinon.fake.resolves({ isVoted: true, voteType: 0 });
 
       dataStore.getVote(1, 1, true).then((actual) => {
         assert.deepStrictEqual(actual, { isVoted: true, voteType: 0 });
-        assert.ok(dbClient.get.calledOnce);
-        assert.ok(dbClient.get.args[0][0].match(/question/));
-        assert.deepStrictEqual(dbClient.get.args[0][1], [1, 1]);
+        assert.ok(knex.from.calledWith('question_votes'));
+        assert.ok(knex.where.calledWith('question_id', 1));
+        assert.ok(knex.andWhere.calledWith('user', 1));
         done();
       });
     });
 
     it('should give voteType when valid user and answer id given', (done) => {
-      const dbClient = {
-        get: sinon.fake.yields(null, { voteType: 0 }),
-      };
-      const dataStore = new DataStore(dbClient);
+      knex.then = sinon.fake.resolves({ isVoted: true, voteType: 0 });
 
       dataStore.getVote(1, 1).then((actual) => {
         assert.deepStrictEqual(actual, { isVoted: true, voteType: 0 });
-        assert.ok(dbClient.get.calledOnce);
-        assert.ok(dbClient.get.args[0][0].match(/answer/));
-        assert.deepStrictEqual(dbClient.get.args[0][1], [1, 1]);
+        assert.ok(knex.from.calledWith('answer_votes'));
+        assert.ok(knex.where.calledWith('answer_id', 1));
+        assert.ok(knex.andWhere.calledWith('user', 1));
         done();
       });
     });
 
     it('should give no vote if invalid ids given', (done) => {
-      const dbClient = {
-        get: sinon.fake.yields(null, undefined),
-      };
-      const dataStore = new DataStore(dbClient);
+      knex.then = sinon.fake.resolves({ isVoted: false, voteType: undefined });
 
       dataStore.getVote(300, 300).then((actual) => {
         assert.deepStrictEqual(actual, { isVoted: false, voteType: undefined });
-        assert.ok(dbClient.get.calledOnce);
-        assert.deepStrictEqual(dbClient.get.args[0][1], [300, 300]);
+        assert.ok(knex.from.calledWith('answer_votes'));
+        assert.ok(knex.where.calledWith('answer_id', 300));
+        assert.ok(knex.andWhere.calledWith('user', 300));
         done();
       });
     });
 
     it('should produce error if database produces', (done) => {
-      const dbClient = {
-        get: sinon.fake.yields(new Error('error')),
-      };
-      const dataStore = new DataStore(dbClient);
+      knex.first = sinon.fake.rejects('Fetching vote failed');
 
       dataStore.getVote(300, 300).catch((err) => {
         assert.deepStrictEqual(err.message, 'Fetching vote failed');
-        assert.ok(dbClient.get.calledOnce);
-        assert.deepStrictEqual(dbClient.get.args[0][1], [300, 300]);
+        assert.ok(knex.from.calledWith('answer_votes'));
+        assert.ok(knex.where.calledWith('answer_id', 300));
+        assert.ok(knex.andWhere.calledWith('user', 300));
         done();
       });
     });

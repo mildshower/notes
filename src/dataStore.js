@@ -198,14 +198,17 @@ class DataStore {
   }
 
   getVote(id, userId, isQuesVote) {
-    return this.getRow(
-      isQuesVote ? query.questionVoteByUser : query.answerVoteByUser,
-      [id, userId],
-      new Error('Fetching vote failed')
-    ).then(details => ({
-      isVoted: Boolean(details),
-      voteType: details && details.voteType,
-    }));
+    const voteOf = isQuesVote ? 'question' : 'answer';
+    return this.knex
+      .select({ voteType: 'vote_type' })
+      .from(voteOf + '_votes')
+      .where(voteOf + '_id', id)
+      .andWhere('user', userId)
+      .first()
+      .then(details => ({
+        isVoted: Boolean(details),
+        voteType: details && details.voteType
+      }));
   }
 
   getQuestionTags(questionId) {
