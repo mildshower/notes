@@ -310,7 +310,7 @@ context('dataStore', () => {
           assert.deepStrictEqual(actual, details);
           assert.ok(knex.table.calledWith('users'));
           assert.ok(knex.select.calledWith());
-          assert.ok(knex.where.calledWith('github_username', '=', 'testUser'));
+          assert.ok(knex.where.calledWith('github_username', 'testUser'));
           done();
         });
     });
@@ -324,7 +324,7 @@ context('dataStore', () => {
           assert.deepStrictEqual(actual, { user: undefined, isFound: false });
           assert.ok(knex.table.calledWith('users'));
           assert.ok(knex.select.calledWith());
-          assert.ok(knex.where.calledWith('github_username', '=', 'noUser'));
+          assert.ok(knex.where.calledWith('github_username', 'noUser'));
           done();
         });
     });
@@ -338,7 +338,7 @@ context('dataStore', () => {
           assert.deepStrictEqual(err.message, message);
           assert.ok(knex.table.calledWith('users'));
           assert.ok(knex.select.calledWith());
-          assert.ok(knex.where.calledWith('github_user', '=', 'noUser'));
+          assert.ok(knex.where.calledWith('github_user', 'noUser'));
           done();
         });
     });
@@ -826,46 +826,40 @@ context('dataStore', () => {
   });
 
   context('#deleteVote', function() {
-    it('should delete a question vote when valid credentials given', (done) => {
-      const dbClient = {
-        run: sinon.fake.yields(null),
-      };
-      const dataStore = new DataStore(dbClient);
+    const dbClient = () => { };
+    const knex = {};
+    knex.table = sinon.fake.returns(knex);
+    knex.where = sinon.fake.returns(knex);
+    knex.andWhere = sinon.fake.returns(knex);
+    knex.del = sinon.fake.resolves();
 
-      dataStore.deleteVote(1, 1, true).then((actual) => {
-        assert.isUndefined(actual);
-        assert.ok(dbClient.run.calledOnce);
-        assert.ok(dbClient.run.args[0][0].match(/question/));
-        assert.deepStrictEqual(dbClient.run.args[0][1], [1, 1]);
+    const dataStore = new DataStore(dbClient, knex);
+
+    it('should delete a question vote when valid credentials given', (done) => {
+      dataStore.deleteVote(1, 1, true).then(() => {
+        assert.ok(knex.table.calledWith('question_votes'));
+        assert.ok(knex.where.calledWith('question_id', 1));
+        assert.ok(knex.andWhere.calledWith('user', 1));
         done();
       });
     });
 
     it('should delete a answer vote when valid credentials given', (done) => {
-      const dbClient = {
-        run: sinon.fake.yields(null),
-      };
-      const dataStore = new DataStore(dbClient);
-
-      dataStore.deleteVote(1, 1).then((actual) => {
-        assert.isUndefined(actual);
-        assert.ok(dbClient.run.calledOnce);
-        assert.ok(dbClient.run.args[0][0].match(/answer/));
-        assert.deepStrictEqual(dbClient.run.args[0][1], [1, 1]);
+      dataStore.deleteVote(1, 1).then(() => {
+        assert.ok(knex.table.calledWith('answer_votes'));
+        assert.ok(knex.where.calledWith('answer_id', 1));
+        assert.ok(knex.andWhere.calledWith('user', 1));
         done();
       });
     });
 
     it('should produce error when invalid credentials given', (done) => {
-      const dbClient = {
-        run: sinon.fake.yields(new Error()),
-      };
-      const dataStore = new DataStore(dbClient);
-
+      knex.del = sinon.fake.rejects('Vote Deletion Failed');
       dataStore.deleteVote(100, 100).catch((err) => {
         assert.deepStrictEqual(err.message, 'Vote Deletion Failed');
-        assert.ok(dbClient.run.calledOnce);
-        assert.deepStrictEqual(dbClient.run.args[0][1], [100, 100]);
+        assert.ok(knex.table.calledWith('answer_votes'));
+        assert.ok(knex.where.calledWith('answer_id', 100));
+        assert.ok(knex.andWhere.calledWith('user', 100));
         done();
       });
     });
@@ -888,7 +882,7 @@ context('dataStore', () => {
       dataStore.getVoteCount(1, true).then((voteCount) => {
         assert.deepStrictEqual(voteCount, { voteCount: 10 });
         assert.ok(knex.from.calledWith('question_votes'));
-        assert.ok(knex.where.calledWith('question_id', '=', 1));
+        assert.ok(knex.where.calledWith('question_id', 1));
         done();
       });
     });
@@ -898,7 +892,7 @@ context('dataStore', () => {
       dataStore.getVoteCount(1).then((voteCount) => {
         assert.deepStrictEqual(voteCount, { voteCount: 10 });
         assert.ok(knex.from.calledWith('answer_votes'));
-        assert.ok(knex.where.calledWith('answer_id', '=', 1));
+        assert.ok(knex.where.calledWith('answer_id', 1));
         done();
       });
     });
@@ -909,7 +903,7 @@ context('dataStore', () => {
       dataStore.getVoteCount(100).catch((err) => {
         assert.deepStrictEqual(err.message, 'Vote Count Fetching Error');
         assert.ok(knex.from.calledWith('answer_votes'));
-        assert.ok(knex.where.calledWith('answer_id', '=', 100));
+        assert.ok(knex.where.calledWith('answer_id', 100));
         done();
       });
     });
@@ -931,7 +925,7 @@ context('dataStore', () => {
       dataStore.rejectAnswer(1).then(() => {
         assert.ok(knex.table.calledWith('answers'));
         assert.ok(knex.update.calledWith('is_accepted', 0));
-        assert.ok(knex.where.calledWith('id', '=', 1));
+        assert.ok(knex.where.calledWith('id', 1));
         done();
       });
     });
@@ -942,7 +936,7 @@ context('dataStore', () => {
       dataStore.rejectAnswer(2454).catch(() => {
         assert.ok(knex.table.calledWith('answers'));
         assert.ok(knex.update.calledWith('is_accepted', 0));
-        assert.ok(knex.where.calledWith('id', '=', 2454));
+        assert.ok(knex.where.calledWith('id', 2454));
         done();
       });
     });
@@ -953,9 +947,9 @@ context('dataStore', () => {
     const knex = {};
 
     const where = sinon.stub();
-    where.withArgs('id', '=', 1).returns(knex);
-    where.withArgs('question', '=', 1).resolves();
-    where.withArgs('question', '=', 2454).rejects();
+    where.withArgs('id', 1).returns(knex);
+    where.withArgs('question', 1).resolves();
+    where.withArgs('question', 2454).rejects();
 
     knex.table = sinon.fake.returns(knex);
     knex.select = sinon.fake.returns(knex);
@@ -1031,7 +1025,7 @@ context('dataStore', () => {
       dataStore.getComments(1, true).then((actual) => {
         assert.deepStrictEqual(actual, details);
         assert.ok(knex.from.calledWith({ comments: 'question_comments' }));
-        assert.ok(knex.where.calledWith('comments.question', '=', 1));
+        assert.ok(knex.where.calledWith('comments.question', 1));
         done();
       });
     });
@@ -1043,7 +1037,7 @@ context('dataStore', () => {
       dataStore.getComments(1, false).then((actual) => {
         assert.deepStrictEqual(actual, details);
         assert.ok(knex.from.calledWith({ comments: 'answer_comments' }));
-        assert.ok(knex.where.calledWith('comments.answer', '=', 1));
+        assert.ok(knex.where.calledWith('comments.answer', 1));
         done();
       });
     });

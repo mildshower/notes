@@ -117,14 +117,6 @@ module.exports = {
       where answer_id = ? AND user = ?`
   },
 
-  ansVoteDeletion:
-    `delete from answer_votes
-    where answer_id = ? and user = ?`,
-
-  quesVoteDeletion:
-    `delete from question_votes
-    where question_id = ? and user = ?`,
-
   answerById:
     answerDetails + 'where ans.id = ?',
 

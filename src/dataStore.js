@@ -72,7 +72,7 @@ class DataStore {
     return this.knex
       .table('users')
       .select()
-      .where(key, '=', value || '')
+      .where(key, value || '')
       .first()
       .then(user => ({ user, isFound: Boolean(user) }));
   }
@@ -213,7 +213,7 @@ class DataStore {
       .select('tags.tag_name')
       .from('tags')
       .leftJoin({ quesTags: 'questions_tags' }, 'quesTags.tag_id', 'tags.id')
-      .where('quesTags.question_id', '=', questionId)
+      .where('quesTags.question_id', questionId)
       .pluck('tag_name');
   }
 
@@ -230,11 +230,15 @@ class DataStore {
   }
 
   deleteVote(id, userId, isQuesVote) {
-    return this.runQuery(
-      isQuesVote ? query.quesVoteDeletion : query.ansVoteDeletion,
-      [id, userId],
-      new Error('Vote Deletion Failed')
-    );
+    const voteOf = isQuesVote ? 'question' : 'answer';
+    return this.knex
+      .table(voteOf + '_votes')
+      .where(voteOf + '_id', id)
+      .andWhere('user', userId)
+      .del()
+      .catch(() => {
+        throw new Error('Vote Deletion Failed');
+      });
   }
 
   getVoteCount(id, isQuesVote) {
@@ -244,7 +248,7 @@ class DataStore {
         this.knex.raw('COALESCE(sum(REPLACE(vote_type,0,-1)),0) as voteCount')
       )
       .from(voteOf + '_votes')
-      .where(voteOf + '_id', '=', id)
+      .where(voteOf + '_id', id)
       .first()
       .catch(() => {
         throw new Error('Vote Count Fetching Error');
@@ -255,7 +259,7 @@ class DataStore {
     return this.knex
       .table('answers')
       .update('is_accepted', 0)
-      .where('id', '=', id)
+      .where('id', id)
       .catch(() => {
         throw new Error('Answer rejection failed');
       });
@@ -265,14 +269,14 @@ class DataStore {
     return this.knex
       .table('answers')
       .select('question')
-      .where('id', '=', id)
+      .where('id', id)
       .first('question')
       .then(({ question }) =>
         this.knex
           .table('answers')
           .update('is_accepted',
             this.knex.raw(`case id when ${id} then 1 else 0 END`))
-          .where('question', '=', question)
+          .where('question', question)
           .catch(() => {
             throw new Error('Could not accept the answer');
           })
@@ -285,7 +289,7 @@ class DataStore {
       .select('comments.*', { ownerName: 'users.display_name' })
       .from({ comments: commentsOf + '_comments' })
       .leftJoin('users', 'users.id', 'comments.owner')
-      .where(`comments.${commentsOf}`, '=', id);
+      .where(`comments.${commentsOf}`, id);
   }
 
   getPopularTags(exp, count) {
