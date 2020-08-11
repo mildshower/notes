@@ -879,46 +879,44 @@ context('dataStore', () => {
   });
 
   context('#getVoteCount', function() {
+
+    const dbClient = () => { };
+    const knex = {};
+    knex.select = sinon.fake.returns(knex);
+    knex.from = sinon.fake.returns(knex);
+    knex.where = sinon.fake.returns(knex);
+    knex.raw = sinon.fake.returns(knex);
+    knex.first = sinon.fake.resolves({ voteCount: 10 });
+
+    const dataStore = new DataStore(dbClient, knex);
+
     it('should give question vote count for a question', (done) => {
-      const dbClient = {
-        get: sinon.fake.yields(null, { voteCount: 10 }),
-      };
-      const dataStore = new DataStore(dbClient);
 
       dataStore.getVoteCount(1, true).then((voteCount) => {
         assert.deepStrictEqual(voteCount, { voteCount: 10 });
-        assert.ok(dbClient.get.calledOnce);
-        assert.ok(dbClient.get.args[0][0].match(/question/));
-        assert.deepStrictEqual(dbClient.get.args[0][1], [1]);
+        assert.ok(knex.from.calledWith('question_votes'));
+        assert.ok(knex.where.calledWith('question_id', '=', 1));
         done();
       });
     });
 
     it('should give answer vote count for a answer', (done) => {
-      const dbClient = {
-        get: sinon.fake.yields(null, { voteCount: 10 }),
-      };
-      const dataStore = new DataStore(dbClient);
 
       dataStore.getVoteCount(1).then((voteCount) => {
         assert.deepStrictEqual(voteCount, { voteCount: 10 });
-        assert.ok(dbClient.get.calledOnce);
-        assert.ok(dbClient.get.args[0][0].match(/answer/));
-        assert.deepStrictEqual(dbClient.get.args[0][1], [1]);
+        assert.ok(knex.from.calledWith('answer_votes'));
+        assert.ok(knex.where.calledWith('answer_id', '=', 1));
         done();
       });
     });
 
     it('should produce error when database produces', (done) => {
-      const dbClient = {
-        get: sinon.fake.yields(new Error(), {}),
-      };
-      const dataStore = new DataStore(dbClient);
+      knex.first = sinon.fake.rejects('Vote Count Fetching Error');
 
       dataStore.getVoteCount(100).catch((err) => {
         assert.deepStrictEqual(err.message, 'Vote Count Fetching Error');
-        assert.ok(dbClient.get.calledOnce);
-        assert.deepStrictEqual(dbClient.get.args[0][1], [100]);
+        assert.ok(knex.from.calledWith('answer_votes'));
+        assert.ok(knex.where.calledWith('answer_id', '=', 100));
         done();
       });
     });

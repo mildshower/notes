@@ -233,11 +233,17 @@ class DataStore {
   }
 
   getVoteCount(id, isQuesVote) {
-    return this.getRow(
-      isQuesVote ? query.questionVoteCount : query.answerVoteCount,
-      [id],
-      new Error('Vote Count Fetching Error')
-    );
+    const voteOf = isQuesVote ? 'question' : 'answer';
+    return this.knex
+      .select(
+        this.knex.raw('COALESCE(sum(REPLACE(vote_type,0,-1)),0) as voteCount')
+      )
+      .from(voteOf + '_votes')
+      .where(voteOf + '_id', '=', id)
+      .first()
+      .catch(() => {
+        throw new Error('Vote Count Fetching Error');
+      });
   }
 
   rejectAnswer(id) {

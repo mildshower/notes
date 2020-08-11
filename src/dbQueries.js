@@ -135,16 +135,6 @@ module.exports = {
    on ques_tags.tag_id = tags.id
    where ques_tags.question_id = ?;`,
 
-  questionVoteCount:
-    `select COALESCE(sum(REPLACE(vote_type,0,-1)),0) as voteCount
-    from question_votes
-    where question_id = ?`,
-
-  answerVoteCount:
-    `select COALESCE(sum(REPLACE(vote_type,0,-1)),0) as voteCount
-    from answer_votes
-    where answer_id = ?`,
-
   answerById:
     answerDetails + 'where ans.id = ?',
 
