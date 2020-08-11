@@ -1,4 +1,3 @@
-require('dotenv').config();
 const sqlite3 = require('sqlite3').verbose();
 const DataStore = require('./src/dataStore');
 const Sessions = require('./src/sessions');
