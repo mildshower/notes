@@ -94,10 +94,8 @@ const authenticateWithGithub = (req, res, next) => {
   if (!['login', 'signUp'].includes(req.query.type)) {
     return next();
   }
-  const redirectStatusCode = 302;
   const redirectUri = `${process.env.HO_BASE_URL}/${req.query.type}?targetPath=${req.query.targetPath}`;
   res.redirect(
-    redirectStatusCode,
     `https://github.com/login/oauth/authorize?client_id=${process.env.HO_CLIENT_ID}&redirect_uri=${redirectUri}`
   );
 };
@@ -116,7 +114,7 @@ const isValidVerificationReq = async function(req, res, next) {
 
 const handleSignUp = async function(req, res, next) {
   if (req.enteringUser) {
-    req.responseStatus = 409;
+    req.responseStatus = 406;
     req.errorMessage = `It seems Github username ${req.userDetails.login} already has an account.`;
     return next();
   }
@@ -129,7 +127,7 @@ const handleSignUp = async function(req, res, next) {
 
 const handleLogin = function(req, res, next) {
   if (!req.enteringUser) {
-    req.responseStatus = 400;
+    req.responseStatus = 406;
     req.errorMessage = `It seems there is no account for Github username ${req.userDetails.login}.`;
     return next();
   }
@@ -186,10 +184,8 @@ const saveDetails = (req, res) => {
 const saveQuestion = (req, res) => {
   const { dataStore } = req.app.locals;
   const question = req.body;
-  dataStore.addQuestion(
-    question,
-    req.user.id
-  ).then(insertionDetails => res.json(insertionDetails));
+  dataStore.addQuestion(question, req.user.id)
+    .then(insertionDetails => res.json(insertionDetails));
 };
 
 const authorizeUser = function(req, res, next) {

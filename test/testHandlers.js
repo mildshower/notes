@@ -190,7 +190,7 @@ describe('GET', () => {
       request(app)
         .get('/login?code=1&targetPath=home')
         .set('accept', '*/*')
-        .expect(400)
+        .expect(406)
         .expect(/Oops../, done);
     });
 
@@ -229,7 +229,7 @@ describe('GET', () => {
       request(app)
         .get('/signUp?code=1&targetPath=home')
         .set('accept', '*/*')
-        .expect(409)
+        .expect(406)
         .expect(/Oops../, done);
     });
 
