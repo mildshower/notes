@@ -940,15 +940,38 @@ context('dataStore', () => {
   });
 
   context('#acceptAnswer', function() {
-    it('should accept an answer', (done) => {
-      const dbClient = {
-        run: sinon.fake.yields(null),
-      };
-      const dataStore = new DataStore(dbClient);
+    const dbClient = () => { };
+    const knex = {};
 
-      dataStore.acceptAnswer(1).then(() => {
-        assert.ok(dbClient.run.calledOnce);
-        assert.deepStrictEqual(dbClient.run.args[0][1], { $ansId: 1 });
+    const where = sinon.stub();
+    where.withArgs('id', '=', 1).returns(knex);
+    where.withArgs('question', '=', 1).returns(Promise.resolve(1));
+    where.withArgs('question', '=', 2454).returns(Promise.reject());
+
+    knex.table = sinon.fake.returns(knex);
+    knex.select = sinon.fake.returns(knex);
+    knex.where = where;
+    knex.first = sinon.fake.returns(Promise.resolve({ question: 1 }));
+    knex.update = sinon.fake.returns(knex);
+    knex.raw = sinon.fake.returns(knex);
+
+    const dataStore = new DataStore(dbClient, knex);
+
+    it('should accept an answer', (done) => {
+
+      dataStore.acceptAnswer(1).then((id) => {
+        assert.equal(id, 1);
+        assert.equal(knex.table.args[0], 'answers');
+        assert.equal(knex.table.args[1], 'answers');
+        done();
+      });
+    });
+
+    it('should not accept an answer when invalid answer id given', (done) => {
+      knex.first = sinon.fake.returns(Promise.resolve({ question: 2454 }));
+      dataStore.acceptAnswer(1).catch(() => {
+        assert.equal(knex.table.args[0], 'answers');
+        assert.equal(knex.table.args[1], 'answers');
         done();
       });
     });

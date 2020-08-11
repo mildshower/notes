@@ -249,11 +249,21 @@ class DataStore {
   }
 
   acceptAnswer(id) {
-    return this.runQuery(
-      query.acceptAnswer,
-      { $ansId: id },
-      new Error('Could not accept the answer')
-    );
+    return this.knex
+      .table('answers')
+      .select('question')
+      .where('id', '=', id)
+      .first('question')
+      .then(({ question }) =>
+        this.knex
+          .table('answers')
+          .update('is_accepted',
+            this.knex.raw(`case id when ${id} then 1 else 0 END`))
+          .where('question', '=', question)
+          .catch(() => {
+            throw new Error('Could not accept the answer');
+          })
+      );
   }
 
   getComments(id, isQuestion) {

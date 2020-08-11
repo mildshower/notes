@@ -156,15 +156,6 @@ module.exports = {
     set is_accepted = 0
     where id = ?`,
 
-  acceptAnswer:
-    `UPDATE answers
-  set is_accepted = 
-    case id
-      when $ansId then 1
-      else 0
-    END
-  where question = (select question from answers where id = $ansId );`,
-
   answerById:
     answerDetails + 'where ans.id = ?',
 
