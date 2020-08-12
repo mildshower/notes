@@ -92,21 +92,6 @@ module.exports = {
     PRAGMA foreign_keys=ON;
   `,
 
-  quesVote: {
-    addition: `insert into question_votes (vote_type, question_id, user)
-      values (?, ?, ?)`,
-    toggle: `update question_votes
-      set vote_type = ?
-      where question_id = ? AND user = ?`
-  },
-  ansVote: {
-    addition: `insert into answer_votes (vote_type, answer_id, user)
-      values (?, ?, ?)`,
-    toggle: `update answer_votes
-      set vote_type = ?
-      where answer_id = ? AND user = ?`
-  },
-
   answerById:
     answerDetails + 'where ans.id = ?',
 

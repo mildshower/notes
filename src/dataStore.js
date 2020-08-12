@@ -220,18 +220,6 @@ class DataStore {
       .pluck('tag_name');
   }
 
-  // async addVote(id, userId, voteType, isQuesVote) {
-  //   const { isVoted } = await this.getVote(id, userId, isQuesVote);
-  //   const voteQueries = isQuesVote ?
-  //     query.quesVote : query.ansVote;
-  //   const chosenQuery = isVoted ? voteQueries.toggle : voteQueries.addition;
-  //   await this.runQuery(
-  //     chosenQuery,
-  //     [voteType, id, userId],
-  //     new Error('Vote Addition Failed')
-  //   );
-  // }
-
   updateVote(id, userId, voteType, voteOf) {
     return this.knex
       .table(`${voteOf}_votes`)
