@@ -201,8 +201,8 @@ class DataStore {
     const voteOf = isQuesVote ? 'question' : 'answer';
     return this.knex
       .select({ voteType: 'vote_type' })
-      .from(voteOf + '_votes')
-      .where(voteOf + '_id', id)
+      .from(`${voteOf}_votes`)
+      .where(`${voteOf}_id`, id)
       .andWhere('user', userId)
       .first()
       .then(details => ({
@@ -220,23 +220,52 @@ class DataStore {
       .pluck('tag_name');
   }
 
+  // async addVote(id, userId, voteType, isQuesVote) {
+  //   const { isVoted } = await this.getVote(id, userId, isQuesVote);
+  //   const voteQueries = isQuesVote ?
+  //     query.quesVote : query.ansVote;
+  //   const chosenQuery = isVoted ? voteQueries.toggle : voteQueries.addition;
+  //   await this.runQuery(
+  //     chosenQuery,
+  //     [voteType, id, userId],
+  //     new Error('Vote Addition Failed')
+  //   );
+  // }
+
+  updateVote(id, userId, voteType, voteOf) {
+    return this.knex
+      .table(`${voteOf}_votes`)
+      .update('vote_type', voteType)
+      .where(`${voteOf}_id`, id)
+      .andWhere('user', userId)
+      .catch(() => {
+        throw new Error('Vote Updation Failed');
+      });
+  }
+
+  addNewVote(id, userId, voteType, voteOf) {
+    return this.knex
+      .table(`${voteOf}_votes`)
+      .insert({ 'vote_type': voteType, [`${voteOf}_id`]: id, user: userId })
+      .catch(() => {
+        throw new Error('Vote Addition Failed');
+      });
+  }
+
   async addVote(id, userId, voteType, isQuesVote) {
     const { isVoted } = await this.getVote(id, userId, isQuesVote);
-    const voteQueries = isQuesVote ?
-      query.quesVote : query.ansVote;
-    const chosenQuery = isVoted ? voteQueries.toggle : voteQueries.addition;
-    await this.runQuery(
-      chosenQuery,
-      [voteType, id, userId],
-      new Error('Vote Addition Failed')
-    );
+    const voteOf = isQuesVote ? 'question' : 'answer';
+    if (isVoted) {
+      return this.updateVote(id, userId, voteType, voteOf);
+    }
+    return this.addNewVote(id, userId, voteType, voteOf);
   }
 
   deleteVote(id, userId, isQuesVote) {
     const voteOf = isQuesVote ? 'question' : 'answer';
     return this.knex
-      .table(voteOf + '_votes')
-      .where(voteOf + '_id', id)
+      .table(`${voteOf}_votes`)
+      .where(`${voteOf}_id`, id)
       .andWhere('user', userId)
       .del()
       .catch(() => {
@@ -250,8 +279,8 @@ class DataStore {
       .select(
         this.knex.raw('COALESCE(sum(REPLACE(vote_type,0,-1)),0) as voteCount')
       )
-      .from(voteOf + '_votes')
-      .where(voteOf + '_id', id)
+      .from(`${voteOf}_votes`)
+      .where(`${voteOf}_id`, id)
       .first()
       .catch(() => {
         throw new Error('Vote Count Fetching Error');

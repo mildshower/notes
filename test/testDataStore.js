@@ -719,106 +719,115 @@ context('dataStore', () => {
   });
 
   context('#addVote', function() {
+    const dbClient = () => { };
+    const knex = {};
+    knex.table = sinon.fake.returns(knex);
+    knex.update = sinon.fake.returns(knex);
+    knex.where = sinon.fake.returns(knex);
+
+    const dataStore = new DataStore(dbClient, knex);
     this.afterEach(() => sinon.restore());
     it('should add a question vote when valid credentials given', (done) => {
-      const dbClient = {
-        run: sinon.fake.yields(null),
-      };
-      const dataStore = new DataStore(dbClient);
+      knex.insert = sinon.fake.resolves([1]);
       const stubbedGetVote = sinon
         .stub(dataStore, 'getVote')
         .resolves({ isVoted: false });
 
-      dataStore.addVote(1, 1, 1, true).then((actual) => {
-        assert.isUndefined(actual);
-        assert.ok(dbClient.run.calledOnce);
+      dataStore.addVote(1, 1, 1, true).then(([id]) => {
+        assert.equal(id, 1);
+        assert.ok(knex.table.calledWith('question_votes'));
+        assert.ok(knex.insert.calledWith({
+          vote_type: 1, question_id: 1, user: 1
+        }));
         assert.ok(stubbedGetVote.calledOnce);
-        assert.ok(dbClient.run.args[0][0].match(/question/));
-        assert.deepStrictEqual(dbClient.run.args[0][1], [1, 1, 1]);
-        assert.ok(dbClient.run.args[0][0].match(/insert/));
         assert.deepStrictEqual(stubbedGetVote.args[0], [1, 1, true]);
         done();
       });
     });
 
     it('should add a answer vote when valid credentials given', (done) => {
-      const dbClient = {
-        run: sinon.fake.yields(null),
-      };
-      const dataStore = new DataStore(dbClient);
+      knex.insert = sinon.fake.resolves([1]);
       const stubbedGetVote = sinon
         .stub(dataStore, 'getVote')
         .resolves({ isVoted: false });
 
-      dataStore.addVote(1, 1, 1, false).then((actual) => {
-        assert.isUndefined(actual);
-        assert.ok(dbClient.run.calledOnce);
+      dataStore.addVote(1, 1, 1, false).then(([id]) => {
+        assert.equal(id, 1);
+        assert.ok(knex.table.calledWith('answer_votes'));
+        assert.ok(knex.insert.calledWith({
+          vote_type: 1, answer_id: 1, user: 1
+        }));
         assert.ok(stubbedGetVote.calledOnce);
-        assert.ok(dbClient.run.args[0][0].match(/answer/));
-        assert.deepStrictEqual(dbClient.run.args[0][1], [1, 1, 1]);
-        assert.ok(dbClient.run.args[0][0].match(/insert/));
         assert.deepStrictEqual(stubbedGetVote.args[0], [1, 1, false]);
         done();
       });
     });
 
     it('should modify a question vote when same question user pair exists', (done) => {
-      const dbClient = {
-        run: sinon.fake.yields(null),
-      };
-      const dataStore = new DataStore(dbClient);
+      knex.andWhere = sinon.fake.resolves();
       const stubbedGetVote = sinon
         .stub(dataStore, 'getVote')
         .resolves({ isVoted: true });
 
-      dataStore.addVote(1, 1, 1, true).then((actual) => {
-        assert.isUndefined(actual);
-        assert.ok(dbClient.run.calledOnce);
+      dataStore.addVote(1, 1, 1, true).then(() => {
+        assert.ok(knex.table.calledWith('question_votes'));
+        assert.ok(knex.update.calledWith('vote_type', 1));
+        assert.ok(knex.where.calledWith('question_id', 1));
+        assert.ok(knex.andWhere.calledWith('user', 1));
         assert.ok(stubbedGetVote.calledOnce);
-        assert.ok(dbClient.run.args[0][0].match(/set/));
-        assert.ok(dbClient.run.args[0][0].match(/question/));
-        assert.deepStrictEqual(dbClient.run.args[0][1], [1, 1, 1]);
         assert.deepStrictEqual(stubbedGetVote.args[0], [1, 1, true]);
         done();
       });
     });
 
     it('should modify a answer vote when same answer user pair exists', (done) => {
-      const dbClient = {
-        run: sinon.fake.yields(null),
-      };
-      const dataStore = new DataStore(dbClient);
+      knex.andWhere = sinon.fake.resolves();
       const stubbedGetVote = sinon
         .stub(dataStore, 'getVote')
         .resolves({ isVoted: true });
 
-      dataStore.addVote(1, 1, 1, false).then((actual) => {
-        assert.isUndefined(actual);
-        assert.ok(dbClient.run.calledOnce);
+      dataStore.addVote(1, 1, 1, false).then(() => {
+        assert.ok(knex.table.calledWith('answer_votes'));
+        assert.ok(knex.update.calledWith('vote_type', 1));
+        assert.ok(knex.where.calledWith('answer_id', 1));
+        assert.ok(knex.andWhere.calledWith('user', 1));
         assert.ok(stubbedGetVote.calledOnce);
-        assert.ok(dbClient.run.args[0][0].match(/set/));
-        assert.ok(dbClient.run.args[0][0].match(/answer/));
-        assert.deepStrictEqual(dbClient.run.args[0][1], [1, 1, 1]);
         assert.deepStrictEqual(stubbedGetVote.args[0], [1, 1, false]);
         done();
       });
     });
 
-    it('should produce error when running query makes error', (done) => {
-      const dbClient = {
-        run: sinon.fake.yields(new Error()),
-      };
-      const dataStore = new DataStore(dbClient);
+    it('should produce error when vote addition failed', (done) => {
+      knex.insert = sinon.fake.rejects('Vote Addition Failed');
+      const stubbedGetVote = sinon
+        .stub(dataStore, 'getVote')
+        .resolves({ isVoted: false });
+
+      dataStore.addVote(1, 1, 1, false).catch((err) => {
+        assert.equal(err.message, 'Vote Addition Failed');
+        assert.ok(knex.table.calledWith('answer_votes'));
+        assert.ok(knex.insert.calledWith({
+          vote_type: 1, answer_id: 1, user: 1
+        }));
+        assert.ok(stubbedGetVote.calledOnce);
+        assert.deepStrictEqual(stubbedGetVote.args[0], [1, 1, false]);
+        done();
+      });
+    });
+
+    it('should produce error when updation failed', (done) => {
+      knex.andWhere = sinon.fake.rejects('Vote Updation Failed');
       const stubbedGetVote = sinon
         .stub(dataStore, 'getVote')
         .resolves({ isVoted: true });
 
       dataStore.addVote(1, 1, 1, false).catch((err) => {
-        assert.deepStrictEqual(err.message, 'Vote Addition Failed');
-        assert.ok(dbClient.run.calledOnce);
+        assert.equal(err.message, 'Vote Updation Failed');
+        assert.ok(knex.table.calledWith('answer_votes'));
+        assert.ok(knex.update.calledWith('vote_type', 1));
+        assert.ok(knex.where.calledWith('answer_id', 1));
+        assert.ok(knex.andWhere.calledWith('user', 1));
         assert.ok(stubbedGetVote.calledOnce);
-        assert.ok(dbClient.run.args[0][0].match(/set/));
-        assert.deepStrictEqual(dbClient.run.args[0][1], [1, 1, 1]);
         assert.deepStrictEqual(stubbedGetVote.args[0], [1, 1, false]);
         done();
       });
