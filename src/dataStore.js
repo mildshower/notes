@@ -17,15 +17,6 @@ class DataStore {
     });
   }
 
-  runQuery(query, params, rejectionContent) {
-    return new Promise((resolve, reject) => {
-      this.dbClient.run(query, params, err => {
-        err && reject(rejectionContent || err);
-        resolve();
-      });
-    });
-  }
-
   getRow(query, params, rejectionContent) {
     return new Promise((resolve, reject) => {
       this.dbClient.get(query, params, (err, row) => {
