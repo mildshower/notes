@@ -128,16 +128,23 @@ class DataStore {
     });
   }
 
-  addTag(tagName) {
-    return new Promise((resolve, reject) => {
-      this.dbClient.serialize(() => {
-        this.dbClient.run(query.tagsInsertion, tagName, () => { });
-        this.dbClient.get(query.tagIdByTagName, tagName, (err, tag) => {
-          err && reject(err);
-          resolve(tag);
-        });
-      });
-    });
+  getTagId(tagName) {
+    return this.knex
+      .select('id')
+      .from('tags')
+      .where('tag_name', tagName)
+      .first();
+  }
+
+  async addTag(tagName) {
+    const tag = await this.getTagId(tagName);
+    if (tag) {
+      return tag;
+    }
+    return this.knex
+      .table('tags')
+      .insert({ 'tag_name': tagName })
+      .then(([id]) => ({ id }));
   }
 
   async addQuestionTags(questionId, tags) {

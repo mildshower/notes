@@ -75,14 +75,6 @@ module.exports = {
     `insert into users (github_username, avatar) 
     values (?, ?);`,
 
-  tagsInsertion:
-    `insert into tags (tag_name)
-    values (?);`,
-
-  tagIdByTagName:
-    `select id from tags
-    where tag_name = ?;`,
-
   insertQuesTags:
     `insert into questions_tags (tag_id, question_id)
     values(?, ?)`,
