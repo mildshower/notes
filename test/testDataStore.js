@@ -334,23 +334,27 @@ context('dataStore', () => {
   });
 
   context('#getUserQuestions', function() {
+    const dbClient = () => { };
+    const knex = {};
+    knex.select = sinon.fake.returns(knex);
+    knex.from = sinon.fake.returns(knex);
+
+    const dataStore = new DataStore(dbClient, knex);
+    const questions = [
+      {
+        id: 1,
+        title: 'How to write arrow functions',
+        body_text: 'here is a sample function',
+      },
+    ];
+
     it('should give all the questions of a particular', (done) => {
-      const questions = [
-        {
-          id: 1,
-          title: 'How to write arrow functions',
-          body_text: 'here is a sample function',
-        },
-      ];
-      const dbClient = {
-        all: sinon.fake.yields(null, questions),
-      };
-      const dataStore = new DataStore(dbClient);
+      knex.where = sinon.fake.resolves(questions);
 
       dataStore.getUserQuestions(1).then((actual) => {
         assert.deepStrictEqual(actual, questions);
-        assert.ok(dbClient.all.calledOnce);
-        assert.deepStrictEqual(dbClient.all.args[0][1], [1]);
+        assert.ok(knex.from.calledWith('questions'));
+        assert.ok(knex.where.calledWith('questions.owner', 1));
         done();
       });
     });

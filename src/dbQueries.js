@@ -51,8 +51,6 @@ module.exports = {
   questionDetails:
     questionDetails + 'where ques.id = ?;',
 
-  userQuestions: questionDetails + 'where ques.owner = ?',
-
   searchQuestions:
     questionDetails +
     ` where ques.title like $text or ques.body_text like $text

@@ -124,7 +124,10 @@ class DataStore {
   }
 
   getUserQuestions(id) {
-    return this.getRows(query.userQuestions, [id]);
+    return this.knex
+      .select()
+      .from('questions')
+      .where('questions.owner', id);
   }
 
   getAnswersByQuestion(id) {
