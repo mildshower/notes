@@ -150,7 +150,9 @@ class DataStore {
   async addQuestionTags(questionId, tags) {
     for (let index = 0; index < tags.length; index++) {
       const { id: tagId } = await this.addTag(tags[index]);
-      this.dbClient.run(query.insertQuesTags, [tagId, questionId], () => { });
+      await this.knex
+        .table('questions_tags')
+        .insert({ 'tag_id': tagId, 'question_id': questionId });
     }
   }
 

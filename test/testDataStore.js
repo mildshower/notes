@@ -74,38 +74,47 @@ context('dataStore', () => {
   });
 
   context('#addQuestionTags', () => {
-    it('it should add tags', (done) => {
-      const dbClient = {
-        get: sinon.fake.yieldsAsync(null, { id: 1 }),
-        run: sinon.fake.yieldsAsync(null),
-        serialize: (cb) => cb.apply({ dbClient }),
-      };
+    const dbClient = () => { };
+    const knex = {};
+    knex.table = sinon.fake.returns(knex);
+    knex.select = sinon.fake.returns(knex);
+    knex.from = sinon.fake.returns(knex);
+    knex.where = sinon.fake.returns(knex);
 
-      const dataStore = new DataStore(dbClient);
+    const dataStore = new DataStore(dbClient, knex);
+    it('it should add tags', (done) => {
+      knex.first = sinon.fake.resolves(undefined);
+      knex.insert = sinon.fake.resolves([1]);
+
       dataStore.addQuestionTags(1, ['tag']).then(() => {
-        assert.ok(dbClient.get.calledOnce);
-        assert.ok(dbClient.run.calledTwice);
-        assert.deepStrictEqual(dbClient.get.args[0][1], 'tag');
-        assert.deepStrictEqual(dbClient.run.args[0][1], 'tag');
-        assert.deepStrictEqual(dbClient.run.args[1][1], [1, 1]);
+        assert.ok(knex.table.calledWith('questions_tags'));
+        assert.ok(knex.insert.calledWith({ 'tag_name': 'tag' }));
+        assert.ok(knex.insert.calledWith({ 'tag_id': 1, 'question_id': 1 }));
+        done();
+      });
+    });
+
+    it('it should get tags without adding if tag is already exists', (done) => {
+      knex.first = sinon.fake.resolves({ id: 1 });
+
+      dataStore.addQuestionTags(1, ['tag']).then(() => {
+        assert.ok(knex.table.calledWith('questions_tags'));
+        assert.ok(knex.insert.calledWith({ 'tag_id': 1, 'question_id': 1 }));
         done();
       });
     });
 
     it('it should give error when addition of tags doesn\'t happen', (done) => {
-      const dbClient = {
-        get: sinon.fake.yieldsAsync(new Error('error')),
-        run: sinon.fake.yieldsAsync(null),
-        serialize: (cb) => cb.apply({ dbClient }),
-      };
+      knex.first = sinon.fake.resolves(undefined);
+      const insert = sinon.stub();
+      insert.withArgs({ 'tag_name': 'tag' }).resolves([1]);
+      insert.withArgs({ 'tag_id': 1, 'question_id': 1 }).rejects();
+      knex.insert = insert;
 
-      const dataStore = new DataStore(dbClient);
-      dataStore.addQuestionTags(1, ['tag']).catch((err) => {
-        assert.ok(dbClient.get.calledOnce);
-        assert.ok(dbClient.run.calledOnce
-        );
-        assert.ok(err.message, 'error');
-        assert.deepStrictEqual(dbClient.run.args[0][1], 'tag');
+      dataStore.addQuestionTags(1, ['tag']).catch(() => {
+        assert.ok(knex.table.calledWith('questions_tags'));
+        assert.ok(knex.insert.calledWith({ 'tag_name': 'tag' }));
+        assert.ok(knex.insert.calledWith({ 'tag_id': 1, 'question_id': 1 }));
         done();
       });
     });
@@ -192,30 +201,26 @@ context('dataStore', () => {
 
   context('#addQuestion', () => {
     it('it should add question', (done) => {
-      const dbClient = {
-        run: sinon.fake.yields(null),
-        get: sinon.fake.yields(null, { id: 1 }),
-        serialize: (cb) => cb(),
+      const dataStore = new DataStore({});
+
+      const fakeAddQuestionContent = sinon
+        .stub(dataStore, 'addQuestionContent')
+        .resolves({ id: 1 });
+
+      const fakeAddQuestionTags = sinon
+        .stub(dataStore, 'addQuestionTags')
+        .resolves();
+
+      const question = {
+        title: 'title', body: 'body', bodyText: 'bodyText', tags: ['tag']
       };
-      const dataStore = new DataStore(dbClient);
+
       dataStore
-        .addQuestion(
-          { title: 'title', body: 'body', bodyText: 'bodyText', tags: ['tag'] },
-          1
-        )
+        .addQuestion(question, 1)
         .then((details) => {
-          assert.ok(dbClient.run.calledThrice);
-          assert.ok(dbClient.get.calledTwice);
-          assert.deepStrictEqual(dbClient.run.args[0][1], [
-            'title',
-            'body',
-            'bodyText',
-            1,
-          ]);
-          assert.deepStrictEqual(dbClient.run.args[1][1], 'tag');
-          assert.deepStrictEqual(dbClient.run.args[2][1], [1, 1]);
-          assert.deepStrictEqual(dbClient.get.args[1][1], 'tag');
           assert.deepStrictEqual(details, { id: 1 });
+          assert.ok(fakeAddQuestionContent.calledOnceWith(question, 1));
+          assert.ok(fakeAddQuestionTags.calledOnceWith(1, ['tag']));
           done();
         });
     });
