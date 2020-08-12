@@ -104,28 +104,13 @@ class DataStore {
 
   addQuestionContent(question, owner) {
     const { title, body, bodyText } = question;
-    return new Promise((resolve, reject) => {
-      this.dbClient.serialize(() => {
-        this.dbClient.run(
-          query.questionInsertion,
-          [title, body, bodyText, owner],
-          (err) => {
-            if (err) {
-              reject(new Error('Question Insertion Incomplete!'));
-            }
-          }
-        );
-        this.dbClient.get(
-          query.lastRowId,
-          (err, details) => {
-            if (err) {
-              reject(err);
-            }
-            resolve(details);
-          }
-        );
+    return this.knex
+      .table('questions')
+      .insert({ title, body, 'body_text': bodyText, owner })
+      .then(([id]) => ({ id }))
+      .catch(() => {
+        throw new Error('Question Insertion Incomplete!');
       });
-    });
   }
 
   getTagId(tagName) {

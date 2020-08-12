@@ -121,13 +121,14 @@ context('dataStore', () => {
   });
 
   context('#addQuestionContent', () => {
+    const dbClient = () => { };
+    const knex = {};
+    knex.table = sinon.fake.returns(knex);
+
+    const dataStore = new DataStore(dbClient, knex);
     it('it should add a question when valid owner given', (done) => {
-      const dbClient = {
-        run: sinon.fake.yields(null),
-        get: sinon.fake.yields(null, { id: 1 }),
-        serialize: (cb) => cb(),
-      };
-      const dataStore = new DataStore(dbClient);
+      knex.insert = sinon.fake.resolves([1]);
+
       dataStore
         .addQuestionContent(
           { title: 'title', body: 'body', bodyText: 'body' },
@@ -135,25 +136,17 @@ context('dataStore', () => {
         )
         .then((details) => {
           assert.deepStrictEqual(details, { id: 1 });
-          assert.ok(dbClient.run.calledOnce);
-          assert.ok(dbClient.get.calledOnce);
-          assert.deepStrictEqual(dbClient.run.args[0][1], [
-            'title',
-            'body',
-            'body',
-            1,
-          ]);
+          assert.ok(knex.table.calledWith('questions'));
+          assert.ok(knex.insert.calledWith({
+            title: 'title', body: 'body',
+            'body_text': 'body', owner: 1
+          }));
           done();
         });
     });
 
     it('it should produce error if wrong owner is given', (done) => {
-      const dbClient = {
-        run: sinon.fake.yields(new Error()),
-        get: sinon.fake.yields(null, { id: 1 }),
-        serialize: (cb) => cb(),
-      };
-      const dataStore = new DataStore(dbClient);
+      knex.insert = sinon.fake.rejects();
       dataStore
         .addQuestionContent(
           { title: 'title', body: 'body', bodyText: 'body' },
@@ -161,39 +154,11 @@ context('dataStore', () => {
         )
         .catch((err) => {
           assert.deepStrictEqual(err.message, 'Question Insertion Incomplete!');
-          assert.deepStrictEqual(dbClient.run.args[0][1], [
-            'title',
-            'body',
-            'body',
-            10,
-          ]);
-          assert.ok(dbClient.run.calledOnce);
-          done();
-        });
-    });
-
-    it('it produce error when last row id fetching could not be performed', (done) => {
-      const dbClient = {
-        run: sinon.fake.yields(null),
-        get: sinon.fake.yields(new Error('error')),
-        serialize: (cb) => cb(),
-      };
-      const dataStore = new DataStore(dbClient);
-      dataStore
-        .addQuestionContent(
-          { title: 'title', body: 'body', bodyText: 'body' },
-          1
-        )
-        .catch((err) => {
-          assert.deepStrictEqual(err.message, 'error');
-          assert.ok(dbClient.run.calledOnce);
-          assert.ok(dbClient.get.calledOnce);
-          assert.deepStrictEqual(dbClient.run.args[0][1], [
-            'title',
-            'body',
-            'body',
-            1,
-          ]);
+          assert.ok(knex.table.calledWith('questions'));
+          assert.ok(knex.insert.calledWith({
+            title: 'title', body: 'body',
+            'body_text': 'body', owner: 10
+          }));
           done();
         });
     });
@@ -639,7 +604,7 @@ context('dataStore', () => {
     });
 
     it('should produce error when insertion failed', (done) => {
-      knex.insert = sinon.fake.rejects('Answer Insertion Failed!');
+      knex.insert = sinon.fake.rejects();
 
       dataStore.addAnswer('body', 'bodyText', 100, 1).catch((err) => {
         assert.deepStrictEqual(err.message, 'Answer Insertion Failed!');
@@ -803,7 +768,7 @@ context('dataStore', () => {
     });
 
     it('should produce error when vote addition failed', (done) => {
-      knex.insert = sinon.fake.rejects('Vote Addition Failed');
+      knex.insert = sinon.fake.rejects();
       const stubbedGetVote = sinon
         .stub(dataStore, 'getVote')
         .resolves({ isVoted: false });
@@ -821,7 +786,7 @@ context('dataStore', () => {
     });
 
     it('should produce error when updation failed', (done) => {
-      knex.andWhere = sinon.fake.rejects('Vote Updation Failed');
+      knex.andWhere = sinon.fake.rejects();
       const stubbedGetVote = sinon
         .stub(dataStore, 'getVote')
         .resolves({ isVoted: true });
@@ -868,7 +833,7 @@ context('dataStore', () => {
     });
 
     it('should produce error when invalid credentials given', (done) => {
-      knex.del = sinon.fake.rejects('Vote Deletion Failed');
+      knex.del = sinon.fake.rejects();
       dataStore.deleteVote(100, 100).catch((err) => {
         assert.deepStrictEqual(err.message, 'Vote Deletion Failed');
         assert.ok(knex.table.calledWith('answer_votes'));
@@ -912,7 +877,7 @@ context('dataStore', () => {
     });
 
     it('should produce error when database produces', (done) => {
-      knex.first = sinon.fake.rejects('Vote Count Fetching Error');
+      knex.first = sinon.fake.rejects();
 
       dataStore.getVoteCount(100).catch((err) => {
         assert.deepStrictEqual(err.message, 'Vote Count Fetching Error');

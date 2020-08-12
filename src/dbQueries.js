@@ -67,17 +67,9 @@ module.exports = {
     or hasCorrectAnswer = $acceptance
     or answerCount = $ansCount;`,
 
-  questionInsertion:
-    `insert into questions (title, body, body_text, owner)
-    values (?, ?, ?, ?);`,
-
   userInsertion:
     `insert into users (github_username, avatar) 
     values (?, ?);`,
-
-  insertQuesTags:
-    `insert into questions_tags (tag_id, question_id)
-    values(?, ?)`,
 
   initial: `
     ${Object.values(tablesSchema).join('\n')}
