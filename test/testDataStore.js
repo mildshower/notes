@@ -363,6 +363,16 @@ describe('dataStore', () => {
         done();
       });
     });
+
+    it('should produce error while db produces error', (done) => {
+      knex.where = sinon.fake.rejects();
+
+      dataStore.getUserQuestions(1).catch(() => {
+        assert.ok(knex.from.calledWith('questions'));
+        assert.ok(knex.where.calledWith('questions.owner', 1));
+        done();
+      });
+    });
   });
 
   context('#getMatchedQuestions', function() {
@@ -536,31 +546,40 @@ describe('dataStore', () => {
   });
 
   context('#getUserAnswers', function() {
+    const dbClient = () => { };
+    const knex = {};
+    knex.select = sinon.fake.returns(knex);
+    knex.from = sinon.fake.returns(knex);
+    knex.leftJoin = sinon.fake.returns(knex);
+
+    const dataStore = new DataStore(dbClient, knex);
+    const details = [{
+      id: 1,
+      body: 'body',
+      body_text: 'body',
+      question: 1,
+      owner: 1,
+      is_accepted: 0,
+      questionTitle: 'question'
+    }];
+
     it('should give all the answers of a particular user', (done) => {
-      const answers = [{ id: 1 }];
-      const dbClient = {
-        all: sinon.fake.yields(null, answers),
-      };
-      const dataStore = new DataStore(dbClient);
+      knex.where = sinon.fake.resolves(details);
 
       dataStore.getUserAnswers(1).then((actual) => {
-        assert.deepStrictEqual(actual, answers);
-        assert.ok(dbClient.all.calledOnce);
-        assert.deepStrictEqual(dbClient.all.args[0][1], [1]);
+        assert.deepStrictEqual(actual, details);
+        assert.ok(knex.from.calledWith('answers'));
+        assert.ok(knex.where.calledWith('answers.owner', 1));
         done();
       });
     });
 
     it('should produce error while db produces error', (done) => {
-      const dbClient = {
-        all: sinon.fake.yields(new Error('error')),
-      };
-      const dataStore = new DataStore(dbClient);
+      knex.where = sinon.fake.rejects();
 
-      dataStore.getUserAnswers(1).catch((err) => {
-        assert.deepStrictEqual(err.message, 'error');
-        assert.ok(dbClient.all.calledOnce);
-        assert.deepStrictEqual(dbClient.all.args[0][1], [1]);
+      dataStore.getUserAnswers(1).catch(() => {
+        assert.ok(knex.from.calledWith('answers'));
+        assert.ok(knex.where.calledWith('answers.owner', 1));
         done();
       });
     });

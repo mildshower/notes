@@ -40,7 +40,6 @@ const answerDetails = `select
   from answers ans `;
 
 module.exports = {
-  answersByUser: answerDetails + 'where ans.owner = ?',
 
   answerByQuestion:
     answerDetails + 'where ans.question = ? ORDER BY isAccepted DESC',

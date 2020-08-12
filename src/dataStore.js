@@ -181,7 +181,11 @@ class DataStore {
   }
 
   getUserAnswers(id) {
-    return this.getRows(query.answersByUser, [id]);
+    return this.knex
+      .select('answers.*', { questionTitle: 'questions.title' })
+      .from('answers')
+      .leftJoin('questions', 'answers.question', 'questions.id')
+      .where('answers.owner', id);
   }
 
   addAnswer(body, bodyText, quesId, owner) {
