@@ -293,48 +293,41 @@ context('dataStore', () => {
   });
 
   context('#updateUserDetails', function() {
+    const dbClient = () => { };
+    const knex = {};
+    knex.table = sinon.fake.returns(knex);
+    knex.update = sinon.fake.returns(knex);
+
+    const dataStore = new DataStore(dbClient, knex);
+
     const name = 'testUser';
     const email = 'testUser.com';
     const location = 'Bangalore';
 
     it('should update details of a user to database', (done) => {
-      const dbClient = {
-        run: sinon.fake.yields(null, undefined),
-      };
-      const dataStore = new DataStore(dbClient);
-
+      knex.where = sinon.fake.resolves(undefined);
       dataStore
-        .updateUserDetails(4, { name, email, location })
-        .then((actual) => {
-          assert.isUndefined(actual);
-          assert.ok(dbClient.run.calledOnce);
-          assert.deepStrictEqual(dbClient.run.args[0][1], [
-            name,
-            email,
-            location,
-            '',
-            4,
-          ]);
+        .updateUserDetails(4, { name, email, location, bio: '' })
+        .then(() => {
+          assert.ok(knex.table.calledWith('users'));
+          assert.ok(knex.update.calledWith({
+            'display_name': name, email, location, bio: ''
+          }));
+          assert.ok(knex.where.calledWith('id', 4));
           done();
         });
     });
 
     it('should produce error while db query produces', (done) => {
-      const dbClient = {
-        run: sinon.fake.yields(new Error('error')),
-      };
-      const dataStore = new DataStore(dbClient);
-
-      dataStore.updateUserDetails(4, { name, email, location }).catch((err) => {
-        assert.deepStrictEqual(err.message, 'error');
-        assert.ok(dbClient.run.calledOnce);
-        assert.deepStrictEqual(dbClient.run.args[0][1], [
-          name,
-          email,
-          location,
-          '',
-          4,
-        ]);
+      knex.where = sinon.fake.rejects();
+      dataStore.updateUserDetails(4, {
+        name, email, location, bio: ''
+      }).catch(() => {
+        assert.ok(knex.table.calledWith('users'));
+        assert.ok(knex.update.calledWith({
+          'display_name': name, email, location, bio: ''
+        }));
+        assert.ok(knex.where.calledWith('id', 4));
         done();
       });
     });

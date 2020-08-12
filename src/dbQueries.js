@@ -40,11 +40,6 @@ const answerDetails = `select
   from answers ans `;
 
 module.exports = {
-  userUpdation:
-    `UPDATE users
-    SET display_name = ?, email = ?, location = ?, bio = ?
-    WHERE id = ?;`,
-
   answersByUser: answerDetails + 'where ans.owner = ?',
 
   answerByQuestion:

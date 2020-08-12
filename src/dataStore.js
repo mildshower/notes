@@ -63,10 +63,10 @@ class DataStore {
   }
 
   updateUserDetails(userId, { name, email, location, bio }) {
-    return this.runQuery(
-      query.userUpdation,
-      [name, email, location, bio || '', userId]
-    );
+    return this.knex
+      .table('users')
+      .update({ 'display_name': name, email, location, bio })
+      .where('id', userId);
   }
 
   getQuestionDetails(id) {
