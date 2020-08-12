@@ -56,7 +56,7 @@ module.exports = {
   questionDetails:
     questionDetails + 'where ques.id = ?;',
 
-  userQuestions: questionDetails + 'where ques.owner = ?;',
+  userQuestions: questionDetails + 'where ques.owner = ?',
 
   searchQuestions:
     questionDetails +
@@ -67,17 +67,10 @@ module.exports = {
     or hasCorrectAnswer = $acceptance
     or answerCount = $ansCount;`,
 
-  userInsertion:
-    `insert into users (github_username, avatar) 
-    values (?, ?);`,
-
   initial: `
     ${Object.values(tablesSchema).join('\n')}
-    PRAGMA foreign_keys=ON;
-  `,
+    PRAGMA foreign_keys=ON;`,
 
   answerById:
-    answerDetails + 'where ans.id = ?',
-
-  lastRowId: 'select last_insert_rowid() as id;'
+    answerDetails + 'where ans.id = ?'
 };

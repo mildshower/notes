@@ -43,29 +43,14 @@ class DataStore {
     });
   }
 
-  addNewUser(username, avatarUrl) {
-    return new Promise((resolve, reject) => {
-      this.dbClient.serialize(() => {
-        this.dbClient.run(
-          query.userInsertion,
-          [username, avatarUrl],
-          (err) => {
-            if (err) {
-              reject(new Error('User Already Exists!'));
-            }
-          }
-        );
-        this.dbClient.get(
-          query.lastRowId,
-          (err, details) => {
-            if (err) {
-              reject(err);
-            }
-            resolve(details);
-          }
-        );
+  addNewUser(userName, avatar) {
+    return this.knex
+      .table('users')
+      .insert({ 'github_username': userName, avatar })
+      .then(([id]) => ({ id }))
+      .catch(() => {
+        throw new Error('User Already Exists!');
       });
-    });
   }
 
   getUser(key, value) {

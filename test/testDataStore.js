@@ -192,55 +192,33 @@ context('dataStore', () => {
   });
 
   context('#addNewUser', function() {
+    const dbClient = () => { };
+    const knex = {};
+    knex.table = sinon.fake.returns(knex);
+
+    const dataStore = new DataStore(dbClient, knex);
     const name = 'testUser';
-    const avatarUrl = 'avatarUrl.com/u/58025792?v=4';
+    const avatar = 'avatarUrl.com/u/58025792?v=4';
 
     it('should add a new user to database', (done) => {
-      const dbClient = {
-        run: sinon.fake.yields(null),
-        get: sinon.fake.yields(null, { id: 1 }),
-        serialize: (cb) => cb(),
-      };
-      const dataStore = new DataStore(dbClient);
+      knex.insert = sinon.fake.resolves([1]);
 
-      dataStore.addNewUser(name, avatarUrl).then((actual) => {
+      dataStore.addNewUser(name, avatar).then((actual) => {
         assert.deepStrictEqual(actual, { id: 1 });
-        assert.ok(dbClient.run.calledOnce);
-        assert.ok(dbClient.get.calledOnce);
-        assert.deepStrictEqual(dbClient.run.args[0][1], [name, avatarUrl]);
+        assert.ok(knex.table.calledWith('users'));
+        assert.ok(knex.insert.calledWith({ 'github_username': name, avatar }));
         done();
       });
     });
 
     it('should not add a user when the user already present', (done) => {
-      const dbClient = {
-        run: sinon.fake.yields(new Error('User Already Exists!'), null),
-        serialize: (cb) => cb(),
-      };
-      const dataStore = new DataStore(dbClient);
+      knex.insert = sinon.fake.rejects();
 
       const message = 'User Already Exists!';
-      dataStore.addNewUser(name, avatarUrl).catch((err) => {
+      dataStore.addNewUser(name, avatar).catch((err) => {
         assert.equal(err.message, message);
-        assert.ok(dbClient.run.calledOnce);
-        assert.deepStrictEqual(dbClient.run.args[0][1], [name, avatarUrl]);
-        done();
-      });
-    });
-
-    it('should produce error if fetching new row id fails', (done) => {
-      const dbClient = {
-        run: sinon.fake.yields(null),
-        get: sinon.fake.yields(new Error('error')),
-        serialize: (cb) => cb(),
-      };
-      const dataStore = new DataStore(dbClient);
-
-      dataStore.addNewUser(name, avatarUrl).catch((err) => {
-        assert.equal(err.message, 'error');
-        assert.ok(dbClient.run.calledOnce);
-        assert.ok(dbClient.get.calledOnce);
-        assert.deepStrictEqual(dbClient.run.args[0][1], [name, avatarUrl]);
+        assert.ok(knex.table.calledWith('users'));
+        assert.ok(knex.insert.calledWith({ 'github_username': name, avatar }));
         done();
       });
     });
