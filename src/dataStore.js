@@ -1,5 +1,27 @@
 const query = require('./dbQueries');
 
+const attachQuestionDetails = function(knex){
+  return knex.with('votes', qb => {
+    qb
+      .table('question_votes')
+      .select({quesId: 'question_id', 
+        count: knex.raw('sum(REPLACE(vote_type,0,-1))')})
+      .groupBy('quesId');
+  })
+    .select(['ques.id', 'title', 'ques.body', 'ques.owner', 'ques.created'])
+    .select({
+      voteCount: knex.raw('COALESCE(count,0)'),
+      hasCorrectAnswer: knex.raw('coalesce(sum(answers.is_accepted),0)'),
+      answerCount: knex.raw('count( answers.id)'),
+      'bodyText': 'ques.body_text', 'ownerName': 'users.display_name',
+      'ownerAvatar': 'users.avatar'})
+    .from('questions as ques')
+    .leftJoin('users', 'users.id', 'ques.owner')
+    .leftJoin('answers', 'answers.question', 'ques.id')
+    .leftJoin('votes', 'ques.id', 'votes.quesId')
+    .first();
+};
+
 class DataStore {
   constructor(dbClient, knex) {
     this.dbClient = dbClient;
@@ -61,12 +83,13 @@ class DataStore {
   }
 
   getQuestionDetails(id) {
-    return this.getRow(query.questionDetails, [id])
+    return attachQuestionDetails(this.knex)
+      .where('ques.id', id)
       .then(details => {
-        if (!details) {
-          throw new Error('Wrong Id Provided');
+        if(details.id){
+          return details;
         }
-        return details;
+        throw new Error('Wrong Id Provided');
       });
   }
 

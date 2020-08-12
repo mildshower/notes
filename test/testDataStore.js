@@ -2,30 +2,35 @@ const sinon = require('sinon');
 const { assert } = require('chai');
 const DataStore = require('../src/dataStore');
 
-context('dataStore', () => {
+describe('dataStore', () => {
   context('#getQuestionDetails', () => {
+    const knex = {
+      select: () => knex,
+      leftJoin: () => knex,
+      with: () => knex,
+      raw: () => knex,
+      table: () => knex,
+      from: () => knex,
+      groupBy: () => knex,
+      first: () => knex
+    };
+
     it('it should give details of question when valid id provided', (done) => {
-      const dbClient = {
-        get: sinon.fake.yields(null, { title: 'question' }),
-      };
-      const dataStore = new DataStore(dbClient);
+      knex.where = sinon.fake.resolves({ id: 1, title: 'question' });
+      const dataStore = new DataStore({}, knex);
       dataStore.getQuestionDetails('1').then((details) => {
-        assert.deepStrictEqual(details, { title: 'question' });
-        assert.ok(dbClient.get.calledOnce);
-        assert.deepStrictEqual(dbClient.get.args[0][1], ['1']);
+        assert.deepStrictEqual(details, { id: 1, title: 'question' });
+        assert.ok(knex.where.calledOnce);
         done();
       });
     });
 
     it('it should produce error when invalid id is given', (done) => {
-      const dbClient = {
-        get: sinon.fake.yields(null, undefined),
-      };
-      const dataStore = new DataStore(dbClient);
-      dataStore.getQuestionDetails('2').catch((error) => {
-        assert.deepStrictEqual(error.message, 'Wrong Id Provided');
-        assert.ok(dbClient.get.calledOnce);
-        assert.deepStrictEqual(dbClient.get.args[0][1], ['2']);
+      knex.where = sinon.fake.resolves({ id: null});
+      const dataStore = new DataStore({}, knex);
+      dataStore.getQuestionDetails('1').catch((err) => {
+        assert.deepStrictEqual(err.message, 'Wrong Id Provided');
+        assert.ok(knex.where.calledOnce);
         done();
       });
     });
