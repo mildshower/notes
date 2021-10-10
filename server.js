@@ -5,6 +5,7 @@ const dbPath = process.env.HO_DB_PATH || 'data/ho_production.db';
 const dbClient = new sqlite3.Database(dbPath);
 const knex = require('./src/knexConnection')(dbPath);
 const { app } = require('./src/routes');
+require('dotenv').config()
 
 app.locals.dataStore = new DataStore(dbClient, knex);
 app.locals.dataStore.init();

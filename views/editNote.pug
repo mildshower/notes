@@ -14,7 +14,7 @@ head
   title heapOverflow | Ask
 body
   include ./header.pug
-  h1.title Add A Note
+  h1.title Edit the Note
   .newQuestionBox(id= id)
     label(for='titleField') Title
     input#titleField(type='text' maxlength='100' autocomplete='off')
@@ -28,4 +28,4 @@ body
         p Popular Tags
         .tags
 
-  button#postButton Post Your Question
+  button#postButton Update Note
