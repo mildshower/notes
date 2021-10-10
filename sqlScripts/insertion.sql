@@ -8,7 +8,7 @@ INSERT INTO users (id, github_username, display_name, location, email, bio, role
    (5,"user5", "john", "China", "john01111@gmail.com","Exploring the world of Mobile and Web Development.","user","https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/Sunflower_sky_backdrop.jpg/220px-Sunflower_sky_backdrop.jpg"),
    (6,"user6", "joe", "spain", "joe394@yahoo.co.in","developing altime","moderator","https://nurserylive.com/images/stories/virtuemart/product/nurserylive-tulip-seadov-red-bulbs.jpg"),
    (7,"user7", "tom", "USA", "tom39292@gmail.com",NULL,"user","https://static01.nyt.com/images/2019/09/27/multimedia/27xp-spiderman/27xp-spiderman-superJumbo.jpg"),
-   (8,"user8", "alex", "America", "alex@yahoo.co.in","I am a software development holic. I feel myself above the sky and feel that I am superman whenever I write code. ","user","https://akm-img-a-in.tosshub.com/sites/btmt/images/stories/shaktiman_505_310320050700.jpg?size=1200:675"),
+   (8,"user8", "alex", "America", "alex@yahoo.co.in","I am a software development holic. I feel myself above the sky and feel that I am superman whenever I write code.","user","https://akm-img-a-in.tosshub.com/sites/btmt/images/stories/shaktiman_505_310320050700.jpg?size=1200:675"),
    (9,"user9", "walker", "russia", "walker9002@yahoo.co.in","Not a C # guru yet but want to be one someday","user","https://static01.nyt.com/images/2019/09/27/multimedia/27xp-spiderman/27xp-spiderman-superJumbo.jpg"),
    (10,"user10", "willie", "hong kong", "willie1222@yahoo.co.in","Passionate about Python,performance, JavaScript and NodeJS.","moderator","https://akm-img-a-in.tosshub.com/sites/btmt/images/stories/shaktiman_505_310320050700.jpg?size=1200:675");
 

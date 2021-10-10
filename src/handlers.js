@@ -67,7 +67,7 @@ const getAllUniqueTags = async function(dataStore, questions) {
 const attachUser = (req, res, next) => {
   const sessionId = req.cookies.session;
   const userId = req.app.locals.sessions.getUserId(sessionId);
-  req.app.locals.dataStore.getUser('id', userId)
+  req.app.locals.dataStore.getUser('id', 1)
     .then(({ user }) => {
       req.user = user;
       next();
@@ -83,7 +83,7 @@ const serveHomePage = async function(req, res) {
   }
   res.render('home', {
     user: req.user,
-    title: 'Latest Questions',
+    title: 'Latest Notes',
     questions,
     currPath: '/home',
   });

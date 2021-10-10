@@ -2,9 +2,9 @@ doctype html
 head
   meta(charset='UTF-8')
   meta(name='viewport' content='width=device-width, initial-scale=1.0')
-  link(href='https://cdn.quilljs.com/1.3.6/quill.snow.css' rel='stylesheet')
-  script(src='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/highlight.min.js')
-  script(src='https://cdn.quilljs.com/1.3.6/quill.js')
+  link(href='/styles/quill.snow.css' rel='stylesheet')
+  script(src='/scripts/highlight.min.js')
+  script(src='/scripts/quill.js')
   link(rel='icon' href='/images/favicon.svg')
   link(rel='stylesheet' href='/css/editorStyles.css')
   link(rel='stylesheet' href='/css/question.css')
@@ -41,44 +41,44 @@ body
         input.newComment(type='text' placeholder='Your comment here..')
         button.newCommentButton Post Comment
         button.cancelButton Cancel
-  p#answersHead 
-    | Answers (
-    span.count #{answers.length}
-    |)
-  each answer in answers
-    .answerBox(id=answer.id)
-      .stats
-        .votes
-          button.upVote(class=answer.userVote && answer.userVote.voteType==1 && 'chosen')
-            img(src=`/images/arrow.svg` alt="voteUp" onclick= user?'':`showPopUp('${currPath}')`)
-          p.voteCount #{answer.voteCount}
-          button.downVote(class=answer.userVote && answer.userVote.voteType==0 && 'chosen')
-            img(src=`/images/arrow.svg` alt="voteUp" onclick= user?'':`showPopUp('${currPath}')`)
-        img.acceptance(class=`${answer.isAccepted?'accepted':''} ${user&&user.id===owner?'clickable':''}`)
-      .body
-        .editor
-        p.status
-          | &nbsp;&nbsp;#{answer.created}
-          a.userName(href=`/profile/${answer.owner}`) #{answer.ownerName}
-          img.smallAvatar(src=answer.ownerAvatar)
-        //- .options
-          if(user && user.id === answer.owner)
-            p.deleteButton(onclick= `deleteAnswer(${answer.id})`) Delete
-        p.commentHead Comments
-        .commentsBox
-          each comment in answer.comments
-            p.comment
-              | #{comment.body}&nbsp;&nbsp;-&nbsp;
-              a.userName(href=`/profile/${comment.owner}`) #{comment.ownerName}
-              span.commentTime &nbsp;&nbsp;#{comment.created}
-        .commentBar.closed
-          p.commentBarOpener(onclick= user?'':`showPopUp('${currPath}')`) add a comment
-          input.newComment(type='text' placeholder='Your comment here..')
-          button.newCommentButton Post Comment
-          button.cancelButton Cancel
-  if(user)
-    #answerBody
-      #editor
-    button#answerButton Post Your Answer
-  else
-    button#answerButton(onclick=`showPopUp(\'${currPath}')`) Post Your Answer
+  //- p#answersHead 
+  //-   | Answers (
+  //-   span.count #{answers.length}
+  //-   |)
+  //- each answer in answers
+  //-   .answerBox(id=answer.id)
+  //-     .stats
+  //-       .votes
+  //-         button.upVote(class=answer.userVote && answer.userVote.voteType==1 && 'chosen')
+  //-           img(src=`/images/arrow.svg` alt="voteUp" onclick= user?'':`showPopUp('${currPath}')`)
+  //-         p.voteCount #{answer.voteCount}
+  //-         button.downVote(class=answer.userVote && answer.userVote.voteType==0 && 'chosen')
+  //-           img(src=`/images/arrow.svg` alt="voteUp" onclick= user?'':`showPopUp('${currPath}')`)
+  //-       img.acceptance(class=`${answer.isAccepted?'accepted':''} ${user&&user.id===owner?'clickable':''}`)
+  //-     .body
+  //-       .editor
+  //-       p.status
+  //-         | &nbsp;&nbsp;#{answer.created}
+  //-         a.userName(href=`/profile/${answer.owner}`) #{answer.ownerName}
+  //-         img.smallAvatar(src=answer.ownerAvatar)
+  //-       //- .options
+  //-         if(user && user.id === answer.owner)
+  //-           p.deleteButton(onclick= `deleteAnswer(${answer.id})`) Delete
+  //-       p.commentHead Comments
+  //-       .commentsBox
+  //-         each comment in answer.comments
+  //-           p.comment
+  //-             | #{comment.body}&nbsp;&nbsp;-&nbsp;
+  //-             a.userName(href=`/profile/${comment.owner}`) #{comment.ownerName}
+  //-             span.commentTime &nbsp;&nbsp;#{comment.created}
+  //-       .commentBar.closed
+  //-         p.commentBarOpener(onclick= user?'':`showPopUp('${currPath}')`) add a comment
+  //-         input.newComment(type='text' placeholder='Your comment here..')
+  //-         button.newCommentButton Post Comment
+  //-         button.cancelButton Cancel
+  //- if(user)
+  //-   #answerBody
+  //-     #editor
+  //-   button#answerButton Post Your Answer
+  //- else
+  //-   button#answerButton(onclick=`showPopUp(\'${currPath}')`) Post Your Answer

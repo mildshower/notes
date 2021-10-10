@@ -14,9 +14,15 @@ const getEditorConfig = () => ({
   ],
   modules: {
     toolbar: [
-      ['bold', 'underline'],
-      ['blockquote', 'code-block'],
-      ['link', { header: [false, 1, 2, 3, 4, 5, 6] }],
+      ['bold', 'italic', 'underline'],        // toggled buttons
+    ['blockquote', 'code-block'],
+      
+    [{ 'script': 'sub'}, { 'script': 'super' }],      // superscript/subscript
+      
+    [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+      
+    [{ 'color': [] }],          // dropdown with defaults from theme
+      
     ],
     syntax: true,
   },

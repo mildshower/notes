@@ -3,9 +3,9 @@ include popUp.pug
 #titleBar
   h1.title #{title}
   if(user)
-    a#askQuestionBtn(href= '/user/askQuestion') Ask Question
+    a#askQuestionBtn(href= '/user/askQuestion') Add Note
   else
-    a#askQuestionBtn(onclick= 'showPopUp(\'/user/askQuestion\')') Ask Question
+    a#askQuestionBtn(onclick= 'showPopUp(\'/user/askQuestion\')') Add Note
 if created
   p#questionStatus
     img.smallAvatar(src=ownerAvatar)
