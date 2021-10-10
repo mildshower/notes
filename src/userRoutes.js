@@ -15,7 +15,8 @@ const {
   verifyAnswerAcceptance,
   acceptAnswer,
   rejectAnswer,
-  saveComment
+  saveComment,
+  updateNote
 } = require('./handlers');
 
 router.use(authorizeUser);
@@ -30,5 +31,6 @@ router.post('/deleteVote', deleteVote);
 router.post('/acceptAnswer', verifyAnswerAcceptance, acceptAnswer);
 router.post('/rejectAnswer', verifyAnswerAcceptance, rejectAnswer);
 router.post('/saveComment', saveComment);
+router.post('/editNote', updateNote)
 
 module.exports = router;

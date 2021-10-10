@@ -4,12 +4,13 @@ const getAnswerBody = () => document.querySelector('#answerBody');
 const getAnswers = () => document.querySelectorAll('.answerBox');
 const getAnswer = (id) => document.querySelector(`.answerBox[id="${id}"]`);
 const getAnswerCount = () => document.querySelector('#answersHead .count');
+const getDeleteButton = () => document.querySelector('.deleteNote');
+const getEditButton = () => document.querySelector('.editNote');
 const getClickableTicks = () => document.querySelectorAll('.clickable');
 const getClickableTick = ancestor =>
   document.querySelector(ancestor + ' .clickable');
 const getCommentBar = ancestor =>
   document.querySelector(`${ancestor} .commentBar`);
-
 const getCommentBox = ancestor =>
   document.querySelector(`${ancestor} .commentsBox`);
 
@@ -133,13 +134,15 @@ const addAcceptanceListener = function(ancestor, id) {
   };
 };
 
-const showComment = function(commentBox, { body, created, ownerName, owner }) {
+const showComment = function(commentBox, { body, created, ownerName, owner, id }) {
   const commentElement = document.createElement('p');
   commentElement.innerHTML =
     `${body}&nbsp;&nbsp;-&nbsp;` +
-    `<a class="userName" href="/profile/${owner}">${ownerName}</a>` +
-    `<span class="commentTime">&nbsp;&nbsp;${created}</span>`;
+    // `<a class="userName" href="/profile/${owner}">${ownerName}</a>` +
+    `<span class="commentTime">&nbsp;&nbsp;${created}</span>` +
+    `<img class="deleteComment" src="/images/delete.png" alt="delete comment" onclick="deleteComment(${id})">`;
   commentElement.classList.add('comment');
+  commentElement.id = `c_${id}`;
   commentBox.appendChild(commentElement);
 };
 
@@ -167,9 +170,32 @@ const addCommentListener = function(ancestor, id, isQuestionComment) {
   };
 };
 
+const addDeleteAndEditListener = (noteId) => {
+  getDeleteButton().onclick = () => {
+    if(!confirm("This Note will be deleted.")) return;
+    fetch(`/deleteNote?id=${noteId}`, {method: "DELETE"}).then((res) => {
+      if(!res.ok) return window.alert("Could not delete the note");
+      location.assign("/home");
+    })
+  }
+  getEditButton().onclick = () => {
+    location.assign(`/editNote?id=${noteId}`);
+  }
+}
+
+const deleteComment = (commentId) => {
+  if(!confirm("The Comment will be deleted")) return;
+
+  fetch(`/deleteComment?id=${commentId}`, {method: "DELETE"}).then(res => {
+    if(!res.ok) return window.alert("Could not delete the comment");
+
+    document.getElementById(`c_${commentId}`).remove();
+  })
+}
+
 const attachContentListeners = function() {
   const questionId = getQuestionBox().id;
-  addVoteListener('.questionBox', questionId, true);
+  // addVoteListener('.questionBox', questionId, true);
   addCommentListener('.questionBox', questionId, true);
   getAnswers().forEach(({ id }) => {
     const answerBoxQuery = `.answerBox[id="${id}"]`;
@@ -177,16 +203,13 @@ const attachContentListeners = function() {
     addCommentListener(answerBoxQuery, id, false);
     addAcceptanceListener(answerBoxQuery, id);
   });
+  addDeleteAndEditListener(questionId);
 };
 
 const main = function() {
   loadQuestion();
-  loadAnswers();
-  if (getAnswerBody()) {
-    const newAnswer = new Quill('#answerBody > #editor', getEditorConfig());
-    getAnswerButton().onclick = saveAnswer.bind(null, newAnswer);
-    attachContentListeners();
-  }
+  // loadAnswers();
+  attachContentListeners();
 };
 
 window.onload = main;

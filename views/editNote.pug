@@ -1,0 +1,31 @@
+doctype html
+head
+  meta(charset='UTF-8')
+  link(href='/styles/quill.snow.css' rel='stylesheet')
+  script(src='/scripts/highlight.min.js')
+  script(src='/scripts/quill.js')
+  link(rel='icon' href='/images/favicon.svg')
+  link(rel='stylesheet' href='/css/askQuestion.css')
+  link(rel='stylesheet' href='/css/editorStyles.css')
+  script(src="/scripts/editor.js")
+  script(src='/scripts/request.js')
+  script(src='/scripts/editNote.js')
+  meta(name='viewport' content='width=device-width, initial-scale=1.0')
+  title heapOverflow | Ask
+body
+  include ./header.pug
+  h1.title Add A Note
+  .newQuestionBox(id= id)
+    label(for='titleField') Title
+    input#titleField(type='text' maxlength='100' autocomplete='off')
+    label(for='bodyField') Body
+    #bodyField
+    label(for='tagsField') Tags
+    #tagInputHolder
+      #tagsHolder.tags
+      input#tagsField(type='text' maxlength='100' autocomplete='off')
+      #suggestionBox
+        p Popular Tags
+        .tags
+
+  button#postButton Post Your Question

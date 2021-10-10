@@ -325,6 +325,22 @@ class DataStore {
       .limit(count);
   }
 
+  deleteNote(noteId) {
+    return this.knex.where('question_id', noteId).from('questions_tags').del()
+      .then(() => this.knex.where('question', noteId).from('question_comments').del())
+      .then(()=>this.knex.where('id', noteId).from('questions').del());
+  }
+
+  async updateNote(noteId, note, owner) {
+    const { title, body, bodyText } = note;
+    await this.knex.where('question_id', noteId).from('questions_tags').del();
+    await this.knex
+      .table('questions')
+      .where('id', noteId)
+      .update({ title, body, 'body_text': bodyText, owner });
+    await this.addQuestionTags(noteId, note.tags);
+  }
+
   saveComment({ body, owner, creationTime, id }, isQuestionComment) {
     const commentOn = isQuestionComment ? 'question' : 'answer';
     const comment = {
@@ -337,6 +353,10 @@ class DataStore {
       .catch(() => {
         throw new Error('Comment Insertion Failed!');
       });
+  }
+
+  deleteComment(commentId) {
+    return this.knex.where('id', commentId).from('question_comments').del()
   }
 }
 

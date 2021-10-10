@@ -24,9 +24,9 @@ body
             img.smallAvatar(src=question.ownerAvatar)
             a.userName(href=`/profile/${question.owner}`) #{question.ownerName}
             | &nbsp;&nbsp;#{question.created} 
-        .answerCount
-          p.count(class= question.hasCorrectAnswer?'hasCorrect':'') #{question.answerCount}
-          p.countType Answers 
-        .voteCount
-          p.count #{question.voteCount}
-          p.countType Votes 
+        //- .answerCount
+        //-   p.count(class= question.hasCorrectAnswer?'hasCorrect':'') #{question.answerCount}
+        //-   p.countType Answers 
+        //- .voteCount
+        //-   p.count #{question.voteCount}
+        //-   p.countType Votes 

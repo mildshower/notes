@@ -7,8 +7,12 @@ include popUp.pug
   else
     a#askQuestionBtn(onclick= 'showPopUp(\'/user/askQuestion\')') Add Note
 if created
-  p#questionStatus
-    img.smallAvatar(src=ownerAvatar)
-    a.userName(href=`/profile/${owner}`) #{ownerName}
-    | &nbsp;&nbsp;#{created}
+  div#subTitle
+    p#questionStatus
+      img.smallAvatar(src=ownerAvatar)
+      a.userName(href=`/profile/${owner}`) #{ownerName}
+      | &nbsp;&nbsp;#{created}
+    div.deleteEditButtons
+      button.editNote Edit
+      button.deleteNote Delete
 hr.separator

@@ -154,13 +154,14 @@ const serveQuestionPage = async function(req, res, next) {
   }
 };
 
-const serveQuestionDetails = function(req, res) {
-  req.app.locals.dataStore
-    .getQuestionDetails(req.query.id)
-    .then((question) => {
-      return res.json(question);
-    })
-    .catch((error) => res.status(404).json({ error: error.message }));
+const serveQuestionDetails = async function(req, res) {
+  try{
+    const question = await req.app.locals.dataStore.getQuestionDetails(req.query.id);
+    question.tags = await req.app.locals.dataStore.getQuestionTags(question.id)
+    return res.json(question);
+  }catch(error) {
+    return res.status(404).json({ error: error.message })
+  };
 };
 
 const serveAnswers = function(req, res) {
@@ -175,6 +176,10 @@ const serveAskQuestion = function(req, res) {
   res.render('askQuestion', { user: req.user });
 };
 
+const serveEditNote = function(req, res) {
+  res.render('editNote', { user: req.user, id: req.query.id });
+};
+
 const saveDetails = (req, res) => {
   req.app.locals.dataStore.updateUserDetails(req.user.id, req.body)
     .then(() => res.redirect(req.query.targetPath));
@@ -186,6 +191,13 @@ const saveQuestion = (req, res) => {
   dataStore.addQuestion(question, req.user.id)
     .then(insertionDetails => res.json(insertionDetails));
 };
+
+const updateNote = async (req, res) => {
+  const { dataStore } = req.app.locals;
+  const note = req.body;
+  await dataStore.updateNote(req.query.id, note, req.user.id);
+  res.status(200).json({});
+}
 
 const authorizeUser = function(req, res, next) {
   if (req.user) {
@@ -303,14 +315,23 @@ const saveComment = function(req, res) {
   const created = getRelativeTime(creationTime);
   const comment = { id, body, owner, ownerName, creationTime, created };
   req.app.locals.dataStore.saveComment(comment, isQuestionComment)
-    .then(() => res.json({ isSucceeded: true, comment }))
+    .then(([id]) => res.json({ isSucceeded: true, comment: {...comment, id} }))
     .catch(err => res.status(406).json({ error: err.message }));
 };
+
+const deleteNote = (req, res) => {
+  req.app.locals.dataStore.deleteNote(req.query.id).then(res.sendStatus(200));
+}
 
 const logout = function(req, res) {
   req.app.locals.sessions.clearSession(req.cookies.session);
   res.clearCookie('session').redirect('/home');
 };
+
+const deleteComment = async (req, res) => {
+  await req.app.locals.dataStore.deleteComment(req.query.id);
+  res.sendStatus(200);
+}
 
 module.exports = {
   attachUser,
@@ -339,5 +360,9 @@ module.exports = {
   verifyAnswerAcceptance,
   getTagsSuggestion,
   saveComment,
-  logout
+  logout,
+  deleteNote,
+  serveEditNote,
+  updateNote,
+  deleteComment
 };

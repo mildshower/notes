@@ -15,27 +15,30 @@ head
 body
   include header.pug
   include titleBar.pug
+
   .questionBox(id= id)
-    .stats
-      .votes
-        button.upVote(class=userVote && userVote.voteType==1 && 'chosen')
-          img(src=`/images/arrow.svg` alt="voteUp" onclick= user?'':`showPopUp('${currPath}')`)
-        p.voteCount #{voteCount}
-        button.downVote(class=userVote && userVote.voteType==0 && 'chosen')
-          img(src=`/images/arrow.svg` alt="voteUp" onclick= user?'':`showPopUp('${currPath}')`)
+    //- .stats
+    //-   .votes
+    //-     button.upVote(class=userVote && userVote.voteType==1 && 'chosen')
+    //-       img(src=`/images/arrow.svg` alt="voteUp" onclick= user?'':`showPopUp('${currPath}')`)
+    //-     p.voteCount #{voteCount}
+    //-     button.downVote(class=userVote && userVote.voteType==0 && 'chosen')
+    //-       img(src=`/images/arrow.svg` alt="voteUp" onclick= user?'':`showPopUp('${currPath}')`)
     .body
       .editor
-      .tagStrip
-        each tag in tags
-          a.tag(href=`/search?searchQuery=%23${tag}`) #{tag}
+      if(tags.length != 0)
+        .tagStrip
+          each tag in tags
+            a.tag(href=`/search?searchQuery=%23${tag}`) #{tag}
       //- .editButton
       p.commentHead Comments
       .commentsBox
         each comment in comments
-          p.comment
+          p.comment(id= `c_${comment.id}`)
             | #{comment.body}&nbsp;&nbsp;-&nbsp
-            a.userName(href=`/profile/${comment.owner}`) #{comment.ownerName}
+            //- a.userName(href=`/profile/${comment.owner}`) #{comment.ownerName}
             span.commentTime &nbsp;&nbsp;#{comment.created}
+            img.deleteComment(src='/images/delete.png' alt='delete comment' onclick= `deleteComment(${comment.id})`)
       .commentBar.closed
         p.commentBarOpener(onclick= user?'':`showPopUp('${currPath}')`) add a comment
         input.newComment(type='text' placeholder='Your comment here..')

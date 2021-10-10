@@ -17,7 +17,10 @@ const {
   showProfilePage,
   serveAnswers,
   getTagsSuggestion,
-  logout
+  logout,
+  deleteNote,
+  serveEditNote,
+  deleteComment
 } = require('./handlers');
 
 const app = express();
@@ -42,6 +45,9 @@ app.get('/answers', serveAnswers);
 app.get('/tags', getTagsSuggestion);
 app.get('/search', serveSearchPage);
 app.get('/logout', logout);
+app.delete('/deleteNote', deleteNote);
+app.get('/editNote', serveEditNote);
+app.delete('/deleteComment', deleteComment);
 app.use(serveNotFound);
 
 module.exports = { app };
