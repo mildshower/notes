@@ -36,7 +36,7 @@ body
               a.tag(href=`/search?searchQuery=%23${tag}`) #{tag}
         else
           p.empty No Tags Yet
-      p.laneTitle Questions (#{questions.length})
+      p.laneTitle Notes (#{questions.length})
       #questions
         if(questions.length > 0)
           .contents
@@ -44,11 +44,11 @@ body
               a(href=`/question/${question.id}`) #{question.title}
         else
           p.empty No Questions Yet
-      p.laneTitle Answers (#{answers.length})
-      #answers
-        if(answers.length > 0)
-          .contents
-            each answer in answers
-              a(href=`/question/${answer.quesId}`) #{answer.questionTitle}
-        else
-          p.empty No Answers Yet
+      //- p.laneTitle Answers (#{answers.length})
+      //- #answers
+      //-   if(answers.length > 0)
+      //-     .contents
+      //-       each answer in answers
+      //-         a(href=`/question/${answer.quesId}`) #{answer.questionTitle}
+      //-   else
+      //-     p.empty No Answers Yet

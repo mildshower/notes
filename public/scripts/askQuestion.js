@@ -74,13 +74,14 @@ const showSuggestion = function(tag) {
 
 const manageTags = function(event) {
   const tag = getTagInput();
-  showSuggestion(tag);
   if (event.keyCode === 32) {
-    return addTag(tag);
+    addTag(tag);
+    return showSuggestion({value: ""});
   }
   if (event.keyCode === 8) {
     removeTag();
   }
+  showSuggestion(tag);
 };
 
 const getQuestionTags = function() {
