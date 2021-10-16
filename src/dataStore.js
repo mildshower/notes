@@ -22,6 +22,13 @@ const attachQuestionDetails = function(knex){
     .first();
 };
 
+const toWhereClause = (exp) => {
+  if(exp.startsWith("#")) return ` (ques.id in (select question_id from questions_tags where tag_id = 
+    (select id from tags where tag_name like '%${exp.slice(1)}%'))) `;
+
+  return ` (ques.title like '%${exp}%' or ques.body_text like '%${exp}%') `;
+}
+
 class DataStore {
   constructor(dbClient, knex) {
     this.dbClient = dbClient;
@@ -168,16 +175,11 @@ class DataStore {
   }
 
   getMatchedQuestions(searchKeyword) {
-    const [, userName, tagName, acceptance, ansCount, text] =
-      searchKeyword.match(/^@(.*)|^#(.*)|^:(.*)|^>(.*)|(.*)/);
-    const expressions = {
-      $text: `%${text}%`,
-      $user: `%${userName}%`,
-      $tag: `%${tagName}%`,
-      $acceptance: acceptance && +/^accepted$/i.test(acceptance),
-      $ansCount: +ansCount
-    };
-    return this.getRows(query.searchQuestions, expressions);
+    const searchParams = searchKeyword.split("&&").map(_ => _.trim().replace(/\\&\\&/g, "&&"));
+    const clauses = searchParams.map(toWhereClause);
+    const combinedClause = clauses.join(" AND ");
+
+    return this.getRows(`${query.searchQuestions} ${clauses.length > 0 ? ` where ${combinedClause}` : ''}`, {});
   }
 
   getUserAnswers(id) {

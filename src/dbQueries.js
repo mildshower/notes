@@ -51,13 +51,7 @@ module.exports = {
     questionDetails + 'where ques.id = ?;',
 
   searchQuestions:
-    questionDetails +
-    ` where ques.title like $text or ques.body_text like $text
-    or ownerName like $user
-    or ques.id in (select question_id from questions_tags
-      where tag_id = (select id from tags where tag_name like $tag))
-    or hasCorrectAnswer = $acceptance
-    or answerCount = $ansCount;`,
+    questionDetails,
 
   initial: `
     ${Object.values(tablesSchema).join('\n')}
